@@ -13,3 +13,9 @@ ehthumbs_vista.db
 *.swp
 *.swo
 *~
+
+# Agent Files
+.agent/
+.agent
+.agents/
+.agents
