@@ -26,7 +26,7 @@ The agency acts primarily as the **tour orchestrator/operator** coordinating bot
 
 ## 3. Core Business Domain Concepts
 
-`mermaid
+```mermaid
 classDiagram
     class TourPlan {
         +String title
@@ -63,7 +63,7 @@ classDiagram
     Booking "1" --> "many" Traveler : registers
     TourDeparture "1" --> "many" TourService : requires
     TourService "many" --> "1" Vendor : fulfilled by
-`
+```
 
 1. **Tour / Tour Plan:** The master itinerary and planned structure of a tour (reusable for recurring open tours).
 2. **Tour Departure:** A specific calendar execution of a Tour Plan on a particular date with its own quota, price, Tour Leader, and vendor bookings.
@@ -125,7 +125,7 @@ classDiagram
 
 The system decouples Booking, Tour Departure, and Payment lifecycles to avoid invalid state lock-in:
 
-`mermaid
+```mermaid
 stateDiagram-v2
     direction LR
 
@@ -161,7 +161,7 @@ stateDiagram-v2
         PartiallyPaid --> RefundPending : Cancelled
         RefundPending --> Refunded : Transferred
     }
-`
+```
 
 *Example of valid decoupled state:*
 - Booking = CANCELLED
@@ -172,7 +172,7 @@ stateDiagram-v2
 
 ## 7. Functional Scope by Business Area
 
-`	ext
+```text
 TRAVEL & TOUR OPERATIONS SYSTEM
 ├── CRM & Customer Management (Customer Profiles, Travel History, Document Repository)
 ├── Sales & Quotation (Private Tour Estimator, Quotation Generator, Revision Tracking)
@@ -185,13 +185,13 @@ TRAVEL & TOUR OPERATIONS SYSTEM
 ├── Cancellation & Refund Management (Full Refund Processing, Travel Partner Transfer)
 ├── Document Generation (Invoices, Receipts, Vouchers, Itineraries, Booking Confirmations, POs)
 └── Management Dashboard & Reporting (Departure Pipeline, Cash Flow, Occupancy, Margin Analysis)
-`
+```
 
 ---
 
 ## 8. Automation & Operational Efficiency Opportunities
 
-`mermaid
+```mermaid
 flowchart TD
     subgraph "1. Booking Confirmation Flow"
         DP[DP Paid & Verified] --> CB[Auto-Confirm Booking]
@@ -210,7 +210,7 @@ flowchart TD
         AT -->|Owner: Full Refund| CR[Auto-Calculate Refunds & Open Finance Queue]
         AT -->|Owner: Partner Transfer| PT[Generate Partner Transfer Manifest]
     end
-`
+```
 
 ---
 
