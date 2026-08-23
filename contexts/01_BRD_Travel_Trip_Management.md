@@ -11,7 +11,7 @@ Dokumen ini berfungsi sebagai **Business Requirements Document (BRD)** untuk Tra
 Organisasi merupakan sebuah **travel agency / tour operator** yang mengorkestrasi perjalanan wisata secara *end-to-end*.
 
 Agensi bertanggung jawab untuk:
-- Merencanakan, mengemas (*packaging*), dan menjadwalkan tour.
+- Merencanakan, mengemas (*packaging* — merangkai *itinerary*, transportasi, akomodasi, konsumsi, tiket aktivitas, dan pemandu menjadi satu paket wisata terpadu dengan satu struktur harga), dan menjadwalkan tour (baik *pre-packaged* untuk Open Tour maupun *custom packaging* untuk Private Tour).
 - Mengelola *booking pipeline* dan hubungan pelanggan (*customer relations*).
 - Menugaskan dan mengelola **Tour Leader**.
 - Mengoordinasikan *travelers* dan mengelola *manifest*.
