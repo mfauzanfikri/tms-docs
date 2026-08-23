@@ -4,14 +4,14 @@
 **Travel & Tour Operations System**
 
 ## 2. Swimlane (Aktor & Tanggung Jawab)
-1. **Customer:** Mengajukan inquiry, mengisi formulir registrasi, membayar DP & pelunasan.
-2. **Admin:** Menangani inquiry, menerbitkan order & invoice, komunikasi peserta.
-3. **Finance:** Verifikasi pembayaran (DP & Pelunasan), memproses refund, membayar vendor.
-4. **Operational:** Menyiapkan itinerary, menugaskan Tour Leader, reservasi & PO vendor.
-5. **Tour Leader:** Mengakses manifest, mendampingi peserta, melaporkan status & insiden lapangan.
-6. **Owner:** Approval keputusan kuota D-5 (Full Refund / Transfer Partner), override kebijakan.
-7. **Vendor / Travel Partner:** Menerima PO layanan, menyediakan akomodasi/transportasi, menerima pengalihan peserta.
-8. **System:** Trigger otomatis evaluasi H-5 / D-5, kalkulasi kuota, pembuatan dokumen.
+1. **Customer:** Mengajukan inquiry, mengisi form, memanfaatkan kupon/promo, membayar DP & pelunasan, mengajukan reschedule/batal jika ada kendala.
+2. **Admin / Sales:** Menangani inquiry, menerapkan promo, membuat order & invoice, menyesuaikan draf jadwal pre-publish, menangani meja resolusi disrupsi & pembatalan.
+3. **Finance:** Verifikasi pembayaran (DP & Pelunasan), memproses refund, membayar tagihan vendor, mencatat beban promo & goodwill, melakukan *financial closing*.
+4. **Operational:** Mengelola master paket (BOM), mengatur mesin rekurensi jadwal, menugaskan Tour Leader, menerbitkan PO & voucher layanan ke vendor.
+5. **Tour Leader:** Mengakses live manifest di lapangan, memvalidasi kehadiran & *special perks* peserta, melaporkan status & insiden.
+6. **Owner / Executive:** Persetujuan pembatalan kuota D-5 (*Full Refund* vs *Partner Transfer*), persetujuan *override* dan subsidi *Free Waiver*.
+7. **Vendor & Travel Partner:** Menerima PO layanan, menyediakan akomodasi/transportasi/konsumsi, menerima peserta transfer.
+8. **System (Automations):** Mesin rekurensi jadwal, penguncian harga *published*, kalkulasi kuota D-5 otomatis, kalkulasi promo & invoice, snapshot harga booking.
 
 ---
 
@@ -19,116 +19,114 @@
 
 ```mermaid
 flowchart TD
-    subgraph Customer["Customer"]
-        C_Start([Mulai]) --> C_Ad[Melihat & Klik Iklan]
-        C_Ad --> C_Inq[Inquiry via WhatsApp]
-        C_Form[Isi Booking Form / Data Traveler]
-        C_Pay[Bayar Down Payment DP]
-        C_Settle[Bayar Pelunasan / Final Settlement]
-        C_Tour([Mengikuti Tour & Selesai])
-        C_Refunded([Dana Diterima Kembali 100%])
-        C_Transferred([Berangkat Bersama Mitra])
+    %% Swimlane Definitions
+    subgraph Operational["Operational & Tour Planning"]
+        O_Package[Buat Master Package Blueprint & BOM]
+        O_RecurEngine[Set Aturan Recurrence: Mingguan/Bulanan/Custom]
+        O_AssignTL[Assign Tour Leader]
+        O_VendorPO[Reservasi & Terbitkan PO Vendor + Extra Perks]
+        O_Manifest[Rilis Final Manifest ke TL & Vendor]
+        O_FieldExec[Tour Leader Pimpin Trip & Validasi Perks]
     end
 
-    subgraph Admin["Admin / Sales"]
-        A_Resp[Respons Inquiry & Kirim Form]
-        A_Order[Buat Booking & Terbitkan Invoice]
-        A_InvoiceSettle[Kirim Tagihan Pelunasan]
-    end
-
-    subgraph Finance["Finance"]
-        F_Verify{G1: DP Terverifikasi?}
-        F_SettleVerify[Verifikasi Pelunasan]
-        F_Refund[Transfer Full Refund 100%]
-        F_Close[Proses Financial Closing]
-    end
-
-    subgraph Operational["Operational & Tour Leader"]
-        O_Prep[Siapkan Tour Plan & Itinerary]
-        O_TL[Assign Tour Leader]
-        O_Vendor[Reservasi & Terbitkan PO Vendor]
-        O_Manifest[Rilis Final Manifest & Service Voucher]
-        O_Execute[Eksekusi Tour di Lapangan]
-    end
-
-    subgraph System["System (Automations)"]
-        S_DPCheck[Update Status: DP Confirmed]
+    subgraph System["System (Automations & Engines)"]
+        S_GenSchedule[Generate Draf Departure: TENTATIVE]
+        S_LockPrice[Status PUBLISHED_FIXED: Lock Base Price]
+        S_ApplyPromo[Hitung Diskon / Tandai Perks di Manifest]
+        S_PriceSnapshot[Lock Price Snapshot on Booking Confirmed]
         S_D5Trigger[Trigger Evaluasi H-5 / D-5]
-        S_D5Gate{G2: Peserta DP Valid >= 20?}
-        S_Confirm[Status Departure: CONFIRMED]
-        S_FlagCancel[Status Departure: WAITING OWNER ACTION]
+        S_D5Gate{G1: Peserta DP Valid >= 20?}
+        S_ConfirmDep[Set Departure: CONFIRMED]
+        S_FlagD5Cancel[Set Departure: WAITING OWNER ACTION]
     end
 
-    subgraph Owner["Owner"]
-        O_Decide{G3: Keputusan Disposisi Pembatalan?}
+    subgraph Admin["Admin / Sales Desk"]
+        A_AdjustDate[Pre-Publish Adjustment: Sesuaikan Tanggal/Kuota]
+        A_Publish[Publish Jadwal ke Publik]
+        A_Order[Buat Booking Order & Pasang Promo]
+        A_InvoiceSettle[Kirim Tagihan Pelunasan]
+        A_DisruptionDesk{G2: Meja Resolusi Disrupsi / Force Majeure}
+        A_IndivCancel[Proses Pembatalan Individu: No-Refund / S&K]
+    end
+
+    subgraph Customer["Customer / Traveler"]
+        C_Inq[Inquiry Jadwal & Paket]
+        C_Form[Isi Form & Masukkan Kode Promo]
+        C_PayDP[Bayar Down Payment DP]
+        C_Settle[Bayar Pelunasan]
+        C_Trip([Ikuti Tour & Nikmati Fasilitas/Perks])
+        C_RefundDone([Terima Dana Pengembalian])
+        C_Rebooked([Jadwal / Paket Baru Terkonfirmasi])
+    end
+
+    subgraph Finance["Finance & Ledgers"]
+        F_VerifyDP{G3: DP Valid?}
+        F_VerifySettle[Verifikasi Pelunasan]
+        F_ProcessRefund[Eksekusi Transfer Refund]
+        F_ReconTransfer[Rekonsiliasi Pindah Paket: Selisih vs Free Waiver]
+        F_Close[Financial Closing: Revenue, Vendor, Promo, Goodwill]
+    end
+
+    subgraph Owner["Owner / Executive"]
+        O_D5Decision{G4: Keputusan Kuota Gagal D-5?}
     end
 
     subgraph Partner["Vendor & Travel Partner"]
-        V_PO[Terima PO Layanan: Bus/Hotel/Resto]
-        P_Transfer[Terima Delegasi Manifest & Dana]
+        V_POAccept[Terima PO Layanan & Ekstra Porsi Promo]
+        P_TransferAccept[Terima Rombongan Pengalihan]
     end
 
-    %% Workflow Connections
-    C_Inq --> A_Resp
-    A_Resp --> A_Order
-    A_Order --> C_Form
-    C_Form --> C_Pay
-    C_Pay --> F_Verify
+    %% Flow: 1. Penjadwalan & Rilis
+    O_Package --> O_RecurEngine --> S_GenSchedule
+    S_GenSchedule --> A_AdjustDate
+    A_AdjustDate --> A_Publish --> S_LockPrice
 
-    F_Verify -- Tidak Valid --> A_Resp
-    F_Verify -- Valid --> S_DPCheck
+    %% Flow: 2. Booking & DP
+    S_LockPrice --> C_Inq
+    C_Inq --> A_Order
+    A_Order --> S_ApplyPromo --> C_Form
+    C_Form --> C_PayDP --> F_VerifyDP
 
-    O_Prep --> O_TL --> O_Vendor --> V_PO
+    F_VerifyDP -- Tidak Valid --> A_Order
+    F_VerifyDP -- Valid --> S_PriceSnapshot
+    S_PriceSnapshot --> S_D5Trigger
 
-    S_DPCheck --> S_D5Trigger
+    %% Flow: 3. Persiapan Operasional
+    S_PriceSnapshot --> O_AssignTL --> O_VendorPO --> V_POAccept
+
+    %% Flow: 4. Milestone D-5
     S_D5Trigger --> S_D5Gate
+    S_D5Gate -- Ya: Kuota >= 20 --> S_ConfirmDep
+    S_ConfirmDep --> A_InvoiceSettle
+    S_ConfirmDep --> O_Manifest
+    A_InvoiceSettle --> C_Settle --> F_VerifySettle
+    F_VerifySettle --> O_FieldExec
+    O_Manifest --> O_FieldExec --> C_Trip --> F_Close
 
-    %% Jalur Sukses (Kuota Terpenuhi)
-    S_D5Gate -- Ya: Kuota >= 20 --> S_Confirm
-    S_Confirm --> A_InvoiceSettle
-    S_Confirm --> O_Manifest
-    A_InvoiceSettle --> C_Settle
-    C_Settle --> F_SettleVerify
-    F_SettleVerify --> O_Execute
-    O_Manifest --> O_Execute
-    O_Execute --> C_Tour
-    C_Tour --> F_Close
+    %% Flow: 5. Kegagalan Kuota D-5
+    S_D5Gate -- Tidak: Kuota < 20 --> S_FlagD5Cancel
+    S_FlagD5Cancel --> O_D5Decision
+    O_D5Decision -- Full Refund 100% --> F_ProcessRefund --> C_RefundDone
+    O_D5Decision -- Transfer Partner --> P_TransferAccept
 
-    %% Jalur Gagal (Kuota Tidak Terpenuhi)
-    S_D5Gate -- Tidak: Kuota < 20 --> S_FlagCancel
-    S_FlagCancel --> O_Decide
+    %% Flow: 6. Penanganan Disrupsi & Bencana
+    A_DisruptionDesk -- 1. Cancel / Full Refund --> F_ProcessRefund
+    A_DisruptionDesk -- 2. Reschedule (Paket Sama) --> S_PriceSnapshot
+    A_DisruptionDesk -- 3. Switch Plan / Rute --> S_PriceSnapshot
+    A_DisruptionDesk -- 4. Switch Package Lain --> F_ReconTransfer --> C_Rebooked
 
-    O_Decide -- Pilihan A: Full Refund --> F_Refund
-    F_Refund --> C_Refunded
-
-    O_Decide -- Pilihan B: Transfer Partner --> P_Transfer
-    P_Transfer --> C_Transferred
+    %% Flow: 7. Pembatalan Mandiri Peserta
+    C_Inq -. Permintaan Batal .-> A_IndivCancel
+    A_IndivCancel --> F_ProcessRefund
 ```
 
 ---
 
-## 4. Decision Gateways Kritis
+## 4. Decision Gateways Summary
 
-### **Gateway 1 (G1) — Payment Verification Gateway**
-- **Trigger:** Bukti transfer pembayaran DP diunggah oleh Customer/Admin.
-- **Logika:** 
-  - `NO` $\rightarrow$ Status tetap `Pending Verification` / Notifikasi perbaikan bukti bayar ke Customer.
-  - `YES` $\rightarrow$ Status pembayaran berubah menjadi `VERIFIED`, status booking menjadi `CONFIRMED`, data *traveler* resmi dihitung ke dalam kuota keberangkatan.
-
-### **Gateway 2 (G2) — D-5 Minimum Quota Gateway**
-- **Trigger:** Pemicu otomatis dari sistem pada **H-5 / D-5 (00:00 WIB)** sebelum tanggal keberangkatan.
-- **Logika:**
-  - $\text{Count(DP Verified)} \ge 20 \rightarrow$ Status departure berubah ke `CONFIRMED`, memicu penagihan pelunasan (*Final Settlement*) dan penerbitan manifes operasional.
-  - $\text{Count(DP Verified)} < 20 \rightarrow$ Status departure berubah ke `CANCELLED / WAITING_OWNER_ACTION`, memicu notifikasi darurat kepada Owner.
-
-### **Gateway 3 (G3) — Owner Decision Gateway**
-- **Trigger:** Keberangkatan gagal memenuhi kuota minimum 20 peserta pada evaluasi D-5.
-- **Pilihan Tindakan:**
-  1. **Full Refund (100%):** Membuka antrean kerja bagi Tim Finance untuk memproses transfer pengembalian seluruh dana masuk ke rekening masing-masing *Customer*.
-  2. **Transfer to Travel Partner:** Mengalihkan manifes peserta dan alokasi dana ke agensi mitra setelah konfirmasi dan persetujuan peserta.
-
----
-
-## 5. Catatan Arsitektur BPMN
-1. **Audit Trail:** Transisi status dari `WAITING_OWNER_ACTION` menuju `REFUNDING` atau `TRANSFERRED` wajib mencatat aktor pengambil keputusan (*Owner ID*), *timestamp*, serta catatan disposisi.
-2. **Pemisahan Notifikasi:** Setiap perubahan jalur keputusan otomatis memicu notifikasi berbasis template WhatsApp/Email kepada Customer dan Vendor terkait.
+| Gateway | Penanggung Jawab | Kondisi & Cabang Keputusan |
+|---|---|---|
+| **G1: Evaluasi Kuota D-5** | System (Otomatis) | • **$\ge 20$ Peserta DP Valid:** Trip CONFIRMED $\rightarrow$ Terbitkan pelunasan.<br>• **$< 20$ Peserta DP Valid:** WAITING OWNER ACTION. |
+| **G2: Meja Resolusi Disrupsi / Force Majeure** | Admin / Sales | • **1. Cancel:** Pengembalian dana darurat.<br>• **2. Reschedule:** Pindah tanggal 1:1.<br>• **3. Switch Plan:** Pindah rute alternatif.<br>• **4. Switch Package:** Pindah paket (Mode Standar vs Free Waiver). |
+| **G3: Verifikasi DP Masuk** | Finance | • **Valid:** Booking status CONFIRMED, harga di-snapshot, kuota terkunci.<br>• **Tidak Valid:** Notifikasi ke Admin/Customer untuk perbaikan bukti bayar. |
+| **G4: Keputusan Kuota Gagal D-5** | Owner / Executive | • **Full Refund 100%:** Dana dikembalikan utuh ke seluruh peserta.<br>• **Transfer Partner:** Manifest dan alokasi dana didelegasikan ke mitra. |
