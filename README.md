@@ -1,73 +1,73 @@
-# Travel & Tour Operations System — Documentation Hub (`tms-docs`)
+# Travel & Tour Operations System — Dokumentasi Hub (`tms-docs`)
 
-Welcome to the central documentation repository for the **Travel & Tour Operations System (TMS)**.
+Selamat datang di repositori dokumentasi sentral untuk **Travel & Tour Operations System (TMS)**.
 
 ---
 
-## 1. Repository Purpose & Scope
+## 1. Tujuan & Scope Repositori
 
 > [!IMPORTANT]
-> **Pure Documentation Repository:**
-> This repository is dedicated **exclusively to system documentation, business discovery, product requirements, and technical architecture specifications**. 
+> **Repositori Khusus Dokumentasi (Pure Documentation Repository):**
+> Repositori ini didedikasikan **khusus untuk dokumentasi sistem, business discovery, product requirements, dan spesifikasi arsitektur teknis**. 
 > 
-> Implementation code (backend, frontend, mobile apps, infrastructure scripts) resides in separate, dedicated repositories.
+> Kode implementasi (*backend, frontend, mobile apps, infrastructure scripts*) berada di repositori terpisah.
 
 ---
 
-## 2. Directory Architecture & Information Flow
+## 2. Arsitektur Direktori & Alur Informasi
 
-The documentation progresses through distinct maturity stages:
+Dokumentasi berkembang melalui tahapan maturitas yang terstruktur:
 
 ```mermaid
 flowchart LR
     A["📂 contexts/<br><i>Working / Temporary Notes<br>Brainstorming & Discovery</i>"]
-    -->|Refined & Validated| B["📂 product/<br><i>Product Specifications<br>(Structure decided as we go)</i>"]
-    -->|Architected| C["📂 technical/<br><i>Technical Specifications<br>(Structure decided as we go)</i>"]
+    -->|Refined & Validated| B["📂 product/<br><i>Product Specifications<br>(Struktur ditentukan bertahap)</i>"]
+    -->|Architected| C["📂 technical/<br><i>Technical Specifications<br>(Struktur ditentukan bertahap)</i>"]
 ```
 
-### Directory Structure
+### Struktur Direktori
 
 ```text
 tms-docs/
-├── contexts/                 # Temporary working documents, brainstorms, meeting notes, raw ideas
+├── contexts/                 # Catatan kerja sementara, brainstorm, meeting notes, raw ideas
 │   ├── 01_BRD_Travel_Trip_Management.md
 │   ├── 02_FLOW_Travel_Trip_Management.md
 │   ├── 03_BPMN_Travel_Trip_Management.md
 │   └── 04_MODULE_DESIGN_Travel_Trip_Management.md
-├── product/                  # (Upcoming) Product documentation & requirements
-├── technical/                # (Upcoming) Technical documentation & architecture
+├── product/                  # (Mendatang) Dokumentasi produk formal & requirements
+├── technical/                # (Mendatang) Engineering blueprints, data schemas, API contracts
 ├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 3. The Role of `contexts/`
+## 3. Peran Direktori `contexts/`
 
-The `contexts/` directory serves as an **active brainstorming and discovery sandbox**:
-- **Temporary & Working State**: Files here capture emerging ideas, operational notes, discussion transcripts, and exploratory designs before they are finalized into formal specifications.
-- **Graduation Lifecycle**: Once concepts and business policies in `contexts/` are validated by stakeholders, they are synthesized and graduated into formal documents under `product/` or `technical/` (the exact sub-structures will be decided and refined as we go).
+Direktori `contexts/` berfungsi sebagai **sandbox brainstorming dan discovery aktif**:
+- **Status Sementara & Kerja (Temporary & Working State)**: File di sini menampung ide-ide awal, catatan operasional, transkrip diskusi, dan desain eksploratif sebelum difinalisasi ke dalam spesifikasi formal.
+- **Siklus Kelulusan (Graduation Lifecycle)**: Setelah konsep dan aturan bisnis di `contexts/` divalidasi oleh *stakeholder*, dokumen akan disintesis dan dipindahkan ke dalam dokumen formal di folder `product/` atau `technical/` (struktur sub-folder akan disesuaikan seiring berjalannya proyek).
 
 ---
 
-## 4. Current Context Reading Order
+## 4. Urutan Membaca Dokumen Konteks Saat Ini
 
-For onboarding or understanding the current business discovery status, review documents in the numbered sequence:
+Untuk proses *onboarding* atau memahami status *business discovery* saat ini, baca dokumen dengan urutan nomor berikut:
 
-| Step | Document | Focus Area |
+| Urutan | Dokumen | Area Fokus |
 |---|---|---|
-| **01** | [`contexts/01_BRD_Travel_Trip_Management.md`](contexts/01_BRD_Travel_Trip_Management.md) | **Business Requirements**: Operating model, domain concepts (`Tour Plan` vs `Tour Departure`), confirmed business rules, and open policy decisions. |
-| **02** | [`contexts/02_FLOW_Travel_Trip_Management.md`](contexts/02_FLOW_Travel_Trip_Management.md) | **End-to-End Flow**: Narrative journey from customer acquisition, booking, D-5 evaluation to trip closing. |
-| **03** | [`contexts/03_BPMN_Travel_Trip_Management.md`](contexts/03_BPMN_Travel_Trip_Management.md) | **BPMN & Decision Gateways**: Swimlane responsibilities (Customer, Admin, Finance, Operational, Owner) and decision branching. |
-| **04** | [`contexts/04_MODULE_DESIGN_Travel_Trip_Management.md`](contexts/04_MODULE_DESIGN_Travel_Trip_Management.md) | **Module Architecture**: High-level module decomposition, entity relationships, and state lifecycles. |
+| **01** | [`contexts/01_BRD_Travel_Trip_Management.md`](contexts/01_BRD_Travel_Trip_Management.md) | **Business Requirements**: Model operasional, konsep domain (`Tour Plan` vs `Tour Departure`), aturan bisnis yang telah dikonfirmasi, dan keputusan kebijakan yang masih terbuka. |
+| **02** | [`contexts/02_FLOW_Travel_Trip_Management.md`](contexts/02_FLOW_Travel_Trip_Management.md) | **End-to-End Flow**: Alur perjalanan naratif dari akuisisi pelanggan, *booking*, evaluasi D-5, hingga *trip closing*. |
+| **03** | [`contexts/03_BPMN_Travel_Trip_Management.md`](contexts/03_BPMN_Travel_Trip_Management.md) | **BPMN & Decision Gateways**: Pembagian tanggung jawab *swimlane* (*Customer, Admin, Finance, Operational, Owner*) dan percabangan keputusan. |
+| **04** | [`contexts/04_MODULE_DESIGN_Travel_Trip_Management.md`](contexts/04_MODULE_DESIGN_Travel_Trip_Management.md) | **Module Architecture**: Dekomposisi modul tingkat tinggi, relasi entitas, dan *state lifecycles*. |
 
 ---
 
-## 5. Documentation Standards & Guidelines
+## 5. Standar & Panduan Dokumentasi
 
-1. **Keep Requirements Decoupled from Implementation**: In discovery and product phases, document *what* the business needs and *why*, rather than prescribing premature database schemas or UI libraries.
-2. **Explicit Uncertainty**: Always distinguish between:
-   - **Confirmed**: Firm business rules signed off by management.
-   - **Assumptions to Validate**: Working assumptions that require verification.
-   - **Open Questions**: Unresolved business policies.
-3. **Numbered Prefixes**: Use two-digit prefixes (`01_`, `02_`, etc.) for sequential reading order within directories.
+1. **Pisahkan Requirements dari Implementasi**: Pada fase *discovery* dan *product*, dokumentasikan *apa* yang dibutuhkan bisnis dan *mengapa*, hindari menentukan skema database atau *UI library* secara prematur.
+2. **Eksplisitkan Ketidakpastian**: Selalu bedakan antara:
+   - **Confirmed**: Aturan bisnis pasti yang telah disetujui manajemen.
+   - **Assumptions to Validate**: Asumsi kerja yang masih membutuhkan verifikasi.
+   - **Open Questions**: Kebijakan bisnis yang belum diputuskan.
+3. **Penomoran Berurutan (Numbered Prefixes)**: Gunakan format dua digit (`01_`, `02_`, dst.) untuk urutan membaca dalam setiap direktori.

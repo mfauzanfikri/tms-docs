@@ -1,129 +1,159 @@
-# BPMN — Travel Trip Management System (To-Be)
+# BPMN — Travel & Tour Operations Management System (To-Be)
 
 ## 1. Pool
-**Travel Trip Management**
+**Travel & Tour Operations System**
 
-## 2. Swimlane
-1. Customer
-2. Admin
-3. Finance
-4. Operational
-5. Owner
-6. Vendor / Travel Partner
+## 2. Swimlane (Aktor & Tanggung Jawab)
+1. **Customer:** Mengajukan inquiry, mengisi formulir registrasi, membayar DP & pelunasan.
+2. **Admin:** Menangani inquiry, menerbitkan order & invoice, komunikasi peserta.
+3. **Finance:** Verifikasi pembayaran (DP & Pelunasan), memproses refund, membayar vendor.
+4. **Operational:** Menyiapkan itinerary, menugaskan Tour Leader, reservasi & PO vendor.
+5. **Tour Leader:** Mengakses manifest, mendampingi peserta, melaporkan status & insiden lapangan.
+6. **Owner:** Approval keputusan kuota D-5 (Full Refund / Transfer Partner), override kebijakan.
+7. **Vendor / Travel Partner:** Menerima PO layanan, menyediakan akomodasi/transportasi, menerima pengalihan peserta.
+8. **System:** Trigger otomatis evaluasi H-5 / D-5, kalkulasi kuota, pembuatan dokumen.
+
+---
 
 ## 3. Main BPMN Flow
 
-```text
+`	ext
 CUSTOMER
 (Start)
   ↓
-Melihat iklan
+Melihat iklan / promosi
   ↓
-Klik iklan
+Klik link iklan
   ↓
 Inquiry via WhatsApp
   ↓
-Order
+Order / Reservasi
   ↓
-Isi Form Order
+Mengisi Booking Form (Data Traveler)
   ↓
-Terima Invoice
+Menerima Invoice
   ↓
-Bayar DP
+Membayar Down Payment (DP)
   ↓
-[Payment Verification]
+[Payment Verification Pending]
 
 ADMIN
   ↓
-Menjawab Inquiry
+Merespons WhatsApp Inquiry
   ↓
-Membuat Order
+Membuat Draft Order / Booking
   ↓
-Mengirim Form
+Mengirimkan Booking Form
   ↓
-Membuat Invoice
+Menerbitkan Invoice Pembayaran
   ↓
-Mencatat Payment
-  ↓
-Memasukkan participant setelah DP terverifikasi
+Mencatat Bukti Pembayaran DP
 
 FINANCE
   ↓
-Verifikasi Payment
+Verifikasi Bukti Pembayaran DP
   ↓
-Payment Verified
-  ↓
-Participant dihitung
+◇ G1: Apakah DP Valid?
+  ├── NO  → Pembayaran ditolak / Konfirmasi ulang ke Customer
+  └── YES → Status Pembayaran: VERIFIED
+              ↓
+            Status Booking: CONFIRMED
+              ↓
+            Data Traveler masuk ke Manifest Resmi
 
 OPERATIONAL
   ↓
-Planning Trip
+Menyiapkan Tour Plan & Itinerary
   ↓
-Atur Destination & Activity
+Mengatur Destinasi & Aktivitas
   ↓
-Assign Tour Leader
+Menugaskan Tour Leader (Assign Tour Leader)
   ↓
-Booking Vendor
+Reservasi & Kirim PO ke Vendor (Bus, Penginapan, Restoran)
   ↓
-Persiapan
+Persiapan Operasional Keberangkatan
 
-SYSTEM
+SYSTEM (D-5 Milestone Event)
   ↓
-H-5 Event
+Pemicu Otomatis H-5 (5 Hari Sebelum Departure)
   ↓
-Count DP Verified Participants
+Hitung Total Peserta Terverifikasi DP
   ↓
-◇ Apakah participant >= 20?
-  ├── YES → Trip CONFIRMED
+◇ G2: Apakah Peserta Terverifikasi >= 20?
+  ├── YES → Status Departure: CONFIRMED
   │          ↓
-  │       Persiapan keberangkatan
+  │       Admin kirim tagihan Pelunasan (Final Settlement)
   │          ↓
-  │       Pelunasan
+  │       Finance verifikasi Pelunasan
   │          ↓
-  │       Departure
+  │       Operational rilis Final Manifest & Service Vouchers
   │          ↓
-  │       On Trip
+  │       Status Departure: IN_OPERATION (Keberangkatan)
   │          ↓
-  │       Completed
+  │       Tour Leader koordinasi lapangan
+  │          ↓
+  │       Status Departure: COMPLETED
+  │          ↓
+  │       Finance proses Financial Closing
   │
-  └── NO → Trip CANCELLED
+  └── NO → Status Departure: CANCELLED / WAITING OWNER ACTION
              ↓
-        WAITING OWNER ACTION
+        Notifikasi Darurat dikirim ke Owner
 
 OWNER
   ↓
-◇ Pilihan?
+◇ G3: Keputusan Disposisi Pembatalan?
   ├── FULL REFUND
   │      ↓
-  │   Finance proses refund
+  │   Finance menghitung total refund seluruh peserta
   │      ↓
-  │   Bukti refund disimpan
+  │   Finance memproses transfer pengembalian dana 100%
   │      ↓
-  │   REFUNDED
+  │   Upload bukti refund ke sistem
+  │      ↓
+  │   Status Pembayaran: REFUNDED
+  │      ↓
+  │   Status Departure: CLOSED_CANCELLED
   │
   └── TRANSFER TO TRAVEL PARTNER
          ↓
-      Persetujuan/konfirmasi peserta
+      Persetujuan & konfirmasi dari peserta
          ↓
-      Transfer data/transaksi
+      Transfer manifest & alokasi dana ke mitra
          ↓
-      TRANSFERRED
+      Upload bukti disposisi/perjanjian transfer
+         ↓
+      Status Peserta: TRANSFERRED
+         ↓
+      Status Departure: CLOSED_TRANSFERRED
 
 (End)
-```
+`
 
-## 4. Gateway Penting
-**G1 — Payment Verified?**
-- No → tetap Waiting Verification.
-- Yes → participant dihitung.
+---
 
-**G2 — Minimum Participant Reached?**
-- Yes → trip dapat dilanjutkan.
-- No → cancellation handling.
+## 4. Decision Gateways Kritis
 
-**G3 — Owner Decision**
-- Full Refund.
-- Transfer to Travel Partner.
+### **Gateway 1 (G1) — Payment Verification Gateway**
+- **Trigger:** Bukti pembayaran DP diunggah.
+- **Logika:** 
+  - NO $\rightarrow$ Status tetap Pending Verification / Notifikasi penolakan ke Customer.
+  - YES $\rightarrow$ Status berubah menjadi Verified, booking menjadi Confirmed, peserta resmi dihitung dalam kuota.
 
-## 5. Catatan BPMN
-Untuk implementasi final, status `CANCELLED` sebaiknya dipisahkan dari `WAITING OWNER ACTION` jika Owner masih harus memilih tindakan. Dengan begitu sistem memiliki audit trail yang jelas.
+### **Gateway 2 (G2) — D-5 Minimum Quota Gateway**
+- **Trigger:** Penanda waktu sistem pada H-5 (00:00 atau jam yang ditentukan) sebelum tanggal keberangkatan.
+- **Logika:**
+  - $\text{Count(DP Verified)} \ge 20 \rightarrow$ Lanjut ke fase Confirmed, penagihan pelunasan, dan persiapan keberangkatan.
+  - $\text{Count(DP Verified)} < 20 \rightarrow$ Otomatis memicu alur penanganan pembatalan (Waiting Owner Action).
+
+### **Gateway 3 (G3) — Owner Decision Gateway**
+- **Trigger:** Keberangkatan gagal memenuhi kuota minimum pada D-5.
+- **Pilihan Tindakan:**
+  1. **Full Refund (100%):** Membuka antrean kerja Finance untuk mengembalikan seluruh dana peserta.
+  2. **Transfer to Travel Partner:** Mengalihkan manifes dan alokasi dana ke agensi mitra setelah konfirmasi peserta.
+
+---
+
+## 5. Catatan Arsitektur BPMN
+1. **Audit Trail:** Transisi status dari WAITING_OWNER_ACTION menuju REFUNDING atau TRANSFERRED wajib mencatat aktor pengambil keputusan (*Owner ID*), tanggal/waktu keputusan, serta alasan persetujuan.
+2. **Pemisahan Notifikasi:** Setiap perubahan jalur keputusan otomatis mengirimkan notifikasi berbasis *template* WhatsApp/Email kepada *Customer* dan *Vendor* terkait.

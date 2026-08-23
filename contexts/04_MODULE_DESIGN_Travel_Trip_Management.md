@@ -1,119 +1,142 @@
-# MD — Module Design / System Modules
+# MODULE DESIGN — Arsitektur Modul & Spesifikasi Sistem
 
-## 1. Arsitektur Modul
+## 1. Arsitektur Dekomposisi Modul
+
 ```text
-TRAVEL MANAGEMENT SYSTEM
-├── Dashboard
-├── Customer
-├── Trip Management
-├── Booking & Order
-├── Participant
-├── Finance
-│   ├── Invoice Peserta
-│   ├── Payment Peserta
-│   ├── Refund
-│   ├── Vendor Invoice
-│   └── Vendor Payment
-├── Operational
-│   ├── Planning
-│   ├── Itinerary
-│   ├── Destination
-│   ├── Activity
-│   └── Tour Leader
-├── Vendor
-├── Travel Partner
-├── Document Management
-├── User & Role
-└── Report
+TRAVEL & TOUR OPERATIONS SYSTEM
+├── Dashboard & Analytics Module
+├── CRM & Customer Management Module
+├── Tour Catalog & Planning Module
+│   ├── Master Tour Plan
+│   ├── Itinerary Builder
+│   ├── Destination & Point of Interest (POI)
+│   └── Activity Catalog
+├── Tour Departure & Operations Module
+│   ├── Departure Scheduler & Quota Engine
+│   ├── D-5 Minimum Quota Evaluation Engine
+│   ├── Manifest & Rooming List Manager
+│   └── Tour Leader Assignment
+├── Booking & Sales Pipeline Module
+│   ├── Quotation Generator (Private Tour)
+│   ├── Booking & Order Management
+│   └── Traveler Registration
+├── Finance & Billing Module
+│   ├── Customer Invoicing & DP Allocation
+│   ├── Payment Verification Queue
+│   ├── Vendor Invoicing & Disbursement
+│   ├── Refund Processing Engine
+│   └── Tour Financial Closing Ledger
+├── Vendor & Procurement Module
+│   ├── Vendor Master Directory (Transport, Hotel, Resto, Activity)
+│   ├── Purchase Order (PO) & Service Voucher
+│   └── Travel Partner Management
+├── Tour Leader Field Module
+│   ├── Field Manifest & Check-in
+│   ├── Real-time Itinerary & Vendor Contact
+│   └── Incident & Complaint Logger
+├── Document Management & Generation Vault
+└── Access Control & Audit Trail (RBAC)
 ```
 
-## 2. Trip sebagai pusat data
-Satu Trip menghubungkan:
-- Participants
-- Booking
-- Invoice
-- Payment
-- Refund/Transfer
-- Itinerary
-- Destination
-- Activity
-- Tour Leader
-- Vendors
-- Vendor payments
-- Documents
+---
 
-## 3. Status Utama
-### Trip
-DRAFT → OPEN FOR BOOKING → H-5 VALIDATION → CONFIRMED → PREPARATION → DEPARTURE → ON TRIP → COMPLETED
+## 2. Tour Departure sebagai Pusat Data (*Single Source of Truth*)
 
-Jika minimum gagal:
-H-5 VALIDATION → CANCELLED → WAITING OWNER ACTION → REFUNDING → REFUNDED
+Setiap entitas operasional dan finansial terikat langsung pada **Tour Departure**:
 
-atau:
-H-5 VALIDATION → CANCELLED → WAITING OWNER ACTION → TRANSFERRED
+```mermaid
+graph TD
+    TD[Tour Departure<br><i>Specific Date & Quota Execution</i>]
+    
+    TD --> TP[Tour Plan / Itinerary]
+    TD --> BK[Bookings & Travelers / Manifest]
+    TD --> TL[Assigned Tour Leader]
+    TD --> VP[Vendor POs & Bookings]
+    TD --> FIN[Finance Ledger & Invoices]
+    TD --> DOC[Document Vault]
+    TD --> REF[Refund / Partner Transfers]
+```
 
-### Booking/Participant
-INQUIRY → ORDER → WAITING DP → DP PAID/CONFIRMED → FULLY PAID → JOINED TRIP → COMPLETED
+---
 
-### Payment
-PENDING VERIFICATION → VERIFIED → ALLOCATED
+## 3. State Machine & Transisi Status Utama
 
-### Refund
-REQUESTED → APPROVED → PROCESSING → REFUNDED
+### 3.1 Status Tour Departure
+- **Skenario Normal:**
+  `DRAFT` $\rightarrow$ `OPEN_FOR_BOOKING` $\rightarrow$ `D5_VALIDATION` $\rightarrow$ `CONFIRMED` $\rightarrow$ `PREPARATION` $\rightarrow$ `IN_OPERATION` $\rightarrow$ `COMPLETED` $\rightarrow$ `FINANCIAL_CLOSED`
+- **Skenario Kuota Gagal pada D-5:**
+  `D5_VALIDATION` $\rightarrow$ `CANCELLED_WAITING_OWNER_ACTION` $\rightarrow$ `REFUNDING` $\rightarrow$ `CLOSED_REFUNDED`
+  *(atau)*
+  `D5_VALIDATION` $\rightarrow$ `CANCELLED_WAITING_OWNER_ACTION` $\rightarrow$ `TRANSFERRED` $\rightarrow$ `CLOSED_TRANSFERRED`
 
-## 4. Role
-### Admin
-Customer, booking, invoice, participant, dokumen, komunikasi operasional.
+### 3.2 Status Booking / Traveler
+`DRAFT` $\rightarrow$ `PENDING_DP` $\rightarrow$ `DP_CONFIRMED` $\rightarrow$ `FULLY_PAID` $\rightarrow$ `CHECKED_IN` $\rightarrow$ `COMPLETED`
+*(Jalur Eksepsi: `EXPIRED`, `CANCELLED_BY_CUSTOMER`, `REFUNDED`, `TRANSFERRED`)*
 
-### Finance
-Payment verification, refund, vendor payment, laporan keuangan.
+### 3.3 Status Pembayaran (Payment)
+`PENDING_VERIFICATION` $\rightarrow$ `VERIFIED` $\rightarrow$ `ALLOCATED` $\rightarrow$ `RECONCILED`
 
-### Operational
-Planning, itinerary, vendor, Tour Leader.
+### 3.4 Status Pengembalian Dana (Refund)
+`REQUESTED` $\rightarrow$ `OWNER_APPROVED` $\rightarrow$ `PROCESSING` $\rightarrow$ `REFUNDED`
 
-### Tour Leader
-Melihat detail trip, peserta, itinerary, dan kebutuhan operasional.
+---
 
-### Owner
-Approval/decision penting, termasuk penanganan trip yang tidak mencapai minimum.
+## 4. Role & Matrix Tanggung Jawab (RBAC)
 
-## 5. Modul H-5
-Input:
-- Trip
-- Departure date
-- Minimum participant
-- DP verified count
+| Role | Domain & Hak Akses Utama |
+|---|---|
+| **Admin / Sales** | Mengelola Customer, Booking, penerbitan Invoice, pengiriman formulir registrasi, dan komunikasi via WhatsApp. |
+| **Finance** | Antrean verifikasi bukti pembayaran (*Payment Verification*), pemrosesan *Refund*, pembayaran tagihan Vendor, dan *Financial Closing*. |
+| **Operational** | Mengelola *Tour Plan*, menyusun *Itinerary*, reservasi dan penerbitan PO ke Vendor, penugasan *Tour Leader*. |
+| **Tour Leader** | Tampilan *mobile-friendly* untuk melihat detail *manifest* peserta, kontak darurat, *itinerary* lapangan, dan pelaporan insiden. |
+| **Owner / Executive** | *Executive Dashboard*, persetujuan penanganan trip tidak memenuhi kuota (*Refund* vs *Transfer*), dan persetujuan *override* kebijakan. |
 
-Process:
-1. Tentukan H-5.
-2. Hitung participant dengan DP terverifikasi.
-3. Bandingkan dengan minimum.
-4. Jika >= minimum → Confirmed.
-5. Jika < minimum → Cancelled/Waiting Owner Action.
-6. Owner memilih Refund atau Transfer.
+---
 
-## 6. Modul Finance
-### Participant Finance
-Invoice → Payment(s) → Outstanding → Paid
+## 5. Spesifikasi Mesin Evaluasi H-5 (D-5 Evaluation Engine)
 
-### Trip Finance
-Participant Revenue - Vendor Cost - Other Cost = Profit
+- **Input:**
+  - `tour_departure_id`
+  - `departure_date`
+  - `min_quota` (default: 20 peserta)
+  - `dp_verified_traveler_count`
+- **Proses:**
+  1. Trigger otomatis berjalan pada H-5 pukul 00:00 WIB (atau waktu yang ditentukan).
+  2. Query seluruh *Traveler* dengan status `Booking = Confirmed` dan `Payment = DP_Verified`.
+  3. Bandingkan `count` dengan `min_quota`.
+  4. Jika $\ge \text{min\_quota} \rightarrow$ Update status departure ke `CONFIRMED`, kirim tagihan pelunasan.
+  5. Jika $< \text{min\_quota} \rightarrow$ Update status departure ke `CANCELLED_WAITING_OWNER_ACTION`, kirim notifikasi darurat ke Owner.
+  6. Tangkap keputusan Owner: **Full Refund** atau **Transfer Partner**.
 
-### Cancellation Finance
-Payment Received → Refund / Transfer
+---
 
-## 7. Modul Document
-Semua dokumen dikaitkan dengan entitas:
-Trip / Booking / Invoice / Payment / Vendor / Refund / Transfer.
+## 6. Spesifikasi Modul Keuangan (Finance Module)
 
-## 8. Dashboard
-- Trip aktif
-- Trip H-5
-- Trip yang belum memenuhi minimum
-- Jumlah participant
-- DP vs lunas
-- Outstanding
-- Vendor payable
-- Revenue
-- Cost
-- Profit
+### 6.1 Customer Finance
+`Invoice Total` $\rightarrow$ `DP Payment(s)` $\rightarrow$ `Settlement Payment(s)` $\rightarrow$ `Outstanding Balance = Rp 0`
+
+### 6.2 Vendor Finance
+`Service PO Amount` $\rightarrow$ `Vendor DP` $\rightarrow$ `Vendor Final Payment` $\rightarrow$ `Receipt Attachment`
+
+### 6.3 Trip Financial Reconciliation
+\[
+\text{Gross Margin} = \sum \text{Customer Revenue Received} - \sum \text{Vendor Fulfilled Costs} - \sum \text{Operational Expenses}
+\]
+
+---
+
+## 7. Modul Manajemen Dokumen (Document Vault)
+
+Seluruh dokumen digital (PDF, JPG, PNG) disimpan secara kontekstual terikat pada entitas transaksi:
+- `Tour Departure`: Master Itinerary PDF, Final Manifest, Vendor Contracts.
+- `Booking`: Invoice Customer, Bukti Transfer DP, Bukti Pelunasan, Service Voucher.
+- `Vendor`: Purchase Order (PO), Invoice Vendor, Bukti Pembayaran Vendor.
+- `Cancellation`: Form Persetujuan Transfer, Bukti Transfer Refund 100%.
+
+---
+
+## 8. Spesifikasi Dashboard & Pelaporan
+
+- **Operational Metrics:** Keberangkatan aktif bulan ini, status *pipeline* D-5, peringatan keberangkatan di bawah kuota minimum.
+- **Occupancy Metrics:** Total kursi tersedia, total kursi terisi (DP confirmed vs Lunas), rasio konversi *inquiry-to-booking*.
+- **Financial Metrics:** Total piutang customer (*Accounts Receivable*), total hutang vendor (*Accounts Payable*), estimasi vs realisasi margin keuntungan per *departure*.

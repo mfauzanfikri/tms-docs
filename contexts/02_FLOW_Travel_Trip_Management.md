@@ -1,79 +1,83 @@
-# FLOW — End-to-End Travel Trip Management
+# FLOW — Alur Operasional End-to-End Travel & Tour Management
 
-## A. Customer Acquisition
-1. Customer melihat iklan sosial media.
-2. Customer klik iklan.
-3. Customer diarahkan ke WhatsApp Admin.
-4. Customer melakukan inquiry.
-5. Admin memberikan informasi.
-6. Customer memutuskan order.
+## A. Akuisisi Pelanggan (Customer Acquisition)
+1. *Customer* melihat iklan di media sosial atau saluran promosi.
+2. *Customer* mengklik tautan iklan dan diarahkan ke WhatsApp Admin.
+3. *Customer* melakukan *inquiry* terkait *Tour Plan* atau jadwal keberangkatan (*Tour Departure*).
+4. Admin memberikan informasi detail, ketersediaan kuota, dan harga.
+5. *Customer* memutuskan untuk melakukan pemesanan (*order*).
 
-## B. Booking
-7. Admin membuat order.
-8. Admin mengirim form order.
-9. Customer mengisi form.
-10. Admin membuat invoice.
-11. Customer melakukan pembayaran DP.
-12. Finance/Admin memverifikasi pembayaran.
-13. Jika DP terverifikasi, booking menjadi participant confirmed.
-14. Participant masuk perhitungan minimum Open Trip.
+## B. Pemesanan & Pembayaran DP (Booking & Down Payment)
+6. Admin membuat draf *Order / Booking*.
+7. Admin mengirimkan formulir registrasi (*Booking Form*) kepada *Customer*.
+8. *Customer* mengisi data *Traveler* (nama, kontak, identitas) pada formulir.
+9. Admin menerbitkan *Invoice* pembayaran dengan rincian total biaya dan batas pembayaran DP (*Due Date*).
+10. *Customer* melakukan pembayaran Down Payment (DP) dan mengunggah bukti transfer.
+11. Tim Finance memverifikasi bukti pembayaran masuk (*Payment Verification*).
+12. Begitu DP terverifikasi, status *Booking* berubah menjadi Confirmed dan *Traveler* tercatat resmi dalam *Manifest*.
+13. *Traveler* resmi dihitung ke dalam kalkulasi kuota minimum *Tour Departure*.
 
-## C. Trip Preparation
-15. Trip memiliki planning.
-16. Operational menyiapkan destination dan activity.
-17. Operational menentukan Tour Leader.
-18. Operational melakukan booking vendor bus.
-19. Jika diperlukan, booking penginapan.
-20. Booking restoran/vendor konsumsi.
-21. Dokumen dan transaksi disimpan pada Trip.
+## C. Persiapan Operasional (Tour Preparation)
+14. Tim Operational menyiapkan *Itinerary*, destinasi, dan susunan aktivitas dari *Tour Plan*.
+15. Tim Operational menugaskan **Tour Leader** yang bertanggung jawab memimpin keberangkatan.
+16. Tim Operational melakukan reservasi dan menerbitkan *Purchase Order* (PO) kepada:
+    - Vendor Transportasi (*Bus / Van / Shuttle*).
+    - Vendor Penginapan (*Hotel / Villa / Homestay*), jika bermalam.
+    - Vendor Konsumsi (*Restoran / Catering*).
+17. Dokumen kontrak, voucher layanan, dan rincian transaksi vendor ditautkan langsung ke entitas *Tour Departure*.
 
-## D. H-5 Minimum Participant
-22. Sistem mencapai H-5 keberangkatan.
-23. Sistem menghitung participant berdasarkan DP yang sudah terverifikasi.
-24. Gateway: apakah participant >= 20?
+## D. Evaluasi Kuota Minimum H-5 (D-5 Minimum Participant Milestone)
+18. Sistem memicu evaluasi otomatis pada **H-5 / D-5 sebelum tanggal keberangkatan**.
+19. Sistem menghitung total *Traveler* aktif yang memiliki status **DP Terverifikasi**.
+20. **Decision Gateway:** Apakah jumlah peserta terverifikasi $\ge 20True
 
-### Jika YA
-25. Trip Confirmed.
-26. Persiapan dilanjutkan.
-27. Peserta yang masih DP melakukan pelunasan.
-28. Trip berangkat.
-29. Trip dilaksanakan.
-30. Trip selesai.
-31. Finance melakukan closing trip.
+---
 
-### Jika TIDAK
-25. Trip tidak memenuhi minimum.
-26. Trip masuk status Cancelled / Waiting Owner Action.
-27. Owner memilih:
-   - Full Refund, atau
-   - Transfer ke Travel Partner.
+### Skenario 1: Kuota Tercapai ($\ge 20$ Peserta) — Trip CONFIRMED
+21. Status *Tour Departure* berubah menjadi CONFIRMED.
+22. Admin mengirimkan notifikasi penagihan pelunasan (*Final Settlement*) kepada seluruh peserta.
+23. Peserta melakukan pelunasan sebelum batas waktu yang ditentukan.
+24. Operational merilis *Final Manifest* dan dokumen *Service Voucher* kepada Tour Leader dan Vendor.
+25. **Tour Execution:** Keberangkatan dilaksanakan (IN_OPERATION), aktivitas dipantau, hingga perjalanan selesai.
+26. Status *Tour Departure* ditutup menjadi COMPLETED.
+27. Tim Finance memproses penutupan buku operasional (*Financial Closing*).
 
-### Full Refund
-28. Finance menghitung total pembayaran masing-masing peserta.
-29. Refund diproses.
-30. Bukti refund disimpan.
-31. Status peserta menjadi Refunded.
-32. Trip ditutup.
+---
 
-### Transfer Travel Partner
-28. Owner/operational menentukan travel partner.
-29. Peserta diberi informasi dan mengikuti mekanisme persetujuan yang ditetapkan perusahaan.
-30. Data/transaksi dialihkan sesuai kesepakatan.
-31. Bukti transfer/disposisi disimpan.
-32. Status peserta menjadi Transferred.
-33. Trip ditutup.
+### Skenario 2: Kuota Tidak Tercapai ($< 20$ Peserta) — WAITING OWNER ACTION
+21. *Tour Departure* tidak memenuhi kuota minimum dan otomatis masuk status CANCELLED / WAITING OWNER ACTION.
+22. **Owner Decision Gateway:** Owner menentukan tindakan penyelesaian:
 
-## E. Financial Closing
-- Total revenue peserta.
-- Total payment received.
-- Outstanding peserta.
-- Total vendor cost.
-- Outstanding vendor.
-- Refund jika ada.
-- Other cost.
-- Estimasi/actual profit.
+#### Opsi A: Full Refund (100% Pengembalian Dana)
+23. Tim Finance merekapitulasi seluruh dana masuk per *Booking*.
+24. Finance memproses transfer pengembalian dana 100% kepada setiap *Customer*.
+25. Bukti transfer *refund* diunggah ke sistem.
+26. Status pembayaran *Customer* diperbarui menjadi REFUNDED.
+27. Status *Tour Departure* ditutup menjadi CLOSED_CANCELLED.
 
-## F. Critical Rule
-**Participant Count untuk Open Trip = jumlah peserta dengan DP yang sudah terverifikasi.**
+#### Opsi B: Transfer to Travel Partner (Pengalihan ke Mitra)
+23. Owner/Operational menentukan *Travel Partner* yang memiliki jadwal keberangkatan serupa.
+24. Peserta dihubungi untuk konfirmasi dan persetujuan pengalihan.
+25. Data *manifest* dan alokasi dana ditransfer ke mitra *Travel Partner*.
+26. Bukti disposisi/perjanjian pengalihan diunggah ke sistem.
+27. Status peserta diperbarui menjadi TRANSFERRED dan *Tour Departure* ditutup.
 
-Peserta yang baru inquiry, baru mengisi form, atau belum membayar DP **tidak dihitung** dalam minimum 20 peserta.
+---
+
+## E. Penutupan Keuangan (Financial Closing)
+Laporan ringkasan finansial merekonsiliasi:
+- **Total Customer Revenue:** Total nilai invoice peserta.
+- **Total Payment Received:** Realisasi dana masuk (DP + Pelunasan).
+- **Outstanding Receivables:** Sisa piutang peserta.
+- **Total Vendor Cost:** Total tagihan vendor transportasi, penginapan, restoran, dll.
+- **Vendor Payables / Outstanding:** Sisa hutang ke vendor.
+- **Total Refunds Issued:** Total pengembalian dana jika terjadi pembatalan.
+- **Gross Profit Realized:** $\text{Gross Profit} = \text{Total Payment Received} - \text{Total Vendor Costs} - \text{Other Expenses}$.
+
+---
+
+## F. Aturan Kritis (Critical Rule)
+> [!IMPORTANT]
+> **Kalkulasi Kuota Peserta (Participant Count) = Jumlah Traveler dengan DP yang sudah TERVERIFIKASI oleh Finance.**
+> 
+> *Inquiry*, formulir registrasi yang belum dibayar, atau pembayaran DP yang belum diverifikasi oleh Finance **TIDAK BOLEH dihitung** ke dalam kuota minimum keberangkatan.

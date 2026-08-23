@@ -1,30 +1,30 @@
 # BRD — Travel & Tour Operations System
 
-## 1. Document Context & Sprint Objective
-This document serves as the **Business Requirements Document (BRD)** for the Travel & Tour Operations System in its discovery and brainstorming phase.
+## 1. Konteks Dokumen & Sprint Objective
+Dokumen ini berfungsi sebagai **Business Requirements Document (BRD)** untuk Travel & Tour Operations System pada fase penemuan (*discovery*) dan *brainstorming*.
 
-> **Principle:** The focus of this stage is to discover and validate **Business Context, Business Processes, and Business Rules**, while explicitly recording assumptions and open questions. It does not prescribe database schemas, APIs, microservice boundaries, or UI implementations.
-
----
-
-## 2. Business Context & Operating Model
-The organization is a **travel agency / tour operator** that orchestrates tours end-to-end. 
-
-The agency is responsible for:
-- Planning, packaging, and scheduling tours.
-- Managing booking pipelines and customer relations.
-- Assigning and managing **Tour Leaders**.
-- Coordinating travelers and managing manifests.
-- Coordinating third-party vendors for fulfilled services (Transport, Accommodations, Activities, Meals).
-- Monitoring live tour execution and managing incidents/complaints.
-- Managing financial transactions (Customer Invoicing, DP/Settlement collections, Vendor Payables, Refunds).
-- Generating operational, commercial, and financial documents.
-
-The agency acts primarily as the **tour orchestrator/operator** coordinating both internal resources and external service providers.
+> **Prinsip:** Fokus pada tahap ini adalah menemukan dan memvalidasi **Business Context, Business Processes, dan Business Rules**, serta mencatat secara eksplisit asumsi dan *open questions*. Dokumen ini tidak menentukan skema database, API, batasan *microservice*, maupun implementasi UI secara prematur.
 
 ---
 
-## 3. Core Business Domain Concepts
+## 2. Konteks Bisnis & Operating Model
+Organisasi merupakan sebuah **travel agency / tour operator** yang mengorkestrasi perjalanan wisata secara *end-to-end*.
+
+Agensi bertanggung jawab untuk:
+- Merencanakan, mengemas (*packaging*), dan menjadwalkan tour.
+- Mengelola *booking pipeline* dan hubungan pelanggan (*customer relations*).
+- Menugaskan dan mengelola **Tour Leader**.
+- Mengoordinasikan *travelers* dan mengelola *manifest*.
+- Mengoordinasikan vendor pihak ketiga untuk pemenuhan layanan (*Transport, Accommodations, Activities, Meals*).
+- Memonitor pelaksanaan tour secara *live* dan menangani *incident/complaint*.
+- Mengelola transaksi keuangan (*Customer Invoicing, DP/Settlement collections, Vendor Payables, Refunds*).
+- Menghasilkan dokumen operasional, komersial, dan keuangan.
+
+Agensi bertindak terutama sebagai **tour orchestrator/operator** yang mengoordinasikan sumber daya internal serta penyedia layanan eksternal (*vendors*).
+
+---
+
+## 3. Konsep Inti Domain Bisnis
 
 ```mermaid
 classDiagram
@@ -65,76 +65,76 @@ classDiagram
     TourService "many" --> "1" Vendor : fulfilled by
 ```
 
-1. **Tour / Tour Plan:** The master itinerary and planned structure of a tour (reusable for recurring open tours).
-2. **Tour Departure:** A specific calendar execution of a Tour Plan on a particular date with its own quota, price, Tour Leader, and vendor bookings.
-3. **Booking:** The commercial contract/reservation made by a customer for one or more travelers on a specific Tour Departure.
-4. **Traveler / Participant:** The individual participating in the tour.
-5. **Tour Leader:** The agency's designated coordinator responsible for leading the tour on the ground.
-6. **Tour Service:** An individual component required for tour execution (Transport, Hotel, Activity, Restaurant, Guiding).
-7. **Vendor:** An external third-party providing fulfilled tour services.
+1. **Tour / Tour Plan:** *Master itinerary* dan struktur rencana perjalanan wisata (dapat digunakan kembali untuk *open tour* berulang).
+2. **Tour Departure:** Eksekusi kalender spesifik dari suatu *Tour Plan* pada tanggal tertentu dengan kuota, harga, *Tour Leader*, dan reservasi vendor tersendiri.
+3. **Booking:** Kontrak/reservasi komersial yang dibuat oleh pelanggan untuk satu atau lebih *traveler* pada *Tour Departure* tertentu.
+4. **Traveler / Participant:** Individu yang menjadi peserta dalam perjalanan wisata.
+5. **Tour Leader:** Koordinator yang ditunjuk oleh agensi untuk memimpin dan mendampingi perjalanan di lapangan.
+6. **Tour Service:** Komponen layanan individual yang dibutuhkan untuk pelaksanaan tour (*Transport, Hotel, Activity, Restaurant, Guiding*).
+7. **Vendor:** Pihak ketiga eksternal yang menyediakan pemenuhan layanan tour (*service fulfillment*).
 
 ---
 
-## 4. Tour Types & Service Delivery
+## 4. Tipe Tour & Penyediaan Layanan
 
 ### 4.1 Open Tour (Recurring / Multi-Customer)
-- Predefined public tours where multiple independent travelers/groups join the same departure.
-- Reusable Tour Plan with multiple recurring calendar departures.
-- Governed by **minimum participant quotas** (e.g., minimum 20 verified participants).
-- Prices and operational details may vary between departures.
+- Tour publik yang telah ditentukan polanya, di mana banyak pelanggan/rombongan independen bergabung dalam keberangkatan (*departure*) yang sama.
+- Memiliki *Tour Plan* yang dapat dipakai ulang dengan jadwal keberangkatan kalender berulang (*recurring departures*).
+- Diatur oleh **kuota minimum peserta** (contoh: minimum 20 peserta terverifikasi DP).
+- Harga dan detail operasional dapat berbeda antar keberangkatan (*departures*).
 
 ### 4.2 Private / Custom Tour (Bespoke)
-- Customized itineraries for a specific customer or group.
+- Rencana perjalanan (*itinerary*) yang disesuaikan secara khusus untuk pelanggan atau grup tertentu.
 - **Workflow:** Customer Request $\rightarrow$ Custom Tour Plan $\rightarrow$ Service Sourcing $\rightarrow$ Cost Estimation $\rightarrow$ Quotation $\rightarrow$ Negotiation $\rightarrow$ Final Agreed Price $\rightarrow$ Booking Confirmation.
 
 ---
 
-## 5. Business Rules Catalog
+## 5. Katalog Aturan Bisnis (Business Rules Catalog)
 
-### 5.1 Confirmed Business Rules
+### 5.1 Aturan Bisnis yang Telah Dikonfirmasi (Confirmed)
 
-| ID | Rule Statement | Category |
+| ID | Pernyataan Aturan Bisnis | Kategori |
 |---|---|---|
-| **BR-001** | A Booking becomes **confirmed only when the required Down Payment (DP) is paid and verified**. | Booking & Finance |
-| **BR-002** | Open Tour departures may be cancelled if the minimum participant requirement is not met. | Tour Operations |
-| **BR-003** | Standard Open Tour minimum threshold is **20 DP-verified participants**. | Quota Validation |
-| **BR-004** | DP validation is evaluated at **D-5 (5 days prior to departure)**. Unverified inquiries or unpaid forms are **excluded**. | Quota Validation |
-| **BR-005** | Current agency policy for agency-initiated cancellation (e.g. quota unmet) is **100% Full Refund** or **Transfer to Travel Partner** upon Owner decision. | Refund Policy |
-| **BR-006** | Refunds can occur even after a booking has already reached Confirmed status. | Refund Policy |
-| **BR-007** | Open tours are recurring with separate departure events. | Tour Planning |
-| **BR-008** | Itineraries and service components may vary between different departures of the same tour plan. | Tour Planning |
-| **BR-009** | Private tours can be customized by customers through quotations. | Sales & Quotation |
-| **BR-010** | Tour departure prices are mutable/fluctuating across seasons, dates, and early-bird periods. | Pricing Policy |
-| **BR-011** | Every active departure must have an assigned **Tour Leader**. | Operations |
-| **BR-012** | Third-party services (Bus, Accommodations, Restaurants) must be tracked via Vendor Records. | Vendor Management |
+| **BR-001** | Booking berstatus **Confirmed hanya ketika Down Payment (DP) yang dipersyaratkan telah dibayar dan diverifikasi**. | Booking & Finance |
+| **BR-002** | Keberangkatan *Open Tour* dapat dibatalkan jika syarat minimum peserta tidak tercapai. | Tour Operations |
+| **BR-003** | Standar ambang batas kuota minimum *Open Tour* saat ini adalah **20 peserta terverifikasi DP**. | Quota Validation |
+| **BR-004** | Validasi DP dievaluasi pada **H-5 / D-5 (5 hari sebelum keberangkatan)**. *Inquiry* tanpa DP terverifikasi atau form belum bayar **tidak dihitung**. | Quota Validation |
+| **BR-005** | Kebijakan pembatalan yang diinisiasi agensi (misal: kuota tidak tercapai) saat ini adalah **100% Full Refund** atau **Transfer to Travel Partner** berdasarkan keputusan Owner. | Refund Policy |
+| **BR-006** | Proses *Refund* dapat terjadi bahkan setelah booking mencapai status Confirmed. | Refund Policy |
+| **BR-007** | *Open tour* bersifat berulang (*recurring*) dengan *departure events* yang terpisah. | Tour Planning |
+| **BR-008** | *Itinerary* dan komponen layanan dapat bervariasi antar keberangkatan yang berbeda dari *Tour Plan* yang sama. | Tour Planning |
+| **BR-009** | *Private tour* dapat dikustomisasi oleh pelanggan melalui mekanisme *quotation*. | Sales & Quotation |
+| **BR-010** | Harga *Tour Departure* bersifat fluktuatif/dapat berubah (*mutable*) mengikuti musim, tanggal, dan periode *early-bird*. | Pricing Policy |
+| **BR-011** | Setiap keberangkatan aktif wajib memiliki **Tour Leader** yang ditugaskan. | Operations |
+| **BR-012** | Layanan pihak ketiga (*Bus, Penginapan, Restoran*) wajib dicatat melalui *Vendor Records*. | Vendor Management |
 
-### 5.2 Pricing Principles & Assumptions to Validate
+### 5.2 Prinsip Penetapan Harga & Asumsi yang Perlu Divalidasi
 
 > [!IMPORTANT]
-> **Price Immutability on Agreed Bookings (Assumption to Validate):**
-> While Tour Departure baseline prices fluctuate over time (e.g., August Rp 3.5M $\rightarrow$ September Rp 3.7M), **once a customer's booking is agreed/issued, subsequent departure price adjustments must NOT retroactively alter the customer's financial obligation.**
+> **Immutability Harga pada Booking yang Disepakati (Asumsi untuk Divalidasi):**
+> Meskipun harga dasar *Tour Departure* dapat berubah seiring waktu (contoh: Keberangkatan Agustus Rp 3,5 jt $\rightarrow$ September Rp 3,7 jt), **begitu booking pelanggan disepakati/diterbitkan (*agreed booking*), penyesuaian harga *departure* di kemudian hari TIDAK BOLEH mengubah kewajiban pembayaran pelanggan secara retroaktif.**
 
-**Future Pricing Capabilities:**
-- Seasonal pricing & early-bird discounts.
-- Tiered pricing based on group size or traveler category (Adult, Child, Infant).
-- Custom negotiated rates for private tours.
+**Kapabilitas Penetapan Harga di Masa Depan:**
+- *Seasonal pricing* & diskon *early-bird*.
+- *Tiered pricing* berdasarkan ukuran grup atau kategori traveler (*Adult, Child, Infant*).
+- Tarif negosiasi khusus untuk *private tour*.
 
 ---
 
-## 6. Decoupled Lifecycles & State Transitions
+## 6. Pemisahan Lifecycle & Transisi Status (Decoupled Lifecycles)
 
-The system decouples Booking, Tour Departure, and Payment lifecycles to avoid invalid state lock-in:
+Sistem memisahkan siklus hidup *Booking*, *Tour Departure*, dan *Payment* agar tidak terjadi *state lock-in* yang tidak valid:
 
 ```mermaid
 stateDiagram-v2
     direction LR
 
     state "Booking Lifecycle" as BL {
-        Draft --> PendingPayment : Form Submitted
-        PendingPayment --> Expired : Payment Due Passed
-        PendingPayment --> Confirmed : DP Verified
-        Confirmed --> Cancelled : Cancelled
-        Confirmed --> Completed : Tour Finished
+        Draft --> PendingPayment : Form Dikirim
+        PendingPayment --> Expired : Batas Bayar Lewat
+        PendingPayment --> Confirmed : DP Terverifikasi
+        Confirmed --> Cancelled : Dibatalkan
+        Confirmed --> Completed : Tour Selesai
     }
 
     state "Tour Departure Lifecycle" as DL {
@@ -147,94 +147,94 @@ stateDiagram-v2
         CancelledDep : Cancelled
 
         DraftDep --> OpenBooking
-        OpenBooking --> MinReached : Count >= 20
-        OpenBooking --> CancelledDep : D-5 Count < 20
-        MinReached --> ConfirmedDep : D-5 Confirmed
-        ConfirmedDep --> InOp : Departure Date
-        InOp --> Comp : Tour Ends
+        OpenBooking --> MinReached : Kuota >= 20
+        OpenBooking --> CancelledDep : D-5 Kuota < 20
+        MinReached --> ConfirmedDep : D-5 Terkonfirmasi
+        ConfirmedDep --> InOp : Tanggal Berangkat
+        InOp --> Comp : Tour Berakhir
     }
 
     state "Payment Lifecycle" as PL {
-        Unpaid --> PartiallyPaid : DP Received
-        PartiallyPaid --> Paid : Settlement
-        Paid --> RefundPending : Cancelled
-        PartiallyPaid --> RefundPending : Cancelled
-        RefundPending --> Refunded : Transferred
+        Unpaid --> PartiallyPaid : DP Diterima
+        PartiallyPaid --> Paid : Pelunasan
+        Paid --> RefundPending : Dibatalkan
+        PartiallyPaid --> RefundPending : Dibatalkan
+        RefundPending --> Refunded : Ditransfer
     }
 ```
 
-*Example of valid decoupled state:*
-- Booking = CANCELLED
-- Payment = PARTIALLY_PAID (or PAID)
-- Refund = PENDING
+*Contoh kombinasi status yang valid:*
+- `Booking = CANCELLED`
+- `Payment = PARTIALLY_PAID` (atau `PAID`)
+- `Refund = PENDING`
 
 ---
 
-## 7. Functional Scope by Business Area
+## 7. Cakupan Fungsional Berdasarkan Area Bisnis
 
 ```text
 TRAVEL & TOUR OPERATIONS SYSTEM
-├── CRM & Customer Management (Customer Profiles, Travel History, Document Repository)
-├── Sales & Quotation (Private Tour Estimator, Quotation Generator, Revision Tracking)
-├── Booking & Registration (Manifest Management, Traveler Details, Rooming Lists)
-├── Tour Planning & Master Catalog (Master Tour Plans, Day-by-Day Itineraries, Activity Catalog)
-├── Tour Operations (Departure Scheduler, D-5 Quota Monitor, Manifest Dispatch)
-├── Tour Leader Operations (Field Itinerary View, Traveler Check-in, Incident Reporting)
-├── Vendor Procurement & Management (Vendor Directory, Service Requests, PO Tracking)
-├── Finance & Billing (Customer Invoicing, DP/Full Payment Verification, Vendor Payables, Profit & Loss)
-├── Cancellation & Refund Management (Full Refund Processing, Travel Partner Transfer)
+├── CRM & Customer Management (Customer Profiles, Riwayat Tour, Document Repository)
+├── Sales & Quotation (Private Tour Estimator, Generator Quotation, Tracking Revisi)
+├── Booking & Registration (Manajemen Manifest, Detail Traveler, Rooming Lists)
+├── Tour Planning & Master Catalog (Master Tour Plans, Day-by-Day Itinerary, Katalog Aktivitas)
+├── Tour Operations (Departure Scheduler, Monitor Kuota D-5, Dispatch Manifest)
+├── Tour Leader Operations (Field Itinerary View, Traveler Check-in, Laporan Insiden)
+├── Vendor Procurement & Management (Direktori Vendor, Request Layanan, Tracking PO)
+├── Finance & Billing (Customer Invoicing, Verifikasi DP/Pelunasan, Vendor Payables, Profit & Loss)
+├── Cancellation & Refund Management (Pemrosesan Full Refund, Disposisi Transfer Partner)
 ├── Document Generation (Invoices, Receipts, Vouchers, Itineraries, Booking Confirmations, POs)
-└── Management Dashboard & Reporting (Departure Pipeline, Cash Flow, Occupancy, Margin Analysis)
+└── Management Dashboard & Reporting (Pipeline Keberangkatan, Cash Flow, Okupansi, Analisis Margin)
 ```
 
 ---
 
-## 8. Automation & Operational Efficiency Opportunities
+## 8. Peluang Otomasi & Efisiensi Operasional
 
 ```mermaid
 flowchart TD
-    subgraph "1. Booking Confirmation Flow"
-        DP[DP Paid & Verified] --> CB[Auto-Confirm Booking]
-        CB --> GD[Generate Confirmation & Invoice]
-        CB --> MT[Update Departure Count & Manifest]
+    subgraph "1. Alur Konfirmasi Booking"
+        DP[DP Dibayar & Terverifikasi] --> CB[Auto-Confirm Booking]
+        CB --> GD[Generate Dokumen Konfirmasi & Invoice]
+        CB --> MT[Update Hitungan Departure & Manifest]
     end
 
-    subgraph "2. Vendor Procurement Flow"
-        TSR[Tour Service Required] --> VS[Vendor Selection]
+    subgraph "2. Alur Pengadaan Vendor"
+        TSR[Kebutuhan Layanan Tour] --> VS[Pemilihan Vendor]
         VS --> GPO[Generate PO & Service Voucher]
-        GPO --> TF[Track Vendor Fulfillment & Bill]
+        GPO --> TF[Tracking Pemenuhan Layanan & Tagihan]
     end
 
-    subgraph "3. Cancellation & Refund Flow"
-        D5[D-5 Quota < 20] --> AT[Flag Waiting Owner Action]
-        AT -->|Owner: Full Refund| CR[Auto-Calculate Refunds & Open Finance Queue]
-        AT -->|Owner: Partner Transfer| PT[Generate Partner Transfer Manifest]
+    subgraph "3. Alur Pembatalan & Refund"
+        D5[D-5 Kuota < 20] --> AT[Flag Waiting Owner Action]
+        AT -->|Owner: Full Refund| CR[Kalkulasi Refund Otomatis & Buka Antrean Finance]
+        AT -->|Owner: Partner Transfer| PT[Generate Manifest Transfer Partner]
     end
 ```
 
 ---
 
-## 9. Stakeholders & Responsibilities
+## 9. Stakeholder & Tanggung Jawab
 
-| Role | Core Responsibilities |
+| Role | Tanggung Jawab Utama |
 |---|---|
-| **Customer / Traveler** | Submits inquiries, completes registration forms, pays DP/settlements, receives vouchers & itineraries. |
-| **Admin / Sales** | Handles customer inquiries, issues quotations, prepares booking forms, generates customer invoices. |
-| **Finance** | Verifies incoming payment proofs, authorizes refunds, manages vendor disbursements, performs financial closing. |
-| **Operational** | Schedules tour departures, assigns Tour Leaders, books vendor services, tracks vendor deliverables. |
-| **Tour Leader** | Accesses real-time traveler manifests, conducts field coordination, reports ground incidents. |
-| **Owner / Executive** | Authorizes cancellation dispositions (Refund vs Transfer), approves policy overrides, reviews company-wide profitability. |
-| **Vendor / Travel Partner** | Receives service requests/POs, provides transport/hotel/meals, accepts transferred bookings. |
+| **Customer / Traveler** | Mengajukan *inquiry*, mengisi form registrasi, membayar DP/pelunasan, menerima voucher & itinerary. |
+| **Admin / Sales** | Merespons *inquiry*, menerbitkan *quotation*, menyiapkan form booking, membuat *invoice* customer. |
+| **Finance** | Memverifikasi bukti pembayaran masuk, memproses *refund*, membayar tagihan vendor, melakukan *financial closing*. |
+| **Operational** | Menjadwalkan *tour departure*, menugaskan *Tour Leader*, mereservasi layanan vendor, memonitor pemenuhan vendor. |
+| **Tour Leader** | Mengakses *manifest* traveler secara *real-time*, memimpin koordinasi lapangan, melaporkan insiden tour. |
+| **Owner / Executive** | Memberikan keputusan pembatalan (*Full Refund* vs *Transfer Partner*), menyetujui *override* kebijakan, meninjau profitabilitas agensi. |
+| **Vendor / Travel Partner** | Menerima *service request/PO*, menyediakan transportasi/penginapan/konsumsi, menerima pengalihan peserta (*transferred bookings*). |
 
 ---
 
-## 10. Open Questions & Policy Decisions to Resolve
+## 10. Pertanyaan Terbuka & Keputusan Kebijakan yang Perlu Diselesaikan
 
-| Topic | Question to Resolve | Impact / Risk |
+| Topik | Pertanyaan untuk Diselesaikan | Dampak / Risiko |
 |---|---|---|
-| **DP Threshold** | Is DP a fixed flat nominal (e.g. Rp 500k) or a percentage (e.g. 30%)? Is it configurable per tour? | Impacts invoice generation logic and booking confirmation triggers. |
-| **Customer-Initiated Cancellation** | What is the refund policy if a *customer* cancels (before D-5 vs after D-5)? | Requires clear tiering (e.g. non-refundable DP vs partial refund). |
-| **D-5 Action Automation** | Does the system hard-cancel departures under 20 automatically on D-5, or raise an urgent action task for Owner confirmation? | Protects against accidental cancellation of trips Owner intends to subsidize. |
-| **Owner Quota Override** | Can the Owner override the 20-participant rule and force a departure with lower headcount? | Requires audit logging and financial margin warning. |
-| **Vendor Sunk Costs** | How are non-refundable vendor down payments accounted for when an agency cancels a departure? | Affects trip loss reporting and vendor contract terms. |
-| **Partner Transfer Protocol** | What is the customer consent and price adjustment mechanism when transferring to a partner travel agency? | Customer satisfaction and legal liability protection. |
+| **Ketentuan Nominal DP** | Apakah DP berupa nominal tetap/flat (contoh: Rp 500rb) atau persentase (contoh: 30%)? Apakah dapat diatur per tour? | Berdampak pada logika pembuatan *invoice* dan *trigger* konfirmasi booking. |
+| **Pembatalan oleh Customer** | Bagaimana kebijakan refund jika pembatalan diinisiasi oleh *customer* (sebelum D-5 vs setelah D-5)? | Memerlukan aturan berjenjang (contoh: DP hangus vs refund parsial). |
+| **Otomasi Tindakan D-5** | Apakah sistem otomatis membatalkan *departure* berkuota < 20 pada D-5, atau membuat notifikasi darurat untuk konfirmasi Owner? | Mencegah pembatalan tidak sengaja pada trip yang ingin disubsidi oleh Owner. |
+| **Override Kuota oleh Owner** | Apakah Owner memiliki kewenangan *override* agar trip tetap berangkat meskipun peserta < 20? | Memerlukan pencatatan *audit log* dan peringatan margin profit. |
+| **Sunk Cost Pembayaran Vendor** | Bagaimana perlakuan uang muka vendor yang hangus (*non-refundable*) saat agensi membatalkan keberangkatan? | Mempengaruhi laporan kerugian trip dan klausul kontrak vendor. |
+| **Prosedur Transfer ke Partner** | Bagaimana mekanisme persetujuan peserta dan penyesuaian harga ketika peserta dialihkan ke *travel partner*? | Menjaga kepuasan pelanggan dan kepatuhan hukum/kewajiban agensi. |
