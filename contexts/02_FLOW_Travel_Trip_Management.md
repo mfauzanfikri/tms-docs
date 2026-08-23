@@ -29,7 +29,7 @@
 ## D. Evaluasi Kuota Minimum H-5 (D-5 Minimum Participant Milestone)
 18. Sistem memicu evaluasi otomatis pada **H-5 / D-5 sebelum tanggal keberangkatan**.
 19. Sistem menghitung total *Traveler* aktif yang memiliki status **DP Terverifikasi**.
-20. **Decision Gateway:** Apakah jumlah peserta terverifikasi $\ge 20True
+20. **Decision Gateway:** Apakah jumlah peserta terverifikasi $\ge 20$?
 
 ---
 

@@ -58,11 +58,11 @@ classDiagram
         +ServiceCategory category
     }
 
-    TourPlan "1" --> "many" TourDeparture : generates recurring
-    TourDeparture "1" --> "many" Booking : contains
-    Booking "1" --> "many" Traveler : registers
-    TourDeparture "1" --> "many" TourService : requires
-    TourService "many" --> "1" Vendor : fulfilled by
+    TourPlan "1" --> "*" TourDeparture : generates recurring
+    TourDeparture "1" --> "*" Booking : contains
+    Booking "1" --> "*" Traveler : registers
+    TourDeparture "1" --> "*" TourService : requires
+    TourService "*" --> "1" Vendor : fulfilled by
 ```
 
 1. **Tour / Tour Plan:** *Master itinerary* dan struktur rencana perjalanan wisata (dapat digunakan kembali untuk *open tour* berulang).
@@ -147,8 +147,8 @@ stateDiagram-v2
         CancelledDep : Cancelled
 
         DraftDep --> OpenBooking
-        OpenBooking --> MinReached : Kuota >= 20
-        OpenBooking --> CancelledDep : D-5 Kuota < 20
+        OpenBooking --> MinReached : Kuota Terpenuhi (>= 20)
+        OpenBooking --> CancelledDep : Kuota Tidak Terpenuhi (< 20)
         MinReached --> ConfirmedDep : D-5 Terkonfirmasi
         ConfirmedDep --> InOp : Tanggal Berangkat
         InOp --> Comp : Tour Berakhir
@@ -206,7 +206,7 @@ flowchart TD
     end
 
     subgraph "3. Alur Pembatalan & Refund"
-        D5[D-5 Kuota < 20] --> AT[Flag Waiting Owner Action]
+        D5["D-5 Kuota < 20"] --> AT[Flag Waiting Owner Action]
         AT -->|Owner: Full Refund| CR[Kalkulasi Refund Otomatis & Buka Antrean Finance]
         AT -->|Owner: Partner Transfer| PT[Generate Manifest Transfer Partner]
     end

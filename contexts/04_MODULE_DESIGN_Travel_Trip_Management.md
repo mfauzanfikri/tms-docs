@@ -46,15 +46,15 @@ Setiap entitas operasional dan finansial terikat langsung pada **Tour Departure*
 
 ```mermaid
 graph TD
-    TD[Tour Departure<br><i>Specific Date & Quota Execution</i>]
+    TD["Tour Departure<br><i>Specific Date & Quota Execution</i>"]
     
-    TD --> TP[Tour Plan / Itinerary]
-    TD --> BK[Bookings & Travelers / Manifest]
-    TD --> TL[Assigned Tour Leader]
-    TD --> VP[Vendor POs & Bookings]
-    TD --> FIN[Finance Ledger & Invoices]
-    TD --> DOC[Document Vault]
-    TD --> REF[Refund / Partner Transfers]
+    TD --> TP["Tour Plan / Itinerary"]
+    TD --> BK["Bookings & Travelers / Manifest"]
+    TD --> TL["Assigned Tour Leader"]
+    TD --> VP["Vendor POs & Bookings"]
+    TD --> FIN["Finance Ledger & Invoices"]
+    TD --> DOC["Document Vault"]
+    TD --> REF["Refund / Partner Transfers"]
 ```
 
 ---
