@@ -8,7 +8,7 @@ Selamat datang di repositori dokumentasi sentral untuk **Travel & Tour Operation
 
 > [!IMPORTANT]
 > **Repositori Khusus Dokumentasi (Pure Documentation Repository):**
-> Repositori ini didedikasikan **khusus untuk dokumentasi sistem, business discovery, product requirements, dan spesifikasi arsitektur teknis**. 
+> Repositori ini didedikasikan **khusus untuk dokumentasi analisis bisnis, spesifikasi produk, kebutuhan fungsional rilis, dan arsitektur teknis**.
 > 
 > Kode implementasi (*backend, frontend, mobile apps, infrastructure scripts*) berada di repositori terpisah.
 
@@ -16,58 +16,92 @@ Selamat datang di repositori dokumentasi sentral untuk **Travel & Tour Operation
 
 ## 2. Arsitektur Direktori & Alur Informasi
 
-Dokumentasi berkembang melalui tahapan maturitas yang terstruktur:
+Dokumentasi terbagi menjadi 3 pilar utama yang saling terhubung:
 
 ```mermaid
-flowchart LR
-    A["📂 contexts/<br><i>Working / Temporary Notes<br>Brainstorming & Discovery</i>"]
-    -->|Refined & Validated| B["📂 product/<br><i>Product Specifications<br>(Struktur ditentukan bertahap)</i>"]
-    -->|Architected| C["📂 technical/<br><i>Technical Specifications<br>(Struktur ditentukan bertahap)</i>"]
+flowchart TD
+    CTX["📂 contexts/<br><i>Disposable Sandbox & Raw Notes</i>"] -.->|Formulated into| P
+
+    subgraph P["1. Lapisan Produk (Product North Star)"]
+        direction TB
+        BA["📄 product/01_BUSINESS_ANALYSIS.md<br><i>Problem, Operating Model, Value Chain</i>"]
+        BRD["📄 product/02_BRD.md<br><i>Domain Concepts, Actors/RBAC, Master Rules</i>"]
+        CAT["📄 product/03_FEATURE_CATALOG_AND_SCOPE.md<br><i>Full Capabilities & MVP Phasing</i>"]
+        BA --> BRD --> CAT
+    end
+
+    subgraph D["2. Lapisan Eksekusi Rilis (Milestone Execution)"]
+        direction TB
+        PRD["📄 development/mvp-1/01_PRD.md<br><i>User Stories, Journeys & Acceptance Criteria</i>"]
+        FRD["📄 development/mvp-1/02_FRD.md<br><i>System Triggers, State Machines & Validations</i>"]
+        PRD --> FRD
+    end
+
+    subgraph T["3. Lapisan Rekayasa Teknis (Technical Specs)"]
+        direction TB
+        ARCH["📄 technical/01_SYSTEM_ARCHITECTURE.md<br><i>System Blueprint & Modularity</i>"]
+        DB["📄 technical/02_DATABASE_DESIGN.md<br><i>ERD, Data Models & Snapshots</i>"]
+        API["📄 technical/03_API_CONTRACTS.md<br><i>Endpoints, Payload & Interfaces</i>"]
+        ARCH --> DB --> API
+    end
+
+    CAT ==>|Scope Boundary| PRD
+    FRD ==>|System Logic| ARCH
 ```
 
-### Struktur Direktori
+---
+
+## 3. Struktur Direktori Resmi
 
 ```text
 tms-docs/
-├── contexts/                 # Catatan kerja sementara, brainstorm, meeting notes, raw ideas
-│   ├── 01_BRD_Travel_Trip_Management.md
-│   ├── 02_FLOW_Travel_Trip_Management.md
-│   ├── 03_BPMN_Travel_Trip_Management.md
-│   └── 04_MODULE_DESIGN_Travel_Trip_Management.md
-├── product/                  # (Mendatang) Dokumentasi produk formal & requirements
-├── technical/                # (Mendatang) Engineering blueprints, data schemas, API contracts
+├── contexts/                             # Sandbox / Temporary Notes (Disposable)
+│
+├── product/                              # Fondasi Bisnis & Visi Produk Global
+│   ├── 01_BUSINESS_ANALYSIS.md           # Problem Statement, Operating Model, Value Chain & Metrik Bisnis
+│   ├── 02_BRD.md                         # Konsep Domain, Aktor/RBAC, & Master Aturan Bisnis (Harga, D-5, Disrupsi)
+│   └── 03_FEATURE_CATALOG_AND_SCOPE.md   # Katalog Seluruh Fitur & Pembagian Scope (MVP-1 vs Phase 2)
+│
+├── development/                          # Spesifikasi Rilis per Milestone / MVP
+│   └── mvp-1/
+│       ├── 01_PRD.md                     # User Stories, Screen Flows & Kriteria Penerimaan MVP-1
+│       └── 02_FRD.md                     # Functional System Specs (State Machine, Trigger, Validasi) MVP-1
+│
+├── technical/                            # Arsitektur & Spesifikasi Rekayasa Teknis
+│   ├── 01_SYSTEM_ARCHITECTURE.md         # Blueprint Sistem, Modul & Tech Stack
+│   ├── 02_DATABASE_DESIGN.md             # ERD, Model Data & Snapshotting Logic
+│   └── 03_API_CONTRACTS.md              # Spesifikasi Endpoint API & Payload
+│
 ├── .gitignore
-└── README.md
+└── README.md                             # Panduan Navigasi Dokumentasi
 ```
 
 ---
 
-## 3. Peran Direktori `contexts/`
+## 4. Peran Direktori
 
-Direktori `contexts/` berfungsi sebagai **sandbox brainstorming dan discovery aktif**:
-- **Status Sementara & Kerja (Temporary & Working State)**: File di sini menampung ide-ide awal, catatan operasional, transkrip diskusi, dan desain eksploratif sebelum difinalisasi ke dalam spesifikasi formal.
-- **Siklus Kelulusan (Graduation Lifecycle)**: Setelah konsep dan aturan bisnis di `contexts/` divalidasi oleh *stakeholder*, dokumen akan disintesis dan dipindahkan ke dalam dokumen formal di folder `product/` atau `technical/` (struktur sub-folder akan disesuaikan seiring berjalannya proyek).
+### 1. `contexts/` (Disposable / Scratchpad)
+Direktori kerja sementara untuk menampung *raw notes*, rekaman diskusi, dan ide awal. Direktori ini bersifat *disposable* (tidak dijadikan rujukan resmi setelah disintesis ke folder `product/`).
 
----
+### 2. `product/` (Business & Product North Star)
+- **`01_BUSINESS_ANALYSIS.md`**: Fondasi bisnis makro, analisis masalah operasional agensi, posisi sebagai *Tour Orchestrator*, dan target keberhasilan (KPI/OKR).
+- **`02_BRD.md`**: Spesifikasi kebutuhan bisnis menyeluruh, konsep entitas (*Package Blueprint vs. Departure Instance*), hak akses aktor (RBAC), serta katalog aturan bisnis baku (misal: *Price Snapshotting, Evaluasi Kuota D-5, Matriks Disrupsi, Kebijakan Refund*).
+- **`03_FEATURE_CATALOG_AND_SCOPE.md`**: Daftar komprehensif seluruh kapabilitas sistem beserta pemetaannya ke dalam milestone rilis (*MVP-1 vs. Phase 2*).
 
-## 4. Urutan Membaca Dokumen Konteks Saat Ini
+### 3. `development/` (Milestone Deliverables)
+Spesifikasi eksekusi per milestone atau MVP (misal: `mvp-1/`, `mvp-2/`).
+- **`01_PRD.md`**: Kebutuhan produk dari sudut pandang *User & UX* (*User Stories, User Journeys, Acceptance Criteria*).
+- **`02_FRD.md`**: Spesifikasi fungsional sistem (*State transitions, formula kalkulasi, event triggers, validation rules*).
 
-Untuk proses *onboarding* atau memahami status *business discovery* saat ini, baca dokumen dengan urutan nomor berikut:
-
-| Urutan | Dokumen | Area Fokus |
-|---|---|---|
-| **01** | [`contexts/01_BRD_Travel_Trip_Management.md`](contexts/01_BRD_Travel_Trip_Management.md) | **Business Requirements**: Model operasional, konsep domain (`Tour Plan` vs `Tour Departure`), aturan bisnis yang telah dikonfirmasi, dan keputusan kebijakan yang masih terbuka. |
-| **02** | [`contexts/02_FLOW_Travel_Trip_Management.md`](contexts/02_FLOW_Travel_Trip_Management.md) | **End-to-End Flow**: Alur perjalanan naratif dari akuisisi pelanggan, *booking*, evaluasi D-5, hingga *trip closing*. |
-| **03** | [`contexts/03_BPMN_Travel_Trip_Management.md`](contexts/03_BPMN_Travel_Trip_Management.md) | **BPMN & Decision Gateways**: Pembagian tanggung jawab *swimlane* (*Customer, Admin, Finance, Operational, Owner*) dan percabangan keputusan. |
-| **04** | [`contexts/04_MODULE_DESIGN_Travel_Trip_Management.md`](contexts/04_MODULE_DESIGN_Travel_Trip_Management.md) | **Module Architecture**: Dekomposisi modul tingkat tinggi, relasi entitas, dan *state lifecycles*. |
+### 4. `technical/` (Engineering & System Architecture)
+Spesifikasi implementasi teknis untuk developer:
+- **`01_SYSTEM_ARCHITECTURE.md`**: Arsitektur modul dan aplikasi.
+- **`02_DATABASE_DESIGN.md`**: Skema database relasional, ERD, dan struktur snapshot harga/manifest.
+- **`03_API_CONTRACTS.md`**: Format request, response, dan endpoint REST API.
 
 ---
 
 ## 5. Standar & Panduan Dokumentasi
 
-1. **Pisahkan Requirements dari Implementasi**: Pada fase *discovery* dan *product*, dokumentasikan *apa* yang dibutuhkan bisnis dan *mengapa*, hindari menentukan skema database atau *UI library* secara prematur.
-2. **Eksplisitkan Ketidakpastian**: Selalu bedakan antara:
-   - **Confirmed**: Aturan bisnis pasti yang telah disetujui manajemen.
-   - **Assumptions to Validate**: Asumsi kerja yang masih membutuhkan verifikasi.
-   - **Open Questions**: Kebijakan bisnis yang belum diputuskan.
-3. **Penomoran Berurutan (Numbered Prefixes)**: Gunakan format dua digit (`01_`, `02_`, dst.) untuk urutan membaca dalam setiap direktori.
+1. **Pisahkan Requirements dari Implementasi**: Folder `product/` berfokus pada *apa* dan *mengapa*, sedangkan detail implementasi fungsional dan teknis berada di `development/` dan `technical/`.
+2. **Penomoran Berurutan (Numbered Prefixes)**: Gunakan format dua digit (`01_`, `02_`, dst.) untuk memastikan urutan membaca yang runut dan terstruktur.
