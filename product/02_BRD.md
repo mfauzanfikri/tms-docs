@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Requirements Document |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.0 |
-| **Document Status** | Draft |
+| **Document Version** | 1.1 |
+| **Document Status** | In Review |
 | **Implementation Status** | N/A |
-| **Last Updated** | 2026-08-28 |
+| **Last Updated** | 2026-08-29 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -192,6 +192,21 @@ Jika peserta membatalkan keikutsertaan secara sepihak sebelum keberangkatan:
   $$\text{Hak Refund} = (\text{Total Pembayaran} \times \% \text{Refund S\&K}) - \text{Biaya Operasional Nyata}$$
 - **Kebijakan Otorisasi Khusus (*Discretionary Override*):** Admin/Owner berwenang memasukkan nominal refund khusus atas pertimbangan kemanusiaan (*force majeure individu*) dengan mencantumkan alasan wajib pada log audit.
 
+### 4.7 Aturan Penambahan Peserta di Tengah Perjalanan (Mid-Trip Addition Policy)
+Jika terdapat permintaan penambahan peserta baru saat tour sedang berlangsung (*in-progress / on-the-go*):
+- **Rule 4.7.1 (Kriteria Kelayakan Mutlak / Gatekeeper):** Penambahan peserta susulan hanya dapat disetujui jika seluruh 4 syarat berikut bernilai `TRUE`:
+  1. *Armada Transportasi:* Kursi legal kendaraan masih tersedia (dilarang menggunakan kursi lipat darurat atau melebihi kapasitas STNK/izin operasional).
+  2. *Akomodasi Kamar Hotel:* Kamar hotel masih tersedia atau peserta menyetujui tambahan biaya kamar sendiri (*single room supplement*). Dilarang memaksakan penggabungan kamar (*sharing*) dengan peserta lain tanpa persetujuan tertulis.
+  3. *Tiket Atraksi & Konservasi:* Kuota tiket destinasi berbasis identitas (NIK/Paspor) masih tersedia dan dapat dibeli resmi.
+  4. *Polis Asuransi Instan:* Perlindungan asuransi perjalanan wajib terbit sebelum peserta menaiki kendaraan rombongan.
+  > *Jika salah satu syarat bernilai FALSE, sistem dan Tour Leader wajib menolak penambahan tersebut secara tegas.*
+- **Rule 4.7.2 (Pencegahan Kebocoran Kas & Larangan Transaksi Lapangan):** Tour Leader dan kru lapangan dilarang keras menerima uang tunai langsung. Seluruh penambahan peserta wajib diproses melalui sistem TMS via penerbitan *Emergency E-Invoice* dan pembayaran digital (QRIS / Virtual Account / Kartu Kredit) yang diverifikasi Finance.
+- **Rule 4.7.3 (Formula Dynamic Pricing Mid-Trip):** Tagihan untuk peserta susulan (*Late Joiner*) dihitung secara otomatis oleh sistem dengan formula:
+  $$\text{Total Tagihan} = \text{Prorated Variable Cost} + \text{Walk-in Variance Buffer (15-25\%)} + \text{Emergency Admin Surcharge} + \text{Single Room Fee (jika ada)}$$
+- **Rule 4.7.4 (Sinkronisasi Live Manifest & Add-on PO Vendor):** Begitu pembayaran terverifikasi lunas dan peserta menandatangani *Digital Liability Waiver & Health Declaration*:
+  - Data peserta otomatis masuk ke *Live Field Manifest* dengan penanda `Late-Joiner`.
+  - Sistem otomatis menerbitkan revisi *Add-on Purchase Order (PO)* kepada vendor hotel, konsumsi, dan tiket yang bersangkutan.
+
 ---
 
 ## 5. End-to-End Business Flow & BPMN Swimlane
@@ -256,13 +271,13 @@ Sistem terdiri dari 10 modul fungsional terintegrasi:
 TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 ├── 01. Dashboard & Executive Analytics Module
 ├── 02. Tour Catalog & Blueprint Master Module (BOM, Baseline Pricing)
-├── 03. Tour Operations & Departure Module (Recurrence, D-5 Engine, Manifest)
-├── 04. Booking & Sales Pipeline Module (Price Snapshotting, Traveler Vault)
+├── 03. Tour Operations & Departure Module (Recurrence, D-5 Engine, Live Manifest)
+├── 04. Booking & Sales Pipeline Module (Price Snapshotting, Traveler Vault, Emergency Add-Traveler)
 ├── 05. Promo & Perks Overlay Engine (Monetary Discount, Complimentary Badges)
-├── 06. Finance, Billing & Settlement Module (Invoicing, Refund Queue, Ledger)
-├── 07. Vendor & Procurement Module (Master Directory, PO & Voucher Generator)
-├── 08. Tour Leader Field Module (Live Manifest, Check-in, Perk Validator)
-├── 09. Document Management & Template Vault (Invoice, PO, Voucher, Manifest)
+├── 06. Finance, Billing & Settlement Module (Invoicing, Instant Pay, Refund Queue, Ledger)
+├── 07. Vendor & Procurement Module (Master Directory, Add-on PO & Voucher Generator)
+├── 08. Tour Leader Field Module (Live Manifest, Check-in, Late-Joiner Validator, Incident Log)
+├── 09. Document Management & Template Vault (Invoice, PO, Voucher, Manifest, Digital Waiver)
 └── 10. Access Control, Security & Audit Trail (RBAC, Override Logger)
 ```
 

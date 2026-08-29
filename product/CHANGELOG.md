@@ -8,6 +8,30 @@ Format pencatatan mengikuti panduan:
 
 ---
 
+## [2026-08-29]
+
+### [BA-01] 01_BUSINESS_ANALYSIS.md - Version 1.1
+- **Status:** In Review
+- **Author:** Product & Operations Team
+- **Changes:**
+  - Menambahkan ranah analisis risiko penambahan peserta di tengah perjalanan (*Mid-Trip / Late-Joiner Addition*).
+  - Memperbarui diagram Mermaid alur tantangan operasional dengan menambahkan node $P7$, $I4$, dan solusi sistemik $S7$ (*Emergency Add-Traveler Engine & Instant Waiver*).
+
+### [BRD-01] 02_BRD.md - Version 1.1
+- **Status:** In Review
+- **Author:** Product & Operations Team
+- **Changes:**
+  - Menambahkan aturan bisnis formal **Rule 4.7 (Mid-Trip Addition Policy)** yang mencakup 4 kriteria kelayakan mutlak (*Gatekeeper*), larangan transaksi tunai lapangan, formula *dynamic pricing late-joiner*, dan otomatisasi sinkronisasi *Live Manifest* serta revisi PO vendor.
+  - Memperbarui dekomposisi modul fungsional makro (Modul 03, 04, 06, 07, 08, dan 09) untuk mendukung alur *Emergency Add-Traveler*.
+
+### [REG-01] Product Metadata.md - Version 1.1
+- **Status:** In Review
+- **Author:** Product & Operations Team
+- **Changes:**
+  - Pemutakhiran status dokumen `01_BUSINESS_ANALYSIS.md` dan `02_BRD.md` menjadi Version 1.1 (In Review).
+
+---
+
 ## [2026-08-28]
 
 ### [BA-01] 01_BUSINESS_ANALYSIS.md - Version 1.0

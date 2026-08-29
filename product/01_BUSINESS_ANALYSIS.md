@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Analysis |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.0 |
-| **Document Status** | Draft |
+| **Document Version** | 1.1 |
+| **Document Status** | In Review |
 | **Implementation Status** | N/A |
-| **Last Updated** | 2026-08-28 |
+| **Last Updated** | 2026-08-29 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -67,12 +67,14 @@ graph TD
         P4["Manifest & Alokasi Kamar Tidak Sinkron"]
         P5["Cash-Flow Mismatch & Dispute Refund"]
         P6["Fraud Pembayaran & Default Vendor"]
+        P7["Penambahan Peserta Mid-Trip Tanpa Asuransi & Overcapacity"]
     end
 
     subgraph Impacts["Dampak Bisnis & Finansial"]
         I1["Kerugian Finansial & Erosi Margin"]
         I2["Kekacauan Logistik di Lapangan"]
         I3["Penurunan Kepercayaan Pelanggan"]
+        I4["Gugatan Hukum & Pelanggaran Regulasi"]
     end
 
     subgraph Solutions["Solusi Sistemik (To-Be)"]
@@ -82,15 +84,18 @@ graph TD
         S4["Live Manifest & Automated Rooming Pairer"]
         S5["Disruption Matrix & Floating Ledger"]
         S6["Verification Queue & Vendor Directory"]
+        S7["Emergency Add-Traveler Engine & Instant Waiver"]
     end
 
     P1 & P2 & P3 --> I1
     P4 & P6 --> I2
     P5 & P6 --> I3
+    P7 --> I1 & I2 & I4
 
     I1 ==> S1 & S2 & S3
     I2 ==> S4 & S6
     I3 ==> S5 & S6
+    I4 ==> S7
 ```
 
 ### Matriks Analisis Masalah & Mitigasi Risiko
@@ -105,6 +110,7 @@ graph TD
 | **Siklus Refund & Likuiditas Kas** | Peserta menuntut *Full Refund* seketika (H-5), sementara dana agensi masih terikat sebagai DP di vendor pihak ketiga. | Defisit likuiditas kas operasional (*cash-flow mismatch / floating fund gap*). | **Disruption Matrix & Floating Refund Queue**: 4 jalur resolusi terstruktur dengan antrean pencairan dana yang selaras dengan penarikan dana vendor. |
 | **Verifikasi Pembayaran & Fraud** | Lonjakan transaksi membuat verifikasi mutasi manual rentan disusupi bukti transfer palsu. | Peserta fiktif masuk ke manifest resmi, mengunci kuota tanpa ada dana riil yang masuk. | **Verification Queue & Bank Mutation Log**: Antrean verifikasi terstruktur dengan pencatatan mutasi resmi sebelum status *Confirmed* dirilis. |
 | **Keandalan Vendor & Force Majeure** | Vendor armada mogok di jalan, atau penutupan destinasi wisata mendadak akibat erupsi/cuaca buruk. | Trip terlantar di lapangan, tuntutan kompensasi biaya tiket yang tidak terpakai dari peserta. | **Field Incident Logger & Vendor Backup Directory**: Pencatatan insiden lapangan secara digital oleh *Tour Leader* untuk dasar rekonsiliasi dan direktori kontak vendor cadangan. |
+| **Penambahan Peserta Mid-Trip (*Late Joiner*)** | Peserta menyusul di tengah perjalanan tanpa asuransi resmi, kapasitas kursi/kamar terlampaui, tiket destinasi habis, atau transaksi kas ilegal di lapangan. | Tuntutan hukum dan tanggung jawab penuh jika kecelakaan tanpa asuransi (*liability*), denda razia manifest transportasi KSOP, kerugian selisih harga kamar *walk-in*, dan kebocoran pendapatan kas (*field fraud*). | **Emergency Add-Traveler Engine & Instant Waiver**: Validasi kapasitas kursi & kamar real-time, penerbitan invoice & e-sign waiver instan via sistem, pengikatan asuransi digital otomatis, dan pelarangan transaksi kas di lapangan. |
 
 ---
 

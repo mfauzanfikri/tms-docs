@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Product** | Travel & Tour Operations System (TMS) |
 | **Target Product Release** | v1.0 (TMS Core Operations MVP) |
-| **Last Updated** | 2026-08-28 |
+| **Last Updated** | 2026-08-29 |
 
 ---
 
@@ -13,8 +13,8 @@
 ### Product Documents
 | Document Name | Path | Current Doc Version | Description / Status |
 | :--- | :--- | :--- | :--- |
-| [01 Business Analysis](01_BUSINESS_ANALYSIS.md) | `product/01_BUSINESS_ANALYSIS.md` | 1.0 | Draft — Analisis masalah, operating model, struktur BEP, dan KPI bisnis |
-| [02 BRD](02_BRD.md) | `product/02_BRD.md` | 1.0 | Draft — Konsep domain, aktor/RBAC, master business rules, dan alur BPMN |
+| [01 Business Analysis](01_BUSINESS_ANALYSIS.md) | `product/01_BUSINESS_ANALYSIS.md` | 1.1 | In Review — Analisis masalah, operating model, struktur BEP, dan risiko mid-trip addition |
+| [02 BRD](02_BRD.md) | `product/02_BRD.md` | 1.1 | In Review — Konsep domain, aktor/RBAC, master business rules (incl. Mid-Trip Policy), dan alur BPMN |
 | [03 Feature Catalog & Scope](03_FEATURE_CATALOG_AND_SCOPE.md) | `product/03_FEATURE_CATALOG_AND_SCOPE.md` | 1.0 | Planned — Master katalog kapabilitas & pemetaan fase MVP |
 
 ### Milestone & PRD Documents (MVP-1)
