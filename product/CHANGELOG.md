@@ -8,6 +8,16 @@ Format pencatatan mengikuti panduan:
 
 ---
 
+## [2026-09-01]
+
+### [BA-01] 01_BUSINESS_ANALYSIS.md - Version 1.2
+- **Status:** In Review
+- **Changes:** Menambahkan model BEP dinamis, pemisahan Open/Private Tour, milestone operasional, KPI governance, dan batasan MVP.
+
+### [BRD-01] 02_BRD.md - Version 1.2
+- **Status:** In Review
+- **Changes:** Menambahkan requirement IDs, traceability, acceptance rules, financial controls, data governance, serta policy boundaries.
+
 ## [2026-08-29]
 
 ### [BA-01] 01_BUSINESS_ANALYSIS.md - Version 1.1

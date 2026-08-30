@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Requirements Document |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.1 |
+| **Document Version** | 1.2 |
 | **Document Status** | In Review |
 | **Implementation Status** | N/A |
-| **Last Updated** | 2026-08-29 |
+| **Last Updated** | 2026-09-01 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -283,8 +283,39 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 
 ---
 
-## 7. Batasan Sistem & Asumsi Kunci (*Assumptions & Constraints*)
+## 7. Persyaratan Bisnis Prioritas dan Traceability
+
+| ID | Persyaratan | Prioritas | Sumber |
+|---|---|---|---|
+| BR-FIN-001 | Sistem menghitung BEP dan margin per departure menggunakan biaya aktual/terkomit dan parameter departure, bukan threshold global. | MVP | BA 4.3 |
+| BR-FIN-002 | Sistem memisahkan revenue, discount, commission, tax, payment fee, subsidy, refund, dan vendor cost dalam laporan trip. | MVP | BA 4.3 |
+| BR-OPS-001 | Open Tour dan Private Tour memiliki lifecycle, pricing, approval, dan cancellation policy yang berbeda. | MVP | BA 4.4 |
+| BR-OPS-002 | Sistem menjalankan milestone H-30 sampai H+7 dengan owner, SLA, status, dan escalation. | MVP | BA 4.5 |
+| BR-GOV-001 | Refund, cancellation, chargeback, dan partner transfer harus memakai scenario policy dengan approver, evidence, SLA, funding source, dan terminal status. | MVP | BA 4.3/4.5 |
+| BR-GOV-002 | Vendor dan partner wajib memiliki verification status, SLA, performance history, backup path, dan controlled bank-detail changes. | Phase 2 | BA 3 |
+| BR-DATA-001 | Akses NIK, paspor, health, dan insurance data dibatasi berdasarkan kebutuhan peran; retention, masking, sharing, dan deletion harus tercatat. | MVP | BA 3/4.5 |
+| BR-SCOPE-001 | Setiap capability diberi label MVP, Phase 2, Phase 3, atau Deferred sebelum implementation planning. | MVP | BA 4.6 |
+
+### 7.1 Acceptance Rules
+
+- Semua angka bisnis yang berubah antar departure disimpan sebagai konfigurasi departure atau kontrak.
+- Status transition harus mencantumkan actor, precondition, audit event, dan terminal outcome.
+- Override margin, refund, promo, atau capacity wajib menyimpan alasan, approver, timestamp, dan dampak finansial.
+- Late joiner ditolak secara default pada MVP dan tidak boleh masuk manifest sebelum pembayaran, waiver, asuransi, serta validasi kapasitas selesai.
+- Setiap KPI yang ditampilkan harus memiliki formula dan sumber data yang dapat diaudit.
+
+---
+
+## 8. Batasan Sistem & Asumsi Kunci (*Assumptions & Constraints*)
 
 1. **Tour Departure sebagai Pusat Data (*Single Source of Truth*):** Seluruh dokumen keuangan, pesanan pelanggan, manifes peserta, dan penugasan vendor bermuara pada entitas spesifik *Tour Departure*.
 2. **Keterikatan Harga Transaksi:** Sekali booking berstatus `CONFIRMED`, sistem dilarang keras mengubah nilai tagihan tanpa tindakan amandemen/pembatalan resmi.
-3. **Pemberangkatan Tunggal vs Multi-Armada:** Standar kuota 20 pax dihitung untuk 1 unit bus medium/besar. Keberangkatan dengan $>40$ peserta akan memicu alokasi armada bus kedua (*Multi-Bus Batching*).
+3. **Pemberangkatan Tunggal vs Multi-Armada:** Kapasitas, `minQuota`, dan jumlah armada dikonfigurasi per departure berdasarkan kendaraan legal dan hasil BEP. Nilai 20 pax hanya menjadi default Open Tour sampai kebijakan bisnis menggantinya; departure dengan peserta melebihi kapasitas armada memerlukan rencana Multi-Bus Batching dan persetujuan Operations.
+
+
+### 8.1 Policy Boundaries
+
+- `minQuota` and BEP are configurable per departure; 20 pax is not a universal profitability rule.
+- Private Tour may bypass Open Tour H-5 behavior when its signed contract defines another gate.
+- Refund policy must be approved against applicable consumer, tax, privacy, and insurance obligations before production use.
+- Customer funds, vendor deposits, subsidies, refunds, and operating cash must remain separately identifiable in financial reporting.

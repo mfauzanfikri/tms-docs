@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Analysis |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.1 |
+| **Document Version** | 1.2 |
 | **Document Status** | In Review |
 | **Implementation Status** | N/A |
-| **Last Updated** | 2026-08-29 |
+| **Last Updated** | 2026-09-01 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -140,6 +140,45 @@ Biaya yang muncul dan dihitung secara linear berdasarkan jumlah kepala peserta (
 - Konsumsi (*meals*) di restoran mitra.
 - Alokasi tempat tidur hotel (*twin-sharing/triple-sharing*).
 - Asuransi perjalanan dan *amenities/merchandise kit*.
+
+---
+
+### 4.3 Asumsi BEP dan Guardrails Finansial
+
+- Nilai 20 pax adalah parameter per departure, bukan konstanta global. Setiap departure menyimpan `minQuota`, `maxQuota`, kapasitas per armada, mata uang, dan target margin.
+- BEP dihitung dari biaya aktual atau terkomit, termasuk PO, biaya payment gateway, pajak, komisi, promo, subsidi, refund, dan biaya vendor yang tidak dapat dikembalikan.
+- Formula dasar: `BEP Pax = Biaya Tetap / (Harga Jual Bersih per Pax - Biaya Variabel per Pax)`.
+- Laporan membedakan gross revenue, net revenue, contribution margin, net profit, cash collected, dan outstanding receivable.
+- Target 0% margin leakage adalah target kontrol; pengecualian wajib tercatat dengan alasan, approver, dan dampak finansial.
+
+### 4.4 Perbedaan Operating Model
+
+| Aspek | Open Tour | Private / Custom Tour |
+|---|---|---|
+| Demand | Kuota publik dan recurring departure | Inquiry, quotation, dan kontrak grup |
+| Harga | Harga katalog dan promo terkontrol | Harga negosiasi dengan margin minimum |
+| Konfirmasi | H-5 quota gate | Customer approval dan deposit kontrak |
+| Scope | BOM standar | BOM/itinerary kustom dan change order |
+| Pembatalan | Policy produk standar | Klausul kontrak dan biaya vendor aktual |
+
+### 4.5 Operational Milestones dan KPI Governance
+
+- H-30: review kapasitas, vendor, dan estimasi margin.
+- H-14: review demand, cash collected, dan risiko pembatalan.
+- H-7: review pelunasan, vendor readiness, dan exception list.
+- H-5: quota decision gate dan komunikasi resolusi kepada pelanggan.
+- H-3/H-1: finalisasi vendor, manifest, dokumen, dan emergency contact.
+- H+1 sampai H+2: rekonsiliasi pendapatan, biaya, refund, dan margin.
+- H+7: vendor settlement dan trip closure.
+
+Setiap KPI wajib memiliki baseline, formula, sumber data, frekuensi, owner, target, dan toleransi pengecualian. KPI minimum: conversion rate, load factor, revenue per pax, contribution margin, refund turnaround, vendor fulfillment, complaint rate, repeat booking, dan payment verification time.
+
+### 4.6 MVP dan Roadmap
+
+- **MVP:** package/departure, booking/traveler, quota hold, invoice, payment verification, manifest, vendor PO, H-5 decision, basic refund, RBAC, dan audit trail.
+- **Phase 2:** vendor scoring, partner transfer, rooming automation, advanced ledger, dan customer self-service disruption.
+- **Phase 3:** late-joiner automation, instant insurance, payment/bank integrations, forecasting, dan pricing recommendations.
+- Late joiner default-nya tidak tersedia pada MVP; exception harus melalui Operations dan Finance.
 
 ---
 
