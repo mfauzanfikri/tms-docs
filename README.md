@@ -95,7 +95,7 @@ Direktori kerja sementara untuk menampung *raw notes*, rekaman diskusi, dan ide 
 - **`CHANGELOG.md`**: Catatan riwayat revisi dan perubahan dokumen produk secara terpusat.
 - **`Product Metadata.md`**: Master registri dokumen yang memetakan versi revisi setiap dokumen ke target rilis produk (misal: `v1.0 - TMS Core Operations MVP`).
 - **`01_BUSINESS_ANALYSIS.md`**: Fondasi bisnis makro, analisis masalah operasional agensi, posisi sebagai *Tour Orchestrator*, struktur biaya BEP, dan target keberhasilan (KPI/OKR).
-- **`02_BRD.md`**: Spesifikasi kebutuhan bisnis menyeluruh, konsep entitas (*Package Blueprint vs. Departure Instance*), hak akses aktor (RBAC), serta katalog aturan bisnis baku (misal: *Price Snapshotting, Evaluasi Kuota D-5, Matriks Disrupsi, Kebijakan Refund*).
+- **`02_BRD.md`**: Spesifikasi kebutuhan bisnis menyeluruh, konsep entitas (*Tour Package vs. Departure*), hak akses aktor (RBAC), serta katalog aturan bisnis baku (misal: *Price Snapshotting, Evaluasi Kuota D-5, Matriks Disrupsi, Kebijakan Refund*).
 - **`03_FEATURE_CATALOG_AND_SCOPE.md`**: Daftar komprehensif seluruh kapabilitas sistem beserta pemetaannya ke dalam milestone rilis (*MVP-1 vs. Phase 2*).
 
 ### 3. `development/` (Milestone Deliverables)

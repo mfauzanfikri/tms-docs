@@ -25,7 +25,7 @@ Organisasi beroperasi sebagai **Tour Operator / Orchestrator** yang merancang, m
 
 ```mermaid
 flowchart LR
-    C["Customer / Traveler"]
+    C["Customer"]
     -->|1. Booking & Invoicing| TMS["Agensi (Tour Operator)"]
     TMS -->|2. Orkestrasi & PO| V["Vendor Network<br>(Transport, Hotel, Resto, Tiket)"]
     TMS -->|3. Delegasi & Manifest| TL["Tour Leader (Lapangan)"]
@@ -84,7 +84,7 @@ graph TD
         S4["Live Manifest & Automated Rooming Pairer"]
         S5["Disruption Matrix & Floating Ledger"]
         S6["Verification Queue & Vendor Directory"]
-        S7["Emergency Add-Traveler Engine & Instant Waiver"]
+        S7["Emergency Add-Customer Engine & Instant Waiver"]
     end
 
     P1 & P2 & P3 --> I1
@@ -110,13 +110,13 @@ graph TD
 | **Siklus Refund & Likuiditas Kas** | Peserta menuntut *Full Refund* seketika (H-5), sementara dana agensi masih terikat sebagai DP di vendor pihak ketiga. | Defisit likuiditas kas operasional (*cash-flow mismatch / floating fund gap*). | **Disruption Matrix & Floating Refund Queue**: 4 jalur resolusi terstruktur dengan antrean pencairan dana yang selaras dengan penarikan dana vendor. |
 | **Verifikasi Pembayaran & Fraud** | Lonjakan transaksi membuat verifikasi mutasi manual rentan disusupi bukti transfer palsu. | Peserta fiktif masuk ke manifest resmi, mengunci kuota tanpa ada dana riil yang masuk. | **Verification Queue & Bank Mutation Log**: Antrean verifikasi terstruktur dengan pencatatan mutasi resmi sebelum status *Confirmed* dirilis. |
 | **Keandalan Vendor & Force Majeure** | Vendor armada mogok di jalan, atau penutupan destinasi wisata mendadak akibat erupsi/cuaca buruk. | Trip terlantar di lapangan, tuntutan kompensasi biaya tiket yang tidak terpakai dari peserta. | **Field Incident Logger & Vendor Backup Directory**: Pencatatan insiden lapangan secara digital oleh *Tour Leader* untuk dasar rekonsiliasi dan direktori kontak vendor cadangan. |
-| **Penambahan Peserta Mid-Trip (*Late Joiner*)** | Peserta menyusul di tengah perjalanan tanpa asuransi resmi, kapasitas kursi/kamar terlampaui, tiket destinasi habis, atau transaksi kas ilegal di lapangan. | Tuntutan hukum dan tanggung jawab penuh jika kecelakaan tanpa asuransi (*liability*), denda razia manifest transportasi KSOP, kerugian selisih harga kamar *walk-in*, dan kebocoran pendapatan kas (*field fraud*). | **Emergency Add-Traveler Engine & Instant Waiver**: Validasi kapasitas kursi & kamar real-time, penerbitan invoice & e-sign waiver instan via sistem, pengikatan asuransi digital otomatis, dan pelarangan transaksi kas di lapangan. |
+| **Penambahan Peserta Mid-Trip (*Late Joiner*)** | Peserta menyusul di tengah perjalanan tanpa asuransi resmi, kapasitas kursi/kamar terlampaui, tiket destinasi habis, atau transaksi kas ilegal di lapangan. | Tuntutan hukum dan tanggung jawab penuh jika kecelakaan tanpa asuransi (*liability*), denda razia manifest transportasi KSOP, kerugian selisih harga kamar *walk-in*, dan kebocoran pendapatan kas (*field fraud*). | **Emergency Add-Customer Engine & Instant Waiver**: Validasi kapasitas kursi & kamar real-time, penerbitan invoice & e-sign waiver instan via sistem, pengikatan asuransi digital otomatis, dan pelarangan transaksi kas di lapangan. |
 
 ---
 
 ## 4. Struktur Biaya & Analisis Titik Impas (*Cost Structure & BEP*)
 
-Model profitabilitas agensi pada sebuah keberangkatan tour (*Tour Departure*) ditentukan oleh relasi antara **Biaya Tetap (*Fixed Costs*)** dan **Biaya Variabel (*Variable Costs*)**:
+Model profitabilitas agensi pada sebuah keberangkatan tour (*Departure*) ditentukan oleh relasi antara **Biaya Tetap (*Fixed Costs*)** dan **Biaya Variabel (*Variable Costs*)**:
 
 ```text
 Total Biaya Trip = Biaya Tetap (Armada + TL + Tol) + [Biaya Variabel per Pax × Jumlah Peserta Aktif]
@@ -189,13 +189,13 @@ quadrantChart
     title Matriks Pengaruh vs Kepentingan Stakeholder
     x-axis Kepentingan Rendah --> Kepentingan Tinggi
     y-axis Pengaruh Rendah --> Pengaruh Tinggi
-    "Vendor Pihak Ketiga": [0.45, 0.40]
+    "Vendor": [0.45, 0.40]
     "Tour Leader (Lapangan)": [0.75, 0.55]
     "Admin & Sales Desk": [0.85, 0.65]
-    "Finance & Settlement": [0.88, 0.80]
+    "Finance": [0.88, 0.80]
     "Operations Manager": [0.92, 0.85]
     "Business Owner / Executive": [0.90, 0.95]
-    "Customer / Traveler": [0.80, 0.35]
+    "Customer": [0.80, 0.35]
 ```
 
 ### Rincian Peran dan Ekspektasi Stakeholder:
@@ -206,7 +206,7 @@ quadrantChart
 2. **Operations Manager:**
    - **Tujuan:** Memastikan ketersediaan armada, akomodasi, dan penugasan *Tour Leader* berjalan mulus tanpa kendala logistik.
    - **Kewenangan Utama:** Mengatur master cetak biru paket (*BOM*), mengonfigurasi aturan jadwal berulang (*recurrence*), dan menerbitkan PO vendor.
-3. **Finance & Settlement:**
+3. **Finance:**
    - **Tujuan:** Akurasi penerimaan kas, pencegahan transaksi bodong, pembayaran tagihan vendor tepat waktu, dan kejelasan laporan laba-rugi trip.
    - **Kewenangan Utama:** Verifikasi bukti transfer DP/pelunasan, pemrosesan *refund*, dan *financial closing* keberangkatan.
 4. **Sales / Admin Desk:**
@@ -215,9 +215,9 @@ quadrantChart
 5. **Tour Leader (Field Coordinator):**
    - **Tujuan:** Kemudahan memverifikasi peserta di titik kumpul (*pick-up points*), mengetahui preferensi khusus, dan melaporkan insiden darurat secara cepat.
    - **Kewenangan Utama:** Memvalidasi manifest kehadiran dan mencatat pengecualian fasilitas di lapangan.
-6. **Customer / Lead Booker:**
+6. **Customer:**
    - **Tujuan:** Mendapatkan kepastian liburan yang aman, harga yang transparan tanpa biaya tersembunyi, dan kepastian penyelesaian jika trip terkendala.
-7. **Vendor Mitra (Transport, Hotel, Resto, Tiket):**
+7. **Vendor (Transport, Hotel, Resto, Tiket):**
    - **Tujuan:** Kepastian jadwal pemesanan, akurasi jumlah peserta (*rooming/pax list*), dan kelancaran pembayaran.
 
 ---

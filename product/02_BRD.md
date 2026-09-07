@@ -70,7 +70,7 @@ classDiagram
         +Decimal discountValue
         +String perkDescription
     }
-    class Traveler {
+    class Customer {
         +String fullName
         +String identityNumber
         +String contact
@@ -89,7 +89,7 @@ classDiagram
     TourPackage_Blueprint "1" --> "*" TourDeparture_Instance : generates recurring
     TourPackage_Blueprint "1" --> "*" TourService_BOM : defines standard inclusions
     TourDeparture_Instance "1" --> "*" Booking : contains
-    Booking "1" --> "*" Traveler : registers
+    Booking "1" --> "*" Customer : registers
     Booking "*" --> "0..1" PromoOrPerk : applies overlay
     TourDeparture_Instance "1" --> "*" TourService_BOM : inherits snapshot
     TourService_BOM "*" --> "1" Vendor : fulfilled by
@@ -97,12 +97,12 @@ classDiagram
 
 ### 2.1 Entitas Domain Utama
 1. **Tour Package (Master Blueprint):** Cetak biru paket wisata yang mendefinisikan durasi hari, *itinerary*, destinasi, dan daftar fasilitas baku (*Bill of Materials / BOM*) beserta *baseline price*. Bersifat *reusable* dan stabil.
-2. **Tour Departure (Decoupled Instance):** Eksekusi kalender spesifik dari suatu *Tour Package* pada tanggal tertentu. Memiliki siklus status mandiri (*Tentative* -> *Published_Fixed*), kuota kursi, alokasi *Tour Leader*, reservasi vendor, dan harga dasar yang terkunci mutlak (*immutable*) saat dirilis.
+2. **Departure (Decoupled Instance):** Eksekusi kalender spesifik dari suatu *Tour Package* pada tanggal tertentu. Memiliki siklus status mandiri (*Tentative* -> *Published_Fixed*), kuota kursi, alokasi *Tour Leader*, reservasi vendor, dan harga dasar yang terkunci mutlak (*immutable*) saat dirilis.
 3. **Booking & Price Snapshot:** Kontrak reservasi komersial pelanggan yang mengunci harga total transaksi pada saat pembayaran DP terkonfirmasi (*Price Snapshot*), kebal terhadap fluktuasi harga di masa depan.
-4. **Promo & Perks Overlay:** Lapisan modifikasi transaksi (diskon moneter % / nominal flat atau fasilitas cuma-cuma seperti *free meals/merchandise*) yang diterapkan di atas transaksi tanpa mengubah *base price* master paket.
-5. **Traveler / Participant:** Individu peserta tour yang tercatat dalam manifest keberangkatan beserta hak fasilitas standar maupun fasilitas promo khusus (*Perk Badges*).
+4. **Promotion Overlay:** Lapisan modifikasi transaksi (diskon moneter % / nominal flat atau fasilitas cuma-cuma seperti *free meals/merchandise*) yang diterapkan di atas transaksi tanpa mengubah *base price* master paket.
+5. **Customer:** Individu peserta tour yang tercatat dalam manifest keberangkatan beserta hak fasilitas standar maupun fasilitas promo khusus (*Perk Badges*).
 6. **Tour Leader:** Koordinator lapangan yang memimpin perjalanan, memvalidasi kehadiran, memverifikasi hak fasilitas peserta, dan mencatat insiden.
-7. **Vendor & Travel Partner:** Pihak ketiga penyedia layanan operasional atau mitra operator luar untuk transfer peserta.
+7. **Vendor:** Pihak ketiga penyedia layanan operasional atau mitra operator luar untuk transfer peserta.
 
 ---
 
@@ -112,13 +112,13 @@ Sistem berinteraksi dengan 8 persona (7 aktor manusia dan 1 engine otomasi siste
 
 | No | Aktor | Tanggung Jawab Utama | Lingkup Wewenang Sistem |
 |---|---|---|---|
-| 1 | **Customer / Lead Booker** | Mengajukan inquiry, mengisi formulir registrasi peserta, mengklaim promo, membayar tagihan DP & pelunasan, mengajukan resolusi/pembatalan jika berhalangan. | Akses publik / portal tamu (Read info paket, Create booking draft, Upload bukti bayar). |
+| 1 | **Customer** | Mengajukan inquiry, mengisi formulir registrasi peserta, mengklaim promo, membayar tagihan DP & pelunasan, mengajukan resolusi/pembatalan jika berhalangan. | Akses publik / portal tamu (Read info paket, Create booking draft, Upload bukti bayar). |
 | 2 | **Admin / Sales Desk** | Melayani inquiry pelanggan, membuat draf pesanan, mengaplikasikan kode promo valid, menerbitkan invoice, dan melayani meja resolusi disrupsi. | Create/Update Booking, Apply Promo, Trigger Invoice, Request Disruption Action. |
-| 3 | **Finance & Settlement** | Memverifikasi pembayaran kas masuk (DP & pelunasan), memproses pencairan *refund*, membayar tagihan vendor (PO), dan menyusun laporan laba-rugi trip. | Approve Payment, Execute Payout/Refund, Record Expense Allocation, Financial Closing. |
+| 3 | **Finance** | Memverifikasi pembayaran kas masuk (DP & pelunasan), memproses pencairan *refund*, membayar tagihan vendor (PO), dan menyusun laporan laba-rugi trip. | Approve Payment, Execute Payout/Refund, Record Expense Allocation, Financial Closing. |
 | 4 | **Operations Manager** | Merancang master paket wisata (BOM), mengatur mesin rekurensi jadwal, menugaskan Tour Leader, dan menerbitkan PO/Voucher layanan vendor. | Create/Update Master Blueprint, Configure Recurrence, Assign TL, Issue Vendor PO. |
 | 5 | **Tour Leader (Field)** | Mengakses manifest digital lapangan secara langsung, memverifikasi kehadiran peserta, memvalidasi hak fasilitas/perks, dan mencatat insiden. | Read Field Manifest, Check-in Attendees, View Perk Badges, Log Field Incidents. |
 | 6 | **Business Owner / Executive** | Memantau kesehatan bisnis, memberikan persetujuan pembatalan trip kuota H-5, menyetujui subsidi *Free Waiver*, dan otorisasi kebijakan darurat. | Executive Dashboard, Approve D-5 Cancellation/Partner Transfer, Authorize Discretionary Override. |
-| 7 | **Vendor & Travel Partner** | Menerima PO dan voucher pemesanan layanan, menyediakan fasilitas trip, atau menerima pelimpahan peserta dari agensi. | External Service Fulfillment, Invoice Claim. |
+| 7 | **Vendor** | Menerima PO dan voucher pemesanan layanan, menyediakan fasilitas trip, atau menerima pelimpahan peserta dari agensi. | External Service Fulfillment, Invoice Claim. |
 | 8 | **System Automation Engine** | Mengeksekusi pembuatan jadwal berulang, penguncian harga rilis, evaluasi kuota H-5 tepat waktu, dan kalkulasi tagihan/snapshot otomatis. | Background Cron, Recurrence Generator, D-5 Quota Evaluator, Price Snapshotter. |
 
 ---
@@ -131,16 +131,16 @@ The following status values are normative. `CONFIRMED` applies only to a booking
 
 | Aggregate | Canonical statuses |
 |---|---|
-| Tour Departure | `TENTATIVE`, `PUBLISHED_FIXED`, `CONFIRMED_DEPARTURE`, `IN_OPERATION`, `COMPLETED`, `DISRUPTED`, `WAITING_OWNER_ACTION`, `CANCELLED` |
+| Departure | `TENTATIVE`, `PUBLISHED_FIXED`, `CONFIRMED_DEPARTURE`, `IN_OPERATION`, `COMPLETED`, `DISRUPTED`, `WAITING_OWNER_ACTION`, `CANCELLED` |
 | Booking | `DRAFT`, `PENDING_PAYMENT`, `EXPIRED`, `CONFIRMED`, `FULLY_PAID`, `RESCHEDULED`, `TRANSFERRED`, `CANCELLED` |
 | Payment / Refund | `UNPAID`, `PARTIALLY_PAID`, `PAID`, `REFUND_PENDING`, `REFUNDED` |
 
 ### 4.1 Penjadwalan & Penguncian Harga (*Price Immutability*)
 
 Untuk Private / Custom Tour, lifecycle komersialnya adalah `REQUESTED` -> `PLANNING` -> `QUOTED` -> `NEGOTIATING` -> `AGREED` -> `BOOKING_CONFIRMED` -> `COMPLETED`, dengan `CANCELLED` sebagai terminal exception. Quotation memiliki versi, masa berlaku, persetujuan customer, dan status supplier commitment sendiri. Recurrence, minimum quota default 20 pax, dan H-5 quota gate hanya berlaku untuk Open Tour kecuali kontrak Private Tour menyatakan lain.
-- **Rule 4.1.1 (Recurrence Schedule Generation):** Sistem dapat men-generate jadwal keberangkatan (*Tour Departure*) secara otomatis melalui *Flexible Recurrence Engine* (pola mingguan, bulanan, atau interval kustom) maupun pembuatan manual *on-demand*.
+- **Rule 4.1.1 (Recurrence Schedule Generation):** Sistem dapat men-generate jadwal keberangkatan (*Departure*) secara otomatis melalui *Flexible Recurrence Engine* (pola mingguan, bulanan, atau interval kustom) maupun pembuatan manual *on-demand*.
 - **Rule 4.1.2 (Tentative State Adjustments):** Jadwal yang baru terbentuk berstatus `TENTATIVE`. Staf Operasional/Admin berhak menggeser tanggal, mengubah kuota, atau menyesuaikan baseline harga sebelum dirilis.
-- **Rule 4.1.3 (Price Immutability on Published):** Begitu status keberangkatan diubah menjadi `PUBLISHED_FIXED`, jadwal dan harga dasar (*base price*) terkunci mutlak (*immutable*). Perubahan pada master paket tidak boleh mengubah harga *Tour Departure* yang telah dirilis.
+- **Rule 4.1.3 (Price Immutability on Published):** Begitu status keberangkatan diubah menjadi `PUBLISHED_FIXED`, jadwal dan harga dasar (*base price*) terkunci mutlak (*immutable*). Perubahan pada master paket tidak boleh mengubah harga *Departure* yang telah dirilis.
 
 ### 4.2 Pemesanan, DP, & Price Snapshotting
 - **Rule 4.2.1 (Down Payment Requirement):** Reservasi baru berstatus `PENDING_PAYMENT`. Kursi peserta belum dihitung ke dalam kuota resmi keberangkatan sebelum DP diverifikasi oleh Finance.
@@ -150,7 +150,7 @@ Untuk Private / Custom Tour, lifecycle komersialnya adalah `REQUESTED` -> `PLANN
   - Sistem mengunci total nominal transaksi (*Price Snapshot*) ke dalam dokumen kontrak booking. Fluktuasi harga katalog di kemudian hari tidak berpengaruh pada tagihan booking tersebut.
   - Data seluruh peserta resmi masuk ke dalam **Manifest Keberangkatan** dan dihitung ke dalam kuota minimum aktif.
 
-### 4.3 Promo & Complimentary Perks Engine
+### 4.3 Promotion Engine
 - **Rule 4.3.1 (Monetary Discount):** Diskon moneter (persentase % atau potongan nominal flat) diterapkan sebagai pengurang langsung pada total tagihan invoice pelanggan.
 - **Rule 4.3.2 (Complimentary Facility Perks):** Fasilitas tambahan gratis (misal: *Free Extra Meals +1x*, *Merchandise Upgrade*, *Free Document Service*) tidak memotong nominal invoice pelanggan, melainkan:
   - Menambahkan penanda (*Perk Badge*) pada profil peserta di Manifest Keberangkatan.
@@ -256,7 +256,7 @@ Alur proses bisnis operasional dirangkai secara berurutan dalam diagram swimlane
 ```mermaid
 flowchart TD
     subgraph Operational["Operational & Tour Planning"]
-        O1[Buat Master Package Blueprint & BOM] --> O2[Set Recurrence Schedule: Mingguan/Bulanan]
+        O1[Buat Master Tour Package & BOM] --> O2[Set Recurrence Schedule: Mingguan/Bulanan]
         O2 --> O3[Penugasan Tour Leader]
         O3 --> O4[Terbitkan PO & Service Voucher Vendor]
         O4 --> O5[Rilis Final Manifest ke TL]
@@ -274,19 +274,19 @@ flowchart TD
 
     subgraph Sales["Admin & Sales Desk"]
         A1[Pre-Publish Adjustment: Cek Tanggal/Kuota] --> A2[Publish Jadwal ke Publik]
-        A2 --> A3[Buat Booking & Terapkan Promo/Perks]
+        A2 --> A3[Buat Booking & Terapkan Promotion]
         A3 --> A4[Terbitkan Invoice DP & Pelunasan]
         A4 --> A5{Penanganan Disrupsi H-5}
     end
 
-    subgraph Customer["Customer / Traveler"]
+    subgraph Customer["Customer"]
         C1[Inquiry & Pilih Paket] --> C2[Isi Form Registrasi & Kode Promo]
         C2 --> C3[Bayar DP & Upload Struk]
         C3 --> C4[Bayar Pelunasan Sebelum H-5]
         C4 --> C5[Pelaksanaan Trip & Nikmati Fasilitas]
     end
 
-    subgraph Finance["Finance & Settlement"]
+    subgraph Finance["Finance"]
         F1[Verifikasi Pembayaran DP & Pelunasan]
         F2[Pembayaran PO Tagihan Vendor]
         F3[Eksekusi Payout Refund / Subsidi]
@@ -312,8 +312,8 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 ├── 01. Dashboard & Executive Analytics Module
 ├── 02. Tour Catalog & Blueprint Master Module (BOM, Baseline Pricing)
 ├── 03. Tour Operations & Departure Module (Recurrence, D-5 Engine, Live Manifest)
-├── 04. Booking & Sales Pipeline Module (Price Snapshotting, Traveler Vault, Emergency Add-Traveler)
-├── 05. Promo & Perks Overlay Engine (Monetary Discount, Complimentary Badges)
+├── 04. Booking & Sales Pipeline Module (Price Snapshotting, Customer Vault, Emergency Add-Customer)
+├── 05. Promotion Overlay Engine (Monetary Discount, Complimentary Badges)
 ├── 06. Finance, Billing & Settlement Module (Invoicing, Instant Pay, Refund Queue, Ledger)
 ├── 07. Vendor & Procurement Module (Master Directory, Add-on PO & Voucher Generator)
 ├── 08. Tour Leader Field Module (Live Manifest, Check-in, Late-Joiner Validator, Incident Log)
@@ -348,7 +348,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 
 ## 8. Batasan Sistem & Asumsi Kunci (*Assumptions & Constraints*)
 
-1. **Tour Departure sebagai Pusat Data (*Single Source of Truth*):** Seluruh dokumen keuangan, pesanan pelanggan, manifes peserta, dan penugasan vendor bermuara pada entitas spesifik *Tour Departure*.
+1. **Departure sebagai Pusat Data (*Single Source of Truth*):** Seluruh dokumen keuangan, pesanan pelanggan, manifes peserta, dan penugasan vendor bermuara pada entitas spesifik *Departure*.
 2. **Keterikatan Harga Transaksi:** Sekali booking berstatus `CONFIRMED`, sistem dilarang keras mengubah nilai tagihan tanpa tindakan amandemen/pembatalan resmi.
 3. **Pemberangkatan Tunggal vs Multi-Armada:** Kapasitas, `minQuota`, dan jumlah armada dikonfigurasi per departure berdasarkan kendaraan legal dan hasil BEP. Nilai 20 pax hanya menjadi default Open Tour sampai kebijakan bisnis menggantinya; departure dengan peserta melebihi kapasitas armada memerlukan rencana Multi-Bus Batching dan persetujuan Operations.
 
