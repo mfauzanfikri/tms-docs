@@ -125,13 +125,25 @@ Sistem berinteraksi dengan 8 persona (7 aktor manusia dan 1 engine otomasi siste
 
 ## 4. Master Aturan Bisnis (Core Business Rules)
 
+### 4.0 Canonical Status Vocabulary
+
+The following status values are normative. `CONFIRMED` applies only to a booking; `CONFIRMED_DEPARTURE` applies only to a departure.
+
+| Aggregate | Canonical statuses |
+|---|---|
+| Tour Departure | `TENTATIVE`, `PUBLISHED_FIXED`, `CONFIRMED_DEPARTURE`, `IN_OPERATION`, `COMPLETED`, `DISRUPTED`, `WAITING_OWNER_ACTION`, `CANCELLED` |
+| Booking | `DRAFT`, `PENDING_PAYMENT`, `EXPIRED`, `CONFIRMED`, `FULLY_PAID`, `RESCHEDULED`, `TRANSFERRED`, `CANCELLED` |
+| Payment / Refund | `UNPAID`, `PARTIALLY_PAID`, `PAID`, `REFUND_PENDING`, `REFUNDED` |
+
 ### 4.1 Penjadwalan & Penguncian Harga (*Price Immutability*)
+
+Untuk Private / Custom Tour, lifecycle komersialnya adalah `REQUESTED` -> `PLANNING` -> `QUOTED` -> `NEGOTIATING` -> `AGREED` -> `BOOKING_CONFIRMED` -> `COMPLETED`, dengan `CANCELLED` sebagai terminal exception. Quotation memiliki versi, masa berlaku, persetujuan customer, dan status supplier commitment sendiri. Recurrence, minimum quota default 20 pax, dan H-5 quota gate hanya berlaku untuk Open Tour kecuali kontrak Private Tour menyatakan lain.
 - **Rule 4.1.1 (Recurrence Schedule Generation):** Sistem dapat men-generate jadwal keberangkatan (*Tour Departure*) secara otomatis melalui *Flexible Recurrence Engine* (pola mingguan, bulanan, atau interval kustom) maupun pembuatan manual *on-demand*.
 - **Rule 4.1.2 (Tentative State Adjustments):** Jadwal yang baru terbentuk berstatus `TENTATIVE`. Staf Operasional/Admin berhak menggeser tanggal, mengubah kuota, atau menyesuaikan baseline harga sebelum dirilis.
 - **Rule 4.1.3 (Price Immutability on Published):** Begitu status keberangkatan diubah menjadi `PUBLISHED_FIXED`, jadwal dan harga dasar (*base price*) terkunci mutlak (*immutable*). Perubahan pada master paket tidak boleh mengubah harga *Tour Departure* yang telah dirilis.
 
 ### 4.2 Pemesanan, DP, & Price Snapshotting
-- **Rule 4.2.1 (Down Payment Requirement):** Reservasi baru berstatus `DRAFT_PENDING_DP`. Kursi peserta belum dihitung ke dalam kuota resmi keberangkatan sebelum DP diverifikasi oleh Finance.
+- **Rule 4.2.1 (Down Payment Requirement):** Reservasi baru berstatus `PENDING_PAYMENT`. Kursi peserta belum dihitung ke dalam kuota resmi keberangkatan sebelum DP diverifikasi oleh Finance.
 - **Rule 4.2.2 (Temporary Quota Hold):** Sistem mengunci alokasi kursi sementara selama durasi batas waktu pembayaran (*invoice expiry time*, default: 2 jam). Jika melewati batas waktu tanpa bukti bayar, draf booking kedaluwarsa otomatis.
 - **Rule 4.2.3 (Price Snapshotting on Confirmed):** Saat bukti bayar DP diverifikasi oleh Finance:
   - Status booking berubah menjadi `CONFIRMED`.
@@ -146,10 +158,10 @@ Sistem berinteraksi dengan 8 persona (7 aktor manusia dan 1 engine otomasi siste
 - **Rule 4.3.3 (Promo Guardrails):** Kode promo tunduk pada validasi ketat sistem: batas kuota penggunaan, masa berlaku tanggal booking, batasan tipe paket, dan larangan penggabungan promo bertingkat (*non-stackable rule*) kecuali diizinkan secara eksplisit.
 
 ### 4.4 Evaluasi Kuota Minimum H-5 (D-5 Milestone Gate)
-- **Rule 4.4.1 (D-5 Automatic Trigger):** Sistem wajib memicu evaluasi kuota secara otomatis tepat pada **H-5 kalender sebelum tanggal keberangkatan (pukul 00:00 WIB)**.
-- **Rule 4.4.2 (Quota Threshold):** Sistem menghitung total peserta aktif terverifikasi ($N$).
+- **Rule 4.4.1 (D-5 Automatic Trigger):** Sistem wajib memicu evaluasi kuota tepat pada **H-5 kalender sebelum tanggal keberangkatan (pukul 00:00 WIB)**. Evaluasi harus idempotent dan aman untuk diulang tanpa menggandakan notifikasi atau transaksi.
+- **Rule 4.4.2 (Quota Threshold):** Sistem menghitung hanya traveler aktif dari booking dengan DP terverifikasi Finance. Inquiry, booking belum bayar, expired booking, temporary hold, dan bukti bayar yang belum diverifikasi tidak dihitung.
   - **Kondisi Terpenuhi ($N \ge 20$ Pax):** Status keberangkatan berubah menjadi `CONFIRMED_DEPARTURE`. Sistem mengarahkan tim Operasional untuk menerbitkan PO final ke vendor dan menugaskan Tour Leader.
-  - **Kondisi Tidak Terpenuhi ($N < 20$ Pax):** Status keberangkatan berubah menjadi `WAITING_OWNER_ACTION`. Sistem membekukan penjualan baru dan mengarahkan keberangkatan ke **Meja Resolusi Disrupsi**.
+  - **Kondisi Tidak Terpenuhi ($N < 20$ Pax):** Status keberangkatan berubah menjadi `WAITING_OWNER_ACTION`. Sistem membekukan penjualan baru dan konfirmasi pembayaran, lalu mengarahkan keberangkatan ke **Meja Resolusi Disrupsi**. Refund atau transfer tidak berjalan sebelum keputusan Owner.
 
 ### 4.5 Matriks Resolusi Disrupsi & Akuntansi Subsidi
 Jika keberangkatan tidak memenuhi kuota minimum atau dibatalkan oleh agensi pada H-5, Owner/Executive memilih satu dari 4 jalur resolusi resmi:
@@ -161,7 +173,7 @@ flowchart TD
     PathSelect -->|Jalur 1| Reschedule["1. Reschedule Tanggal Baru<br><i>(Pindah ke Batch Lain)</i>"]
     PathSelect -->|Jalur 2| Transfer["2. Transfer ke Travel Partner<br><i>(Aliansi Operator Mitra)</i>"]
     PathSelect -->|Jalur 3| FullRefund["3. 100% Full Refund<br><i>(Pengembalian Dana Penuh)</i>"]
-    PathSelect -->|Jalur 4| ForceMajeure["4. Force Majeure Override<br><i>(Trip Tetap Berangkat / Subsidi)</i>"]
+    PathSelect -->|Jalur 4| ForceMajeure["4. Force Majeure Resolution<br><i>(Cancel, Reschedule, Switch, atau Approved Continuation)</i>"]
 
     Reschedule --> Trans1["Pindahkan Saldo Booking<br><i>(Sesuaikan Selisih Harga jika Ada)</i>"]
     Transfer --> SubSelect{"Model Biaya Transfer Partner?"}
@@ -183,7 +195,31 @@ flowchart TD
    - Seluruh dana pembayaran pelanggan (DP + pelunasan) dikembalikan 100% tanpa potongan administrasi apapun.
    - Payout refund dicatat dalam antrean pencairan dana Finance.
 4. **Jalur 4 — Force Majeure & Executive Override:**
-   - Owner dapat memutuskan trip tetap berangkat meskipun rugi (*negative margin*) menggunakan penyesuaian armada (misal: beralih dari bus besar ke minibus/shuttle) dengan otorisasi tertulis pada log audit sistem.
+   - Force majeure memerlukan keputusan Owner atau delegated disruption approver. Kelanjutan trip dengan margin negatif bukan default dan hanya boleh dilakukan bila ada rencana operasional, sumber dana, dan otorisasi tertulis pada audit log.
+
+### 4.5.1 Resolution Controls
+
+| Scenario | Allowed resolution | Required approval |
+|---|---|---|
+| Open Tour quota failure | Full refund, reschedule, or partner transfer when commercially supported | Owner |
+| Force majeure / operational disruption | Cancel/refund, reschedule, switch plan/destination, or switch package | Owner or delegated disruption approver |
+
+Every resolution must record customer consent where applicable, payment-balance treatment, vendor/PO treatment, resulting terminal states, approver, evidence, and timestamp. Quota failure does not automatically trigger a refund or transfer. Force majeure does not automatically imply that the trip continues at a negative margin.
+
+### 4.5.2 Financial Calculation Rules
+
+All amounts use the departure currency, two decimal places, and half-up rounding at the final invoice or settlement boundary. Monetary discounts are applied once, in the order recorded on the invoice, and are non-stackable unless explicitly permitted.
+
+```text
+eligible_discount = percentage_discount + flat_discount
+net_invoice = gross_invoice - eligible_discount
+remaining_balance = net_invoice - verified_paid_amount
+transfer_delta = target_price - source_price
+refund_amount = refundable_paid_amount - permitted_operational_deduction
+subsidy_amount = max(0, target_price - customer_charge_after_waiver)
+```
+
+Each calculated amount stores its source-price snapshot and calculation-rule version. Revenue, discounts, taxes, payment fees, commissions, vendor costs, refunds, subsidies, and marketing-perk expenses remain separately identifiable.
 
 ### 4.6 Kebijakan Pembatalan Mandiri oleh Peserta (Individual Cancellation)
 Jika peserta membatalkan keikutsertaan secara sepihak sebelum keberangkatan:
@@ -193,6 +229,10 @@ Jika peserta membatalkan keikutsertaan secara sepihak sebelum keberangkatan:
 - **Kebijakan Otorisasi Khusus (*Discretionary Override*):** Admin/Owner berwenang memasukkan nominal refund khusus atas pertimbangan kemanusiaan (*force majeure individu*) dengan mencantumkan alasan wajib pada log audit.
 
 ### 4.7 Aturan Penambahan Peserta di Tengah Perjalanan (Mid-Trip Addition Policy)
+
+Untuk MVP, late joiner ditolak secara default. Exception wajib disetujui Operations dan Finance; traveler hanya boleh masuk manifest setelah pembayaran, waiver, asuransi, dan kapasitas tervalidasi. Automated late-joiner pricing, instant insurance, live vendor synchronization, dan automatic PO revision adalah kapabilitas Phase 3.
+
+
 Jika terdapat permintaan penambahan peserta baru saat tour sedang berlangsung (*in-progress / on-the-go*):
 - **Rule 4.7.1 (Kriteria Kelayakan Mutlak / Gatekeeper):** Penambahan peserta susulan hanya dapat disetujui jika seluruh 4 syarat berikut bernilai `TRUE`:
   1. *Armada Transportasi:* Kursi legal kendaraan masih tersedia (dilarang menggunakan kursi lipat darurat atau melebihi kapasitas STNK/izin operasional).
@@ -228,7 +268,7 @@ flowchart TD
         S2 --> S3[Price Snapshotting on DP Verified]
         S3 --> S4[Cron Trigger Evaluasi H-5 00:00 WIB]
         S4 --> S5{Evaluasi Kuota >= 20?}
-        S5 -->|Ya| S6[Set Departure: CONFIRMED]
+        S5 -->|Ya| S6[Set Departure: CONFIRMED_DEPARTURE]
         S5 -->|Tidak| S7[Set Departure: WAITING OWNER ACTION]
     end
 
@@ -255,7 +295,7 @@ flowchart TD
 
     O1 --> S1 --> A1 --> A2 --> C1 --> C2 --> A3 --> A4 --> C3 --> F1 --> S3
     S3 --> C4 --> F1 --> S4
-    S6 --> O3
+    S6[Set Departure: CONFIRMED_DEPARTURE] --> O3
     S7 --> A5
     A5 --> F3
     O6 --> F2 --> F4

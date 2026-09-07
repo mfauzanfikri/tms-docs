@@ -178,7 +178,7 @@ Setiap KPI wajib memiliki baseline, formula, sumber data, frekuensi, owner, targ
 - **MVP:** package/departure, booking/traveler, quota hold, invoice, payment verification, manifest, vendor PO, H-5 decision, basic refund, RBAC, dan audit trail.
 - **Phase 2:** vendor scoring, partner transfer, rooming automation, advanced ledger, dan customer self-service disruption.
 - **Phase 3:** late-joiner automation, instant insurance, payment/bank integrations, forecasting, dan pricing recommendations.
-- Late joiner default-nya tidak tersedia pada MVP; exception harus melalui Operations dan Finance.
+- Untuk MVP, late joiner ditolak secara default. Exception wajib disetujui Operations dan Finance; traveler hanya boleh masuk manifest setelah pembayaran, waiver, asuransi, dan kapasitas tervalidasi. Automated late-joiner pricing, instant insurance, live vendor synchronization, dan automatic PO revision adalah kapabilitas Phase 3.
 
 ---
 

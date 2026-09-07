@@ -114,6 +114,13 @@ Spesifikasi implementasi teknis untuk developer:
 
 ## 5. Standar Universal Struktur & Metadata Dokumen
 
+`product/` adalah sumber aturan normatif yang disetujui. `contexts/` adalah material discovery/reference dan tidak boleh mengoverride aturan pada `product/`.
+
+### Documentation Validation
+
+Run `python scripts/validate_docs.py` from the repository root before opening a documentation change.
+
+
 Seluruh dokumen dalam repositori ini mengikuti tata kelola standar berikut:
 
 1. **Tabel Metadata Teratas (Wajib pada Setiap File)**: Setiap dokumen `.md` wajib mencantumkan tabel metadata 2-kolom tepat di bawah judul utama (`# Title`).

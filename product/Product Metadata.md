@@ -14,8 +14,8 @@
 | Document Name | Path | Current Doc Version | Description / Status |
 | :--- | :--- | :--- | :--- |
 | [01 Business Analysis](01_BUSINESS_ANALYSIS.md) | `product/01_BUSINESS_ANALYSIS.md` | 1.2 | In Review — Analisis masalah, operating model, struktur BEP, dan risiko mid-trip addition |
-| [02 BRD](02_BRD.md) | `product/02_BRD.md` | 1.2 | In Review — Konsep domain, aktor/RBAC, master business rules (incl. Mid-Trip Policy), dan alur BPMN |
-| [03 Feature Catalog & Scope](03_FEATURE_CATALOG_AND_SCOPE.md) | `product/03_FEATURE_CATALOG_AND_SCOPE.md` | 1.0 | Planned — Master katalog kapabilitas & pemetaan fase MVP |
+| [02 BRD](02_BRD.md) | `product/02_BRD.md` | 1.3 | In Review — Konsep domain, aktor/RBAC, canonical status vocabulary, H-5 gate, financial rules, dan alur BPMN |
+| 03 Feature Catalog & Scope | `product/03_FEATURE_CATALOG_AND_SCOPE.md` | 1.0 | Planned — Master katalog kapabilitas & pemetaan fase MVP; file belum tersedia |
 
 ### Milestone & PRD Documents (MVP-1)
 | Feature ID | Document Name | Path | Current Doc Version | Description / Status |

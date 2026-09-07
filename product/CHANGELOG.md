@@ -10,6 +10,18 @@ Format pencatatan mengikuti panduan:
 
 ## [2026-09-01]
 
+### [BRD-01] 02_BRD.md - Version 1.3
+- **Status:** In Review
+- **Changes:** Menyatukan vocabulary status, memperjelas gate H-5, memisahkan quota failure dan force majeure, serta memformalkan aturan finansial dan scope late-joiner MVP.
+
+### [BA-01] 01_BUSINESS_ANALYSIS.md - Version 1.3
+- **Status:** In Review
+- **Changes:** Memperjelas bahwa late joiner ditolak secara default pada MVP dan otomatisasi late-joiner berada di Phase 3.
+
+---
+
+## [2026-09-01]
+
 ### [BA-01] 01_BUSINESS_ANALYSIS.md - Version 1.2
 - **Status:** In Review
 - **Changes:** Menambahkan model BEP dinamis, pemisahan Open/Private Tour, milestone operasional, KPI governance, dan batasan MVP.
