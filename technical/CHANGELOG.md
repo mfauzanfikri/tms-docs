@@ -8,6 +8,16 @@ Format pencatatan mengikuti panduan:
 
 ---
 
+## [2026-09-08]
+
+### [DOMAIN-01] 00_DOMAIN_MODEL.md - Version 1.0
+- **Status:** Approved
+- **Author:** Product, Operations & Engineering Team
+- **Changes:**
+  - Persetujuan formal Conceptual & Functional Domain Model sebagai acuan arsitektur rekayasa teknis sistem TMS.
+
+---
+
 ## [2026-08-28]
 
 ### [INIT] Technical Documentation Hub Initialized

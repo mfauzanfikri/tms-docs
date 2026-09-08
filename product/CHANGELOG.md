@@ -8,6 +8,20 @@ Format pencatatan mengikuti panduan:
 
 ---
 
+## [2026-09-08]
+
+### [DOCS-APPROVAL] Product Documentation Baseline Approved
+- **Status:** Approved
+- **Documents:**
+  - `01_BUSINESS_ANALYSIS.md` (Version 1.2) - Status: Approved
+  - `02_BRD.md` (Version 1.3) - Status: Approved
+  - `03_FEATURE_CATALOG_AND_SCOPE.md` (Version 1.0) - Status: Approved
+- **Changes:**
+  - Persetujuan formal dokumen fondasi bisnis, BRD, dan Feature Catalog sebagai acuan normatif rilis MVP-1.
+  - Penegasan evaluasi ambang batas kuota minimum dinamis (`minQuota`, default 20 pax) pada `OPS-GATE-04`.
+
+---
+
 ## [2026-09-01]
 
 ### [BRD-01] 02_BRD.md - Version 1.3

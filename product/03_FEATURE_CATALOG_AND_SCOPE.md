@@ -10,7 +10,7 @@
 | **Document Type** | Feature Catalog & Scope |
 | **Phase / Milestone** | Entire Product / Foundation |
 | **Document Version** | 1.0 |
-| **Document Status** | In Review |
+| **Document Status** | Approved |
 | **Implementation Status** | Planned |
 | **Last Updated** | 2026-09-08 |
 | **Author / Owner** | Product & Operations Team |
@@ -209,7 +209,7 @@ flowchart LR
 | `OPS-REC-01` | Flexible Recurrence & Multi-Date Generator | In-Scope | - | - | MVP: Mendukung jadwal berulang berpola maupun pemilihan tanggal bebas/acak (*on-demand multi-date*). |
 | `OPS-ADJ-02` | Pre-Publish Departure Adjuster | In-Scope | - | - | MVP: Edit tanggal/kuota sebelum publish. |
 | `OPS-LOCK-03` | Departure Publishing & Price Locking | In-Scope | - | - | MVP: Lock base price mutlak saat `PUBLISHED_FIXED`. |
-| `OPS-GATE-04` | D-5 Automated Quota Gatekeeper | In-Scope | - | - | MVP: Cron H-5 00:00 WIB evaluasi kuota 20 pax. |
+| `OPS-GATE-04`  | D-5 Automated Quota Gatekeeper | In-Scope | - | - | MVP: Cron H-5 00:00 WIB evaluasi kuota minimum (`minQuota`, default 20 pax). |
 | `OPS-DISR-05` | Disruption & Crisis Resolution Console | In-Scope | - | - | MVP: Eksekusi 4 jalur disrupsi via internal desk. |
 | `OPS-DISP-06` | Tour Leader & Resource Dispatcher | In-Scope | - | - | MVP: Penugasan TL bebas manual oleh Admin/Owner tanpa restriksi algoritma/beban kerja. |
 | `BOOK-PIPE-01` | Order & Booking Management | In-Scope | - | - | MVP: Pembuatan booking internal & formulir publik. |

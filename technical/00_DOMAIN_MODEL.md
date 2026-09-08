@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Conceptual and Functional Domain Model |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 0.1 |
-| **Document Status** | Draft |
+| **Document Version** | 1.0 |
+| **Document Status** | Approved |
 | **Implementation Status** | Planned |
-| **Last Updated** | YYYY-MM-DD |
+| **Last Updated** | 2026-09-08 |
 | **Author / Owner** | Product, Operations & Engineering Team |
 
 ---
