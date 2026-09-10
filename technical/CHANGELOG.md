@@ -6,6 +6,15 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-09-10]
+
+### [DOMAIN-01] 00_DOMAIN_MODEL.md - Version 1.1
+- **Status:** Approved
+- **Author:** Product, Operations & Engineering Team
+- **Changes:**
+  - Menyelaraskan relasi `Customer` dan `Traveler` (peserta/pax) pada Bagian 2 (Modeling Decisions) dan Bagian 3 (Domain Glossary).
+  - Menyelesaikan keputusan terbuka (*Open Decision #1*) pada Bagian 11 seiring implementasi `BOOK-VAULT-04` di mana satu booking komersial dapat meregistrasikan banyak traveler ke manifest keberangkatan.
+
 ---
 
 ## [2026-09-08]

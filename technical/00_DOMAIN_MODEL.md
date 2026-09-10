@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Conceptual and Functional Domain Model |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.0 |
+| **Document Version** | 1.1 |
 | **Document Status** | Approved |
 | **Implementation Status** | Planned |
-| **Last Updated** | 2026-09-08 |
+| **Last Updated** | 2026-09-10 |
 | **Author / Owner** | Product, Operations & Engineering Team |
 
 ---
@@ -36,7 +36,7 @@ This is a conceptual model. It does not yet define database tables, API payloads
 
 The following decisions are part of this draft:
 
-1. A customer is also a traveler in the current business model. The system does not introduce a separate customer-versus-traveler domain distinction at this stage.
+1. A Customer represents the commercial booking party holding payment obligations. Individual tour participants registered under that booking are recorded as Travelers (Pax) within the manifest (`BOOK-VAULT-04`).
 2. Disruption and exception handling belongs inside the Departure Management domain because disruptions change the operational outcome of a specific departure.
 3. Finance are treated as one domain boundary for trip-level financial accountability.
 4. A Tour Package is a reusable definition, while a Departure is a date-specific operational execution.
@@ -49,7 +49,8 @@ The following decisions are part of this draft:
 | :--- | :--- |
 | **Tour Package** | Reusable master definition of a tour, including itinerary, inclusions, default services, and baseline commercial values. |
 | **Departure** | Date-specific operational execution of a Tour Package with its own schedule, quota, price, fulfillment, and lifecycle. |
-| **Customer** | Person who makes or is included in a booking and participates in the tour. |
+| **Customer** | Person or party who makes the commercial booking reservation and holds payment obligations. |
+| **Traveler** | Individual tour participant (pax) registered under a Customer booking and assigned to a departure manifest. |
 | **Booking** | Commercial reservation made by a Customer against a Departure. |
 | **Promotion** | Commercial or service benefit applied to an eligible booking or customer. |
 | **Payment** | Money received from a Customer and associated with a booking obligation. |
@@ -296,7 +297,7 @@ These are business events for analysis. They are not yet defined as message sche
 
 ## 11. Open Decisions for Next Revision
 
-1. Can one booking contain multiple customers, or is one booking limited to one customer?
+1. **(Resolved)** Can one booking contain multiple customers/travelers? A Booking is owned by one commercial Customer and registers one or more individual Travelers (Participants/Pax) via `BOOK-VAULT-04`.
 2. Does the system allow a customer to hold multiple bookings for the same departure?
 3. Which departure values become immutable at publication, and which remain editable by authorized users?
 4. Is the manifest generated automatically from confirmed bookings, or explicitly published by Operations?

@@ -6,6 +6,17 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-09-10]
+
+### [SCOPE-01] 03_FEATURE_CATALOG_AND_SCOPE.md - Version 1.1
+- **Status:** Approved
+- **Changes:**
+  - Menambahkan Bagian 1.2 (*Keselarasan Domain Model & Bounded Contexts*) yang memetakan secara kanonikal 10 modul TMS ke bounded contexts dan entitas inti pada `00_DOMAIN_MODEL.md`.
+  - Menyelaraskan terminologi entitas: memperjelas perbedaan `Customer` (pemesan komersial) dan `Traveler` (peserta per pax) pada `BOOK-PIPE-01` & `BOOK-VAULT-04`.
+  - Mengaitkan dokumen PO/voucher (`VEND-PO-02`) dengan entitas `Procurement Obligation`.
+  - Menegaskan integrasi domain `Billing` dan `Finance` pada modul `FIN`, serta representasi domain `Field Operations` & `Manifest` pada modul `TL`.
+  - Menambahkan tautan ketertelusuran kanonikal `00_DOMAIN_MODEL.md` pada Bagian 5 (*Traceability*).
+
 ---
 
 ## [2026-09-08]

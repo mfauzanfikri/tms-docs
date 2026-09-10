@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Feature Catalog & Scope |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.0 |
+| **Document Version** | 1.1 |
 | **Document Status** | Approved |
 | **Implementation Status** | Planned |
-| **Last Updated** | 2026-09-08 |
+| **Last Updated** | 2026-09-10 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -28,6 +28,22 @@ Sistem bertindak sebagai **Tour Orchestrator** yang mengelola orkestrasi paket w
 2. **Price Immutability**: Penguncian harga mutlak saat jadwal berstatus `PUBLISHED_FIXED` dan kontrak pesanan berstatus `CONFIRMED` (*Price Snapshotting*).
 3. **Automated Risk Control**: Penegakan evaluasi kuota otomatis pada H-5 (00:00 WIB) untuk mencegah kerugian operasional akibat sewa armada bus.
 4. **Disruption Governance**: Standardisasi 4 jalur resolusi disrupsi (*Reschedule, Partner Transfer, 100% Full Refund, Force Majeure Override*) dengan pemisahan beban akuntansi yang transparan.
+
+### 1.2 Keselarasan Domain Model & Bounded Contexts
+Katalog fitur ini diturunkan langsung dari model konseptual kanonikal pada [00 Domain Model](../technical/00_DOMAIN_MODEL.md). Setiap modul fungsional memetakan batasan konteks (*bounded context*) dan entitas domain inti sebagai berikut:
+
+| Modul TMS | Bounded Context Acuan ([00 Domain Model](../technical/00_DOMAIN_MODEL.md)) | Entitas Domain Inti Terkait | Tanggung Jawab Utama |
+| :--- | :--- | :--- | :--- |
+| **DASH** (01. Dashboard & Analytics) | Supporting: Reporting | Metrics, Aggregates, Alerts | Visibilitas kesehatan operasional, milestone, dan risiko kuota. |
+| **CAT** (02. Tour Catalog & Blueprint) | Tour Catalog (§6.2) | `Tour Package` / `Blueprint`, BOM | Definisi paket reusable, rute, fasilitas, dan kalkulasi BEP. |
+| **OPS** (03. Operations & Departure) | Departure Management (§6.3) & Disruption | `Departure`, `Disruption Case` | Eksekusi tanggal, kuota, gate H-5, dispatch TL, dan resolusi disrupsi. |
+| **BOOK** (04. Booking & Sales) | Booking and Sales (§6.4) | `Booking`, `Customer`, `Traveler` | Siklus reservasi, price snapshotting, dan vault data traveler. |
+| **PROMO** (05. Promo & Perks) | Promotion and Perks (§6.5) | `Promotion` (Discount & Perk Badge) | Overlay diskon moneter dan pencatatan complimentary perks. |
+| **FIN** (06. Finance & Settlement) | Billing (§6.6) & Finance (§6.9) | `Payment`, `General Ledger`, Ledger Entry | Invoicing, verifikasi bayar, refund payout, dan trip closing ledger. |
+| **VEND** (07. Vendor & Procurement) | Procurement (§6.7) | `Vendor`, `Procurement Obligation` (PO) | Direktori vendor, penerbitan PO/voucher, dan tracking settlement. |
+| **TL** (08. Field Operations) | Field Operations (§6.8) | `Manifest` (Field execution) | Live manifest lapangan, check-in peserta, dan logging insiden. |
+| **DOC** (09. Document & Template) | Supporting: Documents (§6.10) | `Document` | Generator PDF invoice, voucher, PO, manifest, dan kuitansi. |
+| **SEC** (10. Security & Access) | Identity & Access (§6.1) & Audit (§6.10) | User, Role, `Audit Record` | RBAC 7 peran, immutable audit trail, dan data privacy masking. |
 
 ---
 
@@ -85,55 +101,60 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 ---
 
 ### Modul 04: Booking & Sales Pipeline (`BOOK`)
+*Mengimplementasikan Bounded Context **Booking and Sales** (§6.4).*
 
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
-| `BOOK-PIPE-01` | Order & Booking Management | Pembuatan reservasi pemesanan paket, pemilihan jadwal keberangkatan, dan pengelolaan siklus hidup booking (`DRAFT` $\rightarrow$ `PENDING_PAYMENT` $\rightarrow$ `CONFIRMED`). | Admin, Customer |
+| `BOOK-PIPE-01` | Order & Booking Management | Pembuatan reservasi pemesanan paket oleh Customer (pemesan komersial), pemilihan jadwal keberangkatan, dan pengelolaan siklus hidup booking (`DRAFT` $\rightarrow$ `PENDING_PAYMENT` $\rightarrow$ `CONFIRMED`). | Admin, Customer |
 | `BOOK-HOLD-02` | Temporary Seat Locking & Quota Hold | Penguncian alokasi kursi sementara selama durasi batas waktu pembayaran (default: 2 jam) guna mencegah *overbooking*. | System Automation Engine |
 | `BOOK-SNAP-03` | Price Snapshotting Engine | Penguncian permanen total nominal transaksi dan rincian harga saat pembayaran DP diverifikasi, kebal terhadap perubahan harga di kemudian hari. | System Automation Engine, Finance |
-| `BOOK-VAULT-04`| Traveler Identity & Preference Vault | Registrasi data identitas peserta (Nama, NIK/Paspor, No. Kontak, Gender, Alergi/Kebutuhan Khusus) yang terikat pada booking. | Customer, Admin |
+| `BOOK-VAULT-04`| Traveler Identity & Preference Vault | Registrasi data identitas peserta/traveler (Nama, NIK/Paspor, No. Kontak, Gender, Alergi/Kebutuhan Khusus) per pax yang terikat pada kontrak booking Customer. | Customer, Admin |
 | `BOOK-CANC-05` | Individual Cancellation Handler | Pemrosesan pembatalan sepihak oleh peserta (*strict no-refund*, penalti S&K bertingkat, atau *discretionary override*). | Admin, Finance, Business Owner |
 | `BOOK-QUOT-06` | Custom Tour Quotation Pipeline | Alur penyusunan proposal, negosiasi harga, dan persetujuan kontrak Private / Custom Tour. | Admin, Operations Manager |
 
 ---
 
 ### Modul 05: Promo & Perks Overlay (`PROMO`)
+*Mengimplementasikan Bounded Context **Promotion and Perks** (§6.5).*
 
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
-| `PROMO-RULE-01`| Monetary Discount Engine | Penerapan diskon moneter (% atau nominal flat) sebagai pengurang langsung pada subtotal tagihan invoice. | Admin, Customer |
-| `PROMO-PERK-02`| Complimentary Perks & Badge Tracker | Penerapan fasilitas ekstra gratis (makan tambahan, merchandise) yang menghasilkan *Perk Badge* tanpa memotong nominal invoice. | Admin, Operations Manager |
+| `PROMO-RULE-01`| Monetary Discount Engine | Penerapan diskon moneter (% atau nominal flat) sebagai pengurang langsung pada subtotal tagihan invoice (`Promotion` bertipe diskon komersial). | Admin, Customer |
+| `PROMO-PERK-02`| Complimentary Perks & Badge Tracker | Penerapan fasilitas ekstra gratis (makan tambahan, merchandise) yang menghasilkan *Perk Badge* tanpa memotong nominal invoice (`Promotion` bertipe service entitlement). | Admin, Operations Manager |
 | `PROMO-GRD-03` | Promo Guardrails & Quota Validator | Validasi batas kuota penggunaan promo, tanggal berlaku, pembatasan tipe paket, dan penegakan aturan *non-stackable*. | System Automation Engine |
 
 ---
 
 ### Modul 06: Finance, Billing & Settlement (`FIN`)
+*Mengintegrasikan Bounded Context **Billing** (§6.6) dan **Finance** (§6.9).*
 
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
-| `FIN-INV-01`  | Dual Invoicing Engine (DP & Pelunasan) | Penerbitan invoice tagihan DP dan pelunasan bertahap dengan batas waktu (*due date*) otomatis. | System Automation Engine, Admin |
-| `FIN-VERIF-02`| Manual Payment Verification Queue | Antrean verifikasi bukti transfer kas masuk (DP dan pelunasan) sebelum status booking dirilis menjadi `CONFIRMED`. | Finance |
-| `FIN-REF-03`  | Disruption Refund Payout Queue | Pengelolaan dan eksekusi antrean pencairan dana pengembalian 100% akibat pembatalan trip H-5 tanpa potongan administrasi. | Finance |
-| `FIN-SUB-04`  | Goodwill Subsidy & Expense Reconciler | Pencatatan beban subsidi agensi (*Free Waiver* aliansi mitra) dan alokasi pos *Marketing Expense* untuk complimentary perks. | Finance |
-| `FIN-CLOSE-05`| Trip Financial Closing Ledger | Rekonsiliasi akhir laba-rugi per batch keberangkatan (pendapatan bersih, biaya vendor riil, komisi, refund, net profit). | Finance |
+| `FIN-INV-01`  | Dual Invoicing Engine (DP & Pelunasan) | Penerbitan invoice tagihan DP dan pelunasan bertahap dengan batas waktu (*due date*) otomatis (Domain Billing). | System Automation Engine, Admin |
+| `FIN-VERIF-02`| Manual Payment Verification Queue | Antrean verifikasi bukti transfer kas masuk (DP dan pelunasan) sebelum status booking dirilis menjadi `CONFIRMED` (Domain Billing). | Finance |
+| `FIN-REF-03`  | Disruption Refund Payout Queue | Pengelolaan dan eksekusi antrean pencairan dana pengembalian 100% akibat pembatalan trip H-5 tanpa potongan administrasi (Domain Billing/Finance). | Finance |
+| `FIN-SUB-04`  | Goodwill Subsidy & Expense Reconciler | Pencatatan beban subsidi agensi (*Free Waiver* aliansi mitra) dan alokasi pos *Marketing Expense* untuk complimentary perks (Domain Finance). | Finance |
+| `FIN-CLOSE-05`| Trip Financial Closing Ledger | Rekonsiliasi akhir laba-rugi per batch keberangkatan (pendapatan bersih, biaya vendor riil, komisi, refund, net profit) ke dalam buku besar trip (`General Ledger` / Domain Finance). | Finance |
 
 ---
 
 ### Modul 07: Vendor & Procurement (`VEND`)
+*Mengimplementasikan Bounded Context **Procurement** (§6.7).*
 
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
 | `VEND-DIR-01`  | Vendor Master Directory | Direktori data mitra penyedia jasa (Transportasi, Hotel, Restoran, Tiket Objek Wisata, Operator Mitra Aliansi). | Operations Manager |
-| `VEND-PO-02`   | Purchase Order (PO) & Voucher Generator | Penerbitan dokumen PO resmi dan Service Voucher layanan vendor berdasarkan jumlah peserta terkonfirmasi. | Operations Manager |
+| `VEND-PO-02`   | Purchase Order (PO) & Voucher Generator | Penerbitan dokumen komitmen pengadaan (*Procurement Obligation*) berupa PO resmi dan Service Voucher layanan vendor berdasarkan jumlah peserta terkonfirmasi. | Operations Manager |
 | `VEND-CLAIM-03`| Vendor Bill Settlement Tracker | Pelacakan status tagihan klaim vendor terhadap PO yang telah diterbitkan hingga status lunas (*settled*). | Finance |
 
 ---
 
 ### Modul 08: Tour Leader Field Operations (`TL`)
+*Mengimplementasikan Bounded Context **Field Operations** (§6.8).*
 
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
-| `TL-MANI-01`   | Interactive Field Live Manifest | Akses manifest digital lapangan secara langsung berisi daftar peserta, titik jemput (*pick-up point*), dan kontak darurat. | Tour Leader |
+| `TL-MANI-01`   | Interactive Field Live Manifest | Akses manifest digital lapangan secara langsung (`Manifest` domain entity) berisi daftar peserta, titik jemput (*pick-up point*), dan kontak darurat. | Tour Leader |
 | `TL-PERK-02`   | Perk Badge & Inclusion Validator | Indikator visual hak fasilitas khusus/promo peserta untuk verifikasi saat pembagian layanan di lapangan. | Tour Leader |
 | `TL-ATTN-03`   | Digital Attendance & Check-in | Pencatatan kehadiran fisik peserta di titik kumpul perjalanan. | Tour Leader |
 | `TL-INCD-04`   | Field Incident & Disruption Logger | Pencatatan kejadian luar biasa / kendala vendor di lapangan sebagai bukti rekonsiliasi klaim pasca-trip. | Tour Leader |
@@ -266,6 +287,7 @@ Berikut adalah batasan fungsional yang **secara tegas dikecualikan dari MVP (Pha
 
 | Dokumen Sumber | Hubungan terhadap Feature Catalog & Scope |
 | :--- | :--- |
+| [00 Domain Model](../technical/00_DOMAIN_MODEL.md) | Fondasi konseptual kanonikal yang mendefinisikan entitas domain, bounded contexts, domain glossary, dan aturan kepemilikan (*core invariants*). |
 | [01 Business Analysis](01_BUSINESS_ANALYSIS.md) | Menyediakan fondasi masalah operasional, model BEP, pemisahan Open/Private Tour, dan milestone H-30 s/d H+7. |
 | [02 BRD](02_BRD.md) | Mendefinisikan konsep domain, taksonomi aktor RBAC, master aturan bisnis (Rule 4.1 - 4.7), dan swimlane BPMN. |
 | [01 PRD MVP-1](../development/mvp-1/01_PRD.md) | Spesifikasi produk terperinci (User Stories, Acceptance Criteria) untuk fitur berlabel MVP-1. |
