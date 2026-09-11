@@ -41,7 +41,7 @@ Katalog fitur ini diturunkan langsung dari model konseptual kanonikal pada [00 D
 | **PROMO** (05. Promo & Perks) | Promotion and Perks (§6.5) | `Promotion` (Discount & Perk Badge) | Overlay diskon moneter dan pencatatan complimentary perks. |
 | **FIN** (06. Finance & Settlement) | Billing (§6.6) & Finance (§6.9) | `Payment`, `General Ledger`, Ledger Entry | Invoicing, verifikasi bayar, refund payout, dan trip closing ledger. |
 | **VEND** (07. Vendor & Procurement) | Procurement (§6.7) | `Vendor`, `Procurement Obligation` (PO) | Direktori vendor, penerbitan PO/voucher, dan tracking settlement. |
-| **TL** (08. Field Operations) | Field Operations (§6.8) | `Manifest` (Field execution) | Live manifest lapangan, check-in peserta, dan logging insiden. |
+| **TL** (08. Field Operations) | Field Operations (§6.8) | `Manifest` (Traveler field execution) | Live manifest traveler lapangan, check-in peserta, dan logging insiden. |
 | **DOC** (09. Document & Template) | Supporting: Documents (§6.10) | `Document` | Generator PDF invoice, voucher, PO, manifest, dan kuitansi. |
 | **SEC** (10. Security & Access) | Identity & Access (§6.1) & Audit (§6.10) | User, Role, `Audit Record` | RBAC 7 peran, immutable audit trail, dan data privacy masking. |
 
@@ -154,7 +154,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
-| `TL-MANI-01`   | Interactive Field Live Manifest | Akses manifest digital lapangan secara langsung (`Manifest` domain entity) berisi daftar peserta, titik jemput (*pick-up point*), dan kontak darurat. | Tour Leader |
+| `TL-MANI-01`   | Interactive Field Live Manifest | Akses manifest digital lapangan secara langsung (`Manifest` domain entity) berisi daftar Traveler, Customer terkait, titik jemput (*pick-up point*), dan kontak darurat. | Tour Leader |
 | `TL-PERK-02`   | Perk Badge & Inclusion Validator | Indikator visual hak fasilitas khusus/promo peserta untuk verifikasi saat pembagian layanan di lapangan. | Tour Leader |
 | `TL-ATTN-03`   | Digital Attendance & Check-in | Pencatatan kehadiran fisik peserta di titik kumpul perjalanan. | Tour Leader |
 | `TL-INCD-04`   | Field Incident & Disruption Logger | Pencatatan kejadian luar biasa / kendala vendor di lapangan sebagai bukti rekonsiliasi klaim pasca-trip. | Tour Leader |

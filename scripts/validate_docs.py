@@ -31,6 +31,7 @@ def markdown_files():
 
 def validate_links():
     errors = []
+    planned = []
     pattern = re.compile(r"\[[^]]+\]\(([^)]+)\)")
     for path in markdown_files():
         for target in pattern.findall(path.read_text(encoding="utf-8")):
@@ -38,11 +39,12 @@ def validate_links():
                 continue
             target_path = (path.parent / target.split("#", 1)[0]).resolve()
             normalized = target_path.relative_to(ROOT).as_posix() if target_path.is_relative_to(ROOT) else ""
-            if normalized in PLANNED:
+            if normalized in PLANNED and not target_path.exists():
+                planned.append(f"{path.relative_to(ROOT)}: planned reference {target}")
                 continue
             if not target_path.exists():
                 errors.append(f"{path.relative_to(ROOT)}: missing link target {target}")
-    return errors
+    return errors, planned
 
 
 def validate_metadata():
@@ -66,7 +68,8 @@ def validate_statuses():
 
 
 def main():
-    errors = validate_links() + validate_metadata() + validate_statuses()
+    link_errors, planned = validate_links()
+    errors = link_errors + validate_metadata() + validate_statuses()
     if errors:
         print("Documentation validation: FAIL")
         for error in errors:
@@ -76,7 +79,9 @@ def main():
     print("Markdown links: PASS")
     print("Metadata headers: PASS")
     print("Status vocabulary: PASS")
-    print(f"Planned references: {len(PLANNED)}")
+    print(f"Planned references: {len(planned)}")
+    for reference in planned:
+        print(f"- {reference}")
     return 0
 
 

@@ -20,13 +20,13 @@
 ### Milestone & PRD Documents (MVP-1)
 | Feature ID | Document Name | Path | Current Doc Version | Description / Status |
 | :--- | :--- | :--- | :--- | :--- |
-| `TMS-MVP1-PRD` | [01 PRD MVP-1](../development/mvp-1/01_PRD.md) | `development/mvp-1/01_PRD.md` | 1.0 | Planned — User Stories, Journey Flows & Acceptance Criteria MVP-1 |
-| `TMS-MVP1-FRD` | [02 FRD MVP-1](../development/mvp-1/02_FRD.md) | `development/mvp-1/02_FRD.md` | 1.0 | Planned — State Machine, System Triggers & Validations MVP-1 |
+| `TMS-MVP1-PRD` | [01 PRD MVP-1](../development/mvp-1/01_PRD.md) | `development/mvp-1/01_PRD.md` | 1.0 | Planned / Not yet available — User Stories, Journey Flows & Acceptance Criteria MVP-1 |
+| `TMS-MVP1-FRD` | [02 FRD MVP-1](../development/mvp-1/02_FRD.md) | `development/mvp-1/02_FRD.md` | 1.0 | Planned / Not yet available — State Machine, System Triggers & Validations MVP-1 |
 
 ### Technical Architecture Documents
 | Document Name | Path | Current Doc Version | Description / Status |
 | :--- | :--- | :--- | :--- |
 | [00 Domain Model](../technical/00_DOMAIN_MODEL.md) | `technical/00_DOMAIN_MODEL.md` | 1.1 | Approved — Conceptual & Functional Domain Model, Invariants & Bounded Contexts |
-| [01 System Architecture](../technical/01_SYSTEM_ARCHITECTURE.md) | `technical/01_SYSTEM_ARCHITECTURE.md` | 1.0 | Planned — Blueprint Arsitektur Sistem, Modul & Tech Stack |
-| [02 Database Design](../technical/02_DATABASE_DESIGN.md) | `technical/02_DATABASE_DESIGN.md` | 1.0 | Planned — ERD, Skema Data & Price Snapshot Logic |
-| [03 API Contracts](../technical/03_API_CONTRACTS.md) | `technical/03_API_CONTRACTS.md` | 1.0 | Planned — Spesifikasi Endpoint REST API & Request/Response |
+| [01 System Architecture](../technical/01_SYSTEM_ARCHITECTURE.md) | `technical/01_SYSTEM_ARCHITECTURE.md` | 1.0 | Planned / Not yet available — Blueprint Arsitektur Sistem, Modul & Tech Stack |
+| [02 Database Design](../technical/02_DATABASE_DESIGN.md) | `technical/02_DATABASE_DESIGN.md` | 1.0 | Planned / Not yet available — ERD, Skema Data & Price Snapshot Logic |
+| [03 API Contracts](../technical/03_API_CONTRACTS.md) | `technical/03_API_CONTRACTS.md` | 1.0 | Planned / Not yet available — Spesifikasi Endpoint REST API & Request/Response |

@@ -6,6 +6,13 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-09-11]
+
+### [DOCS-ALIGNMENT] 00_DOMAIN_MODEL.md - Version 1.1
+- **Status:** Approved
+- **Changes:**
+  - Memperjelas bahwa Manifest berisi Traveler/Pax dan menambahkan relasi konseptual Booking ke Traveler.
+
 ## [2026-09-10]
 
 ### [DOMAIN-01] 00_DOMAIN_MODEL.md - Version 1.1

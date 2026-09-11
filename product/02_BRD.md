@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Requirements Document |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.2 |
+| **Document Version** | 1.3 |
 | **Document Status** | Approved |
 | **Implementation Status** | N/A |
-| **Last Updated** | 2026-09-08 |
+| **Last Updated** | 2026-09-10 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -72,6 +72,11 @@ classDiagram
     }
     class Customer {
         +String fullName
+        +String contact
+        +String paymentAccount
+    }
+    class Traveler {
+        +String fullName
         +String identityNumber
         +String contact
         +List specialPerks
@@ -89,7 +94,8 @@ classDiagram
     TourPackage_Blueprint "1" --> "*" TourDeparture_Instance : generates recurring
     TourPackage_Blueprint "1" --> "*" TourService_BOM : defines standard inclusions
     TourDeparture_Instance "1" --> "*" Booking : contains
-    Booking "1" --> "*" Customer : registers
+    Booking "1" --> "1" Customer : owned by
+    Booking "1" --> "*" Traveler : registers
     Booking "*" --> "0..1" PromoOrPerk : applies overlay
     TourDeparture_Instance "1" --> "*" TourService_BOM : inherits snapshot
     TourService_BOM "*" --> "1" Vendor : fulfilled by
@@ -100,7 +106,7 @@ classDiagram
 2. **Departure (Decoupled Instance):** Eksekusi kalender spesifik dari suatu *Tour Package* pada tanggal tertentu. Memiliki siklus status mandiri (*Tentative* -> *Published_Fixed*), kuota kursi, alokasi *Tour Leader*, reservasi vendor, dan harga dasar yang terkunci mutlak (*immutable*) saat dirilis.
 3. **Booking & Price Snapshot:** Kontrak reservasi komersial pelanggan yang mengunci harga total transaksi pada saat pembayaran DP terkonfirmasi (*Price Snapshot*), kebal terhadap fluktuasi harga di masa depan.
 4. **Promotion Overlay:** Lapisan modifikasi transaksi (diskon moneter % / nominal flat atau fasilitas cuma-cuma seperti *free meals/merchandise*) yang diterapkan di atas transaksi tanpa mengubah *base price* master paket.
-5. **Customer:** Individu peserta tour yang tercatat dalam manifest keberangkatan beserta hak fasilitas standar maupun fasilitas promo khusus (*Perk Badges*).
+5. **Customer:** Pemesan komersial yang memegang kewajiban pembayaran; satu Customer dapat mendaftarkan satu atau lebih Traveler/Pax yang tercatat dalam manifest keberangkatan beserta hak fasilitas standar maupun fasilitas promo khusus (*Perk Badges*).
 6. **Tour Leader:** Koordinator lapangan yang memimpin perjalanan, memvalidasi kehadiran, memverifikasi hak fasilitas peserta, dan mencatat insiden.
 7. **Vendor:** Pihak ketiga penyedia layanan operasional atau mitra operator luar untuk transfer peserta.
 

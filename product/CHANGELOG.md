@@ -6,6 +6,16 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-09-11]
+
+### [DOCS-ALIGNMENT] Product and technical documentation
+- **Status:** Approved
+- **Changes:**
+  - Menyamakan BRD versi 1.3 dengan perubahan terminology yang sudah tercatat pada riwayat revisi.
+  - Menyelaraskan diagram domain BRD agar Customer menjadi pemesan komersial dan Traveler menjadi peserta booking.
+  - Menandai PRD, FRD, arsitektur, database, dan API yang belum tersedia sebagai planned references.
+  - Menyelaraskan Customer sebagai pemesan komersial dan Traveler sebagai peserta manifest sesuai `technical/00_DOMAIN_MODEL.md`.
+
 ## [2026-09-10]
 
 ### [SCOPE-01] 03_FEATURE_CATALOG_AND_SCOPE.md - Version 1.1

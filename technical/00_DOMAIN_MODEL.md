@@ -56,7 +56,7 @@ The following decisions are part of this draft:
 | **Payment** | Money received from a Customer and associated with a booking obligation. |
 | **Vendor** | External party that provides transport, accommodation, meals, activities, or operational support. |
 | **Procurement Obligation** | Operational commitment to obtain a vendor service for a departure. |
-| **Manifest** | Operational list of customers assigned to a departure. |
+| **Manifest** | Operational list of travelers (pax), linked to their commercial customers, assigned to a departure. |
 | **Disruption Case** | Controlled exception process used to resolve a departure problem, such as under-quota cancellation, rescheduling, or partner transfer. |
 | **Finance** | Reconciliation of customer revenue, vendor costs, refunds, adjustments, and trip-level result. |
 | **General Ledger** | Financial record of transactions and adjustments used for settlement and reporting. |
@@ -158,6 +158,7 @@ erDiagram
     TOUR_PACKAGE ||--o{ DEPARTURE : generates
     DEPARTURE ||--o{ BOOKING : accepts
     BOOKING }o--|| CUSTOMER : belongs_to
+    BOOKING ||--|{ TRAVELER : registers
     BOOKING }o--o{ PROMOTION : receives
     BOOKING ||--o{ PAYMENT : has
     DEPARTURE ||--o{ PROCUREMENT_ORDER : requires

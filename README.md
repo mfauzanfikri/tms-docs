@@ -91,6 +91,9 @@ tms-docs/
 ### 1. `contexts/` (Disposable / Scratchpad)
 Direktori kerja sementara untuk menampung *raw notes*, rekaman diskusi, dan ide awal. Direktori ini bersifat *disposable* (tidak dijadikan rujukan resmi setelah disintesis ke folder `product/`).
 
+### Planned references
+Dokumen yang belum tersedia tetapi dirujuk oleh peta ini ditandai sebagai planned references. Tautannya dipertahankan untuk ketertelusuran dan bukan bukti bahwa spesifikasi sudah tersedia.
+
 ### 2. `product/` (Business & Product North Star)
 - **`CHANGELOG.md`**: Catatan riwayat revisi dan perubahan dokumen produk secara terpusat.
 - **`Product Metadata.md`**: Master registri dokumen yang memetakan versi revisi setiap dokumen ke target rilis produk (misal: `v1.0 - TMS Core Operations MVP`).

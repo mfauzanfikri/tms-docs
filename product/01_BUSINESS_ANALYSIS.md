@@ -48,7 +48,7 @@ Organisasi melayani dua lini produk perjalanan wisata:
    - Memerlukan fleksibilitas penyusunan penawaran (*quotation*), kustomisasi fasilitas (*Bill of Materials*), dan negosiasi harga sebelum jadwal dikunci.
 
 ### 2.2 Proposisi Nilai (*Value Proposition*)
-- **Bagi Wisatawan (*Customer*):** Kepastian jadwal, transparansi fasilitas, perlindungan harga (*price locking*), dan jaminan resolusi jika terjadi disrupsi atau kuota tidak terpenuhi.
+- **Bagi Customer dan Traveler:** Customer memperoleh kepastian jadwal, transparansi fasilitas, dan perlindungan harga (*price locking*); setiap Traveler memperoleh jaminan resolusi jika terjadi disrupsi atau kuota tidak terpenuhi.
 - **Bagi Mitra Vendor (*Vendors*):** Kepastian *demand*, penerbitan *Purchase Order (PO)* resmi, dan kejelasan jadwal pembayaran.
 - **Bagi Manajemen Agensi (*Internal*):** Perlindungan margin keuntungan dari kebocoran diskon, otomatisasi mitigasi risiko kuota H-5, dan laporan keuangan per trip yang akurat.
 
@@ -216,6 +216,7 @@ quadrantChart
    - **Tujuan:** Kemudahan memverifikasi peserta di titik kumpul (*pick-up points*), mengetahui preferensi khusus, dan melaporkan insiden darurat secara cepat.
    - **Kewenangan Utama:** Memvalidasi manifest kehadiran dan mencatat pengecualian fasilitas di lapangan.
 6. **Customer:**
+   - **Peran:** Pemesan komersial yang memegang kewajiban pembayaran untuk booking.
    - **Tujuan:** Mendapatkan kepastian liburan yang aman, harga yang transparan tanpa biaya tersembunyi, dan kepastian penyelesaian jika trip terkendala.
 7. **Vendor (Transport, Hotel, Resto, Tiket):**
    - **Tujuan:** Kepastian jadwal pemesanan, akurasi jumlah peserta (*rooming/pax list*), dan kelancaran pembayaran.
