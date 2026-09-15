@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Requirements Document |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.3 |
+| **Document Version** | 1.4 |
 | **Document Status** | Approved |
 | **Implementation Status** | N/A |
-| **Last Updated** | 2026-09-10 |
+| **Last Updated** | 2026-09-15 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -252,6 +252,15 @@ Jika terdapat permintaan penambahan peserta baru saat tour sedang berlangsung (*
 - **Rule 4.7.4 (Sinkronisasi Live Manifest & Add-on PO Vendor):** Begitu pembayaran terverifikasi lunas dan peserta menandatangani *Digital Liability Waiver & Health Declaration*:
   - Data peserta otomatis masuk ke *Live Field Manifest* dengan penanda `Late-Joiner`.
   - Sistem otomatis menerbitkan revisi *Add-on Purchase Order (PO)* kepada vendor hotel, konsumsi, dan tiket yang bersangkutan.
+
+### 4.8 Aturan Penjemputan Rute Sejalan & Pengadaan Armada Bus Peak Season
+- **Rule 4.8.1 (Early Bus PO H-1 Bulan):** Pada H-1 Bulan (H-30 hari) sebelum periode *Peak Season* (libur sekolah resmi, cuti bersama, atau libur nasional panjang), sistem memicu alert ke Manajer Operasional dan biro wajib menerbitkan *Early Purchase Order (PO-Blok Armada)* kepada vendor bus mitra untuk mengunci ketersediaan unit armada dan mengikat tarif sewa agar tidak terkena *last-minute surge pricing*.
+- **Rule 4.8.2 (2 Pick-Up Points Sejalan dari Pool Bus Vendor):** Biro menyediakan maksimal 2 titik jemput resmi per armada:
+  1. **Titik A (*En-Route Pick-up Point*):** Titik antara yang berada sejalan dari arah pool vendor bus yang disewa menuju meeting point utama (lokasi titik ini fleksibel menyesuaikan pool vendor bus yang ditugaskan).
+  2. **Meeting Point Utama:** Titik kumpul utama akhir bagi seluruh rombongan sebelum armada meluncur ke destinasi wisata.
+- **Rule 4.8.3 (Ketentuan Waktu & Protokol Konfirmasi H-2):** 
+  - Waktu penjemputan di Titik A wajib dijadwalkan lebih awal (*earlier timestamp*) dibanding Meeting Point Utama.
+  - Pada H-2 keberangkatan, Admin Sales/Operasional wajib menghubungi seluruh peserta terkonfirmasi: *"Apakah ada yang ingin dijemput di Titik A?"*. Pilihan peserta langsung dicatat dan tersinkronisasi secara sekuensial ke *Live Manifest* Tour Leader.
 
 ---
 

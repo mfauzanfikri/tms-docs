@@ -97,6 +97,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 | `OPS-GATE-04` | D-5 Automated Minimum Quota Gatekeeper | Evaluasi otomatis kuota peserta terverifikasi pada H-5 (00:00 WIB) yang memicu transisi ke `CONFIRMED_DEPARTURE` atau `WAITING_OWNER_ACTION`. | System Automation Engine |
 | `OPS-DISR-05` | Disruption & Crisis Resolution Console | Meja eksekusi 4 jalur resolusi disrupsi (*Reschedule, Partner Transfer, Full Refund, Force Majeure*) dengan otorisasi Owner. | Business Owner, Admin, Operations Manager |
 | `OPS-DISP-06` | Tour Leader & Resource Dispatcher | Penugasan pemandu wisata (Tour Leader) secara manual & bebas oleh Admin/Owner berdasarkan diskresi internal (tanpa restriksi algoritma/beban kerja), serta alokasi armada transportasi legal per batch keberangkatan. | Operations Manager, Admin, Owner |
+| `OPS-SEAS-07` | Peak Season Supply Alert & Vendor Block Reminder | Peringatan dini sistem pada H-1 Bulan (H-30 hari) sebelum rentang periode Peak Season (libur sekolah resmi / tanggal merah panjang) agar Manajer Operasional mengunci unit armada bus dan hotel mitra sebelum kehabisan pasokan. | Operations Manager, Business Owner |
 
 ---
 
@@ -233,6 +234,7 @@ flowchart LR
 | `OPS-GATE-04`  | D-5 Automated Quota Gatekeeper | In-Scope | - | - | MVP: Cron H-5 00:00 WIB evaluasi kuota minimum (`minQuota`, default 20 pax). |
 | `OPS-DISR-05` | Disruption & Crisis Resolution Console | In-Scope | - | - | MVP: Eksekusi 4 jalur disrupsi via internal desk. |
 | `OPS-DISP-06` | Tour Leader & Resource Dispatcher | In-Scope | - | - | MVP: Penugasan TL bebas manual oleh Admin/Owner tanpa restriksi algoritma/beban kerja. |
+| `OPS-SEAS-07` | Peak Season Supply Alert & Vendor Block | In-Scope | - | - | MVP: Alert H-1 Bulan (H-30 hari) sebelum peak season untuk reservasi dini vendor. |
 | `BOOK-PIPE-01` | Order & Booking Management | In-Scope | - | - | MVP: Pembuatan booking internal & formulir publik. |
 | `BOOK-HOLD-02` | Temporary Seat Locking & Quota Hold | In-Scope | - | - | MVP: Hold kuota 2 jam selama proses bayar DP. |
 | `BOOK-SNAP-03` | Price Snapshotting Engine | In-Scope | - | - | MVP: Kunci harga transaksi saat DP terverifikasi. |

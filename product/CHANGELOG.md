@@ -6,6 +6,30 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-09-15]
+
+### [PRD-MVP1] 01_PRD.md - Version 1.0
+- **Status:** Approved Baseline
+- **Author:** Product & Operations Team
+- **Changes:**
+  - Finalisasi dokumen Product Requirements Document (PRD) MVP-1 komprehensif yang mencakup 25 User Stories lengkap dengan Acceptance Criteria Gherkin (Given-When-Then).
+  - Menambahkan 5 diagram alur end-to-end User Journeys (Mermaid) dan spesifikasi State Machines untuk Departure, Booking, Payment, dan PO.
+  - Mengintegrasikan strategi operasional musim: optimalisasi volume/multi-bus pada Peak Season, proteksi BEP/downsizing armada pada Low Season, dan penambahan fitur `OPS-SEAS-07` (Peak Season Supply Alert & Vendor Block Reminder H-1 Bulan / H-30 Hari).
+  - Menyelaraskan batasan ruang lingkup fungsional (In-Scope MVP-1 vs Deferred Phase 2 & 3), Non-Functional Requirements (NFRs), dan matriks ketertelusuran 10 modul.
+
+### [SCOPE-01] 03_FEATURE_CATALOG_AND_SCOPE.md - Version 1.2
+- **Status:** Approved
+- **Changes:**
+  - Menambahkan kapabilitas `OPS-SEAS-07` (Peak Season Supply Alert & Vendor Block Reminder H-1 Bulan) pada Modul 03 (`OPS`) dan tabel matriks fitur per fase.
+
+### [BRD-01] 02_BRD.md - Version 1.4
+- **Status:** Approved
+- **Changes:**
+  - Menambahkan Bagian 4.8 (Aturan Penjemputan Rute Sejalan & Pengadaan Armada Bus Peak Season).
+  - Rule 4.8.1: Biro wajib menerbitkan Early Purchase Order (PO-Blok Armada) pada H-1 Bulan (H-30 hari) sebelum Peak Season untuk mengunci armada dan tarif sewa.
+  - Rule 4.8.2: Penyediaan 2 titik jemput resmi (Titik A En-Route sejalan dari pool vendor bus menuju Meeting Point Utama, dengan jam jemput lebih awal).
+  - Rule 4.8.3: Protokol konfirmasi penjemputan H-2 oleh Admin kepada peserta dan sinkronisasi real-time ke Live Manifest Tour Leader.
+
 ## [2026-09-11]
 
 ### [DOCS-ALIGNMENT] Product and technical documentation
@@ -17,6 +41,11 @@ Format pencatatan mengikuti panduan:
   - Menyelaraskan Customer sebagai pemesan komersial dan Traveler sebagai peserta manifest sesuai `technical/00_DOMAIN_MODEL.md`.
 
 ## [2026-09-10]
+
+### [PRD-MVP1] 01_PRD.md - Version 1.0
+- **Status:** Draft
+- **Author:** Product & Operations Team
+- **Changes:** Inisialisasi dokumen Product Requirements Document (PRD) MVP-1 yang mencakup definisi lengkap 24 User Stories, Acceptance Criteria berformat Given-When-Then, prioritas MoSCoW, serta pemetaan ketertelusuran (traceability) terhadap 10 modul sistem.
 
 ### [SCOPE-01] 03_FEATURE_CATALOG_AND_SCOPE.md - Version 1.1
 - **Status:** Approved
