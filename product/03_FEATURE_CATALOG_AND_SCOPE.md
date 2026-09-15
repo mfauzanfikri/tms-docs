@@ -150,15 +150,15 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 
 ---
 
-### Modul 08: Tour Leader Field Operations (`TL`)
-*Mengimplementasikan Bounded Context **Field Operations** (§6.8).*
+### Modul 08: Tour Leader Field Operations (`TL`) — [DITANGGUHKAN KE PHASE 2]
+*Mengimplementasikan Bounded Context **Field Operations** (§6.8) — Ditangguhkan ke Phase 2 untuk lean scope & penyesuaian demografi peserta lansia. Kebutuhan lapangan MVP-1 dipenuhi via format manifest cetak pada Modul 09 (`DOC-MANI-02`).*
 
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
-| `TL-MANI-01`   | Interactive Field Live Manifest | Akses manifest digital lapangan secara langsung (`Manifest` domain entity) berisi daftar Traveler, Customer terkait, titik jemput (*pick-up point*), dan kontak darurat. | Tour Leader |
-| `TL-PERK-02`   | Perk Badge & Inclusion Validator | Indikator visual hak fasilitas khusus/promo peserta untuk verifikasi saat pembagian layanan di lapangan. | Tour Leader |
-| `TL-ATTN-03`   | Digital Attendance & Check-in | Pencatatan kehadiran fisik peserta di titik kumpul perjalanan. | Tour Leader |
-| `TL-INCD-04`   | Field Incident & Disruption Logger | Pencatatan kejadian luar biasa / kendala vendor di lapangan sebagai bukti rekonsiliasi klaim pasca-trip. | Tour Leader |
+| `TL-MANI-01`   | Interactive Field Live Manifest | [Deferred Phase 2] Akses manifest digital lapangan via mobile web. | Tour Leader |
+| `TL-PERK-02`   | Perk Badge & Inclusion Validator | [Deferred Phase 2] Indikator visual hak fasilitas khusus/promo di web TL. | Tour Leader |
+| `TL-ATTN-03`   | Digital Attendance & Check-in | [Deferred Phase 2] Pencatatan kehadiran fisik peserta via tombol web seluler. | Tour Leader |
+| `TL-INCD-04`   | Field Incident & Disruption Logger | [Deferred Phase 2] Pencatatan log insiden darurat lapangan via web seluler. | Tour Leader |
 
 ---
 
@@ -252,13 +252,13 @@ flowchart LR
 | `VEND-DIR-01`  | Vendor Master Directory | In-Scope | Deferred | - | MVP: Master direktori vendor standar. Phase 2: Scoring. |
 | `VEND-PO-02`   | Purchase Order & Voucher Generator | In-Scope | - | - | MVP: Generate PO dan service voucher PDF. |
 | `VEND-CLAIM-03`| Vendor Bill Settlement Tracker | In-Scope | - | - | MVP: Pencatatan status pembayaran tagihan vendor. |
-| `TL-MANI-01`   | Interactive Field Live Manifest | In-Scope | - | - | MVP: Manifest digital mobile-web view untuk TL. |
-| `TL-PERK-02`   | Perk Badge & Inclusion Validator | In-Scope | - | - | MVP: Penanda hak fasilitas khusus peserta di manifest. |
-| `TL-ATTN-03`   | Digital Attendance & Check-in | In-Scope | - | - | MVP: Check-in kehadiran fisik peserta. |
-| `TL-INCD-04`   | Field Incident & Disruption Logger | In-Scope | - | - | MVP: Pencatatan log insiden darurat lapangan. |
+| `TL-MANI-01`   | Interactive Field Live Manifest | Out-of-Scope | Deferred | - | Phase 2: Manifest digital mobile-web view untuk TL (Ditangguhkan). |
+| `TL-PERK-02`   | Perk Badge & Inclusion Validator | Out-of-Scope | Deferred | - | Phase 2: Penanda digital hak fasilitas khusus peserta di web TL (Ditangguhkan). |
+| `TL-ATTN-03`   | Digital Attendance & Check-in | Out-of-Scope | Deferred | - | Phase 2: Check-in digital kehadiran fisik peserta via web seluler (Ditangguhkan). |
+| `TL-INCD-04`   | Field Incident & Disruption Logger | Out-of-Scope | Deferred | - | Phase 2: Pencatatan log insiden darurat lapangan via web seluler (Ditangguhkan). |
 | `DOC-GEN-01`   | Standard Document PDF Generator | In-Scope | - | - | MVP: Template PDF Invoice, Kuitansi, PO, Voucher. |
-| `DOC-MANI-02`  | Exportable Trip Manifest Generator | In-Scope | - | - | MVP: Ekspor manifest ke PDF/XLSX. |
-| `SEC-RBAC-01`  | Role-Based Access Control (RBAC) | In-Scope | - | - | MVP: Hak akses 7 peran (Admin, Ops, Finance, TL, Owner, Guest, Vendor). |
+| `DOC-MANI-02`  | Exportable Trip Manifest & Field Checklist | In-Scope | - | - | MVP: Ekspor manifest ke PDF/XLSX siap cetak dengan checkbox presensi fisik & badges. |
+| `SEC-RBAC-01`  | Role-Based Access Control (RBAC) | In-Scope | - | - | MVP: Hak akses 4 peran internal (Admin, Ops, Finance, Owner) + Guest Checkout endpoint. |
 | `SEC-AUDIT-02` | Immutable Audit Trail & Override Logger | In-Scope | - | - | MVP: Pencatatan audit trail aksi kritis. |
 | `SEC-MASK-03`  | Sensitive Data Masking | In-Scope | - | - | MVP: Proteksi data NIK/Paspor/Medis peserta. |
 | `P2-ROOM-01`   | Automated Rooming Pairer | Out-of-Scope | Deferred | - | Phase 2: Algoritma pembagian kamar gender/relasi (Ditangguhkan). |
@@ -276,12 +276,13 @@ flowchart LR
 
 Berikut adalah batasan fungsional yang **secara tegas dikecualikan dari MVP (Phase 1)** dan ditangguhkan ke fase lanjutan:
 
-1. **Penerimaan Uang Tunai di Lapangan (*No Cash in Field*)**: Tour Leader dilarang menerima kas langsung; sistem MVP tidak menyediakan fitur input kas lapangan.
-2. **Otomatisasi Penambahan Peserta Susulan (*Automated Late-Joiner*)**: Pada MVP, peserta *walk-in* di tengah jalan ditolak secara default. Penanganan pengecualian harus disetujui manual oleh Operations dan Finance sebelum masuk ke manifest.
-3. **Integrasi Pembayaran Otomatis Langsung (*Direct Payment Gateway*)**: Tidak ada auto-reconciliation gateway instan; seluruh bukti bayar diverifikasi melalui antrean verifikasi manual oleh Finance.
-4. **Integrasi Tiket Pesawat Global (*GDS Flight Booking*)**: Sistem berfokus murni pada orkestrasi paket tour darat/laut (*land tour operations*), tanpa integrasi GDS penerbangan (Amadeus/Sabre).
-5. **Aplikasi Mobile Native (*Native Apps*)**: Seluruh interaksi pengguna (termasuk Tour Leader dan Customer) diakomodasi melalui *Responsive Web Application*.
-6. **Seluruh Fitur Lanjutan Phase 2 & Phase 3 (Deferred)**: Fitur pembagian kamar otomatis (*Rooming Pairer*), portal jaringan mitra aliansi, portal mandiri disrupsi pelanggan, integrasi API asuransi instan, serta analitik AI ditangguhkan (*deferred*) dari fase MVP.
+1. **Aplikasi Lapangan Tour Leader Mandiri (*TL Field App / Live Manifest Web*)**: Tour Leader tidak dibebani pengoperasian sistem/gadget di lapangan guna menjaga lean scope dan menyesuaikan profil demografi peserta (mayoritas lansia/keluarga yang membutuhkan interaksi verbal langsung). Operasional lapangan dipenuhi melalui lembar manifest fisik siap cetak (*Print-Ready Field Manifest Checklist*) pada modul `DOC-MANI-02` dan rekonsiliasi manual via WhatsApp ke Admin Back-Office.
+2. **Penerimaan Uang Tunai di Lapangan (*No Cash in Field*)**: Tour Leader dilarang menerima kas langsung; sistem MVP tidak menyediakan fitur input kas lapangan.
+3. **Otomatisasi Penambahan Peserta Susulan (*Automated Late-Joiner*)**: Pada MVP, peserta *walk-in* di tengah jalan ditolak secara default. Penanganan pengecualian harus disetujui manual oleh Operations dan Finance sebelum masuk ke manifest.
+4. **Integrasi Pembayaran Otomatis Langsung (*Direct Payment Gateway*)**: Tidak ada auto-reconciliation gateway instan; seluruh bukti bayar diverifikasi melalui antrean verifikasi manual oleh Finance.
+5. **Integrasi Tiket Pesawat Global (*GDS Flight Booking*)**: Sistem berfokus murni pada orkestrasi paket tour darat/laut (*land tour operations*), tanpa integrasi GDS penerbangan (Amadeus/Sabre).
+6. **Aplikasi Mobile Native (*Native Apps*)**: Seluruh interaksi pengguna back-office diakomodasi melalui *Web Application* desktop/tablet dan formulir booking publik ramah seluler (*mobile-friendly*).
+7. **Seluruh Fitur Lanjutan Phase 2 & Phase 3 (Deferred)**: Fitur pembagian kamar otomatis (*Rooming Pairer*), portal vendor/mitra mandiri, portal mandiri disrupsi pelanggan, integrasi API asuransi instan, serta analitik AI ditangguhkan (*deferred*) dari fase MVP.
 
 ---
 

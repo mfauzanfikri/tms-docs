@@ -56,29 +56,42 @@ Berdasarkan analisis operasional agensi wisata sebagai *Tour Orchestrator*:
 5. **Promo Diskon & Perk Overlay**: Diskon moneter, *Perk Badge* fasilitas cuma-cuma, dan guardrails kuota promo/non-stackable.
 6. **Keuangan & Verifikasi Kas**: Dual invoicing (DP & Pelunasan), verifikasi bukti transfer manual, antrean pencairan refund disrupsi, dan *Closing Ledger* H+2.
 7. **Pengadaan Vendor**: Direktori vendor, generator dokumen PO/Service Voucher PDF, dan pencocokan klaim tagihan vendor.
-8. **Operasional Lapangan Tour Leader**: Web mobile *Live Field Manifest*, filter peserta per bus, check-in kehadiran digital, dan pelaporan insiden lapangan dengan foto.
-9. **Generator Dokumen Standar**: Rendering PDF otomatis untuk Invoice, Kuitansi, PO, Voucher, dan Export Manifest XLSX.
-10. **Dashboard & RBAC**: Dashboard metrik eksekutif, radar milestone H-30 s/d H+7, RBAC 7 peran pengguna, dan *immutable audit log*.
+8. **Operasional Lapangan & Manifest Siap Cetak**: Manifest lapangan siap cetak (*print-ready* PDF checklist) dengan pengelompokan titik jemput sekuensial, penanda *Perk Badge*, dan sinkronisasi status presensi oleh Admin Back-Office.
+9. **Generator Dokumen Standar**: Rendering PDF otomatis untuk Invoice, Kuitansi, PO, Voucher, dan Export Manifest XLSX/PDF.
+10. **Dashboard & RBAC**: Dashboard metrik eksekutif, radar milestone H-30 s/d H+7, RBAC 4 peran internal pengguna (Owner, Ops, Finance, Admin) + akses publik tamu, dan *immutable audit log*.
 
 ### 2.2 Out-of-Scope (Fase Lanjutan)
-- **Phase 2**: Payment Gateway otomatis (VA/QRIS otomatis pihak ketiga), Vendor Self-Service Portal, Dynamic Pricing Engine berbasis okupansi/yield management real-time, Program Loyalitas Pelanggan (Points/Tiers).
+- **Phase 2**: Tour Leader Mobile Web & Field App (ditangguhkan untuk lean scope & penyesuaian demografi peserta lansia; operasional lapangan menggunakan lembar manifest cetak), Payment Gateway otomatis (VA/QRIS otomatis pihak ketiga), Vendor Self-Service Portal, Dynamic Pricing Engine berbasis okupansi/yield management real-time, Program Loyalitas Pelanggan (Points/Tiers).
 - **Phase 3**: Multi-Cabang / Multi-Branch Organization, Aplikasi Seluler Native (Android/iOS offline-first), Rekomendasi Paket Berbasis AI, Integrasi Global Distribution System (GDS) Tiket Pesawat API, Late-Joiner on-the-go pricing.
 
 ---
 
 ## 3. Taksonomi Aktor & Matriks Hak Akses (RBAC)
 
-Sistem berinteraksi dengan 8 persona (7 aktor manusia dan 1 engine otomasi sistem):
+Sistem berinteraksi dengan 8 persona yang diklasifikasikan ke dalam 4 kelompok akses: **4 Peran Internal Back-Office (Wajib Akun & Login)**, **1 Aktor Publik Tamu**, **2 Entitas Eksternal Non-Login**, dan **1 Engine Otomasi**:
 
+### A. Pengguna Internal Back-Office (Terautentikasi / RBAC)
 | Peran (Role) | Tanggung Jawab Utama | Lingkup Wewenang Sistem |
 | :--- | :--- | :--- |
 | **Business Owner** | Penentu kebijakan & otorisasi krisis | Menyetujui jalur resolusi H-5, diskresi override refund, dan memantau seluruh metrik profit margin. |
-| **Operations Manager** | Perencana & pengelola operasional tour | Mengelola Blueprint, rilis jadwal, konfigurasi BOM, alokasi armada/TL, respon alert peak season, dan penerbitan PO vendor. |
-| **Finance & Settlement Officer** | Pengelola kas & rekonsiliasi keuangan | Memverifikasi bukti transfer bank, memproses antrean pencairan refund, dan melakukan closing ledger H+2. |
-| **Admin Sales** | Pelaksana layanan pelanggan & reservasi | Mendaftarkan pemesanan manual, melengkapi data traveler, dan memproses pembatalan standar. |
-| **Tour Leader** | Koordinator & pemandu perjalanan lapangan | Mengakses *Live Manifest*, check-in peserta, validasi *Perk Badge*, dan pelaporan insiden lapangan via mobile web. |
-| **Customer** | Pemesan komersial tour | Membuat pesanan, mengunggah bukti transfer, dan mengisi data identitas peserta rombongannya. |
-| **Vendor PIC** | Penerima pesanan jasa pihak ketiga | Menerima PO dan Service Voucher resmi. |
+| **Operations Manager** | Perencana & pengelola operasional tour | Mengelola Blueprint, rilis jadwal, konfigurasi BOM, alokasi armada, penugasan TL (data assignment), respon alert peak season, penerbitan PO vendor, dan ekspor manifest lapangan. |
+| **Finance & Settlement Officer** | Pengelola kas & rekonsiliasi keuangan | Memverifikasi bukti transfer bank, memproses antrean pencairan refund, memverifikasi klaim tagihan vendor, dan melakukan closing ledger H+2. |
+| **Admin Sales** | Pelaksana layanan pelanggan & reservasi | Mendaftarkan pemesanan manual, melengkapi data traveler, input preferensi titik jemput, sinkronisasi status presensi lapangan, dan memproses pembatalan standar. |
+
+### B. Aktor Publik Tamu (Tanpa Akun Login)
+| Peran (Role) | Tanggung Jawab Utama | Lingkup Wewenang Sistem |
+| :--- | :--- | :--- |
+| **Customer** | Pemesan komersial tour | Mengakses katalog publik jadwal aktif, membuat pemesanan (guest checkout), mengunggah bukti transfer, mengisi data identitas peserta, dan melihat ringkasan status booking via tautan pesanan. |
+
+### C. Entitas Eksternal Non-Login (Penerima Dokumen Lapangan)
+| Entitas | Peran Operasional | Interaksi Sistem |
+| :--- | :--- | :--- |
+| **Tour Leader** | Koordinator & pemandu perjalanan lapangan | Menerima lembar fisik *Print-Ready Field Manifest* (PDF/XLSX) dari Admin sebelum keberangkatan; memvalidasi kehadiran peserta secara verbal/kertas di titik kumpul; melaporkan disrupsi via WhatsApp ke Admin. *Tidak memiliki akun login sistem pada MVP-1 guna menjaga scope dan mengakomodasi demografi peserta lansia.* |
+| **Vendor PIC** | Penyedia jasa pihak ketiga (Armada/Hotel/Resto) | Menerima dokumen Purchase Order (PO) dan Service Voucher resmi dalam format PDF dari tim Operations. *Tidak memiliki portal akun pada MVP-1 (ditangguhkan ke Phase 2).* |
+
+### D. Otomasi Sistem
+| Entitas | Peran Operasional | Interaksi Sistem |
+| :--- | :--- | :--- |
 | **System Automation Engine** | Mesin otomasi terjadwal sistem | Menjalankan expiry hold kursi 2 jam, evaluasi kuota H-5 00:00 WIB, dan radar peak season H-30 hari. |
 
 ---
@@ -167,26 +180,32 @@ flowchart TD
     Decision -- "Jalur 4: Force Majeure Override" --> Override["Tetap Berangkat dengan Catatan Justifikasi Audit"]
 ```
 
-### 5.4 Journey 4: Field Operations, Live Manifest & Check-in (TL)
+### 5.4 Journey 4: Operasional Lapangan via Manifest Cetak & Sinkronisasi Presensi Back-Office
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor TL as Tour Leader
-    participant App as Mobile Web Manifest
+    actor Admin as Admin Sales / Ops
+    actor TL as Tour Leader (Lapangan)
+    actor Pax as Peserta (Pax)
+    participant TMS as TMS Back-Office
     participant DB as Database
 
-    TL->>App: Login & Buka Jadwal yang Ditugaskan
-    App->>DB: Query Traveler & Perk Badges
-    App-->>TL: Tampilkan Manifest Lapangan (Default filter bus terkait)
-    TL->>App: Cek Titik Kumpul & Sambut Peserta
-    TL->>App: Tekan Tombol "Check-in / Boarded"
-    App->>DB: Update Status Traveler = BOARDED (Timestamp)
-    TL->>App: Verifikasi Perk Badge (Bagikan Merchandise/Extra Meal)
-    opt Terjadi Kendala Lapangan
-        TL->>App: Buka Form Insiden, Tulis Kronologi & Upload Foto
-        App->>DB: Simpan Incident Log terikat Departure ID
+    Admin->>TMS: Buka Departure (Status: CONFIRMED_DEPARTURE)
+    Admin->>TMS: Unduh "Print-Ready Field Manifest" (PDF Checklist)
+    TMS->>DB: Query Data Traveler, Bus, Titik Jemput, & Perk Badges
+    TMS-->>Admin: Render Dokumen PDF Siap Cetak (Checklist + Badges)
+    Admin->>TL: Serahkan Lembar Fisik Manifest (Kertas Cetak / PDF WA)
+    Note over TL,Pax: Hari H di Titik Kumpul (Titik A En-route & Meeting Point Utama)
+    Pax->>TL: Tiba & Sebutkan Nama / Tunjukkan Kode Booking
+    TL->>TL: Ceklis Fisik Kehadiran [X] pada Kertas Manifest
+    TL->>Pax: Sambut Peserta & Bagikan Layanan / Fasilitas Ekstra (Perk)
+    opt Peserta Batal di Tempat / No-Show
+        TL->>Admin: Lapor via WhatsApp (Nama Pax No-Show / Insiden)
+        Admin->>TMS: Buka Departure & Update Status Pax = NO_SHOW
+        TMS->>DB: Simpan Status & Log Audit
     end
+    Admin->>TMS: Tandai Presensi Kehadiran Final Sebelum Prosedur Closing H+2
 ```
 
 ### 5.5 Journey 5: Settlement Vendor & Financial Closing H+2 (VEND & FIN)
@@ -571,49 +590,26 @@ sequenceDiagram
 
 ---
 
-### Epic 7: Tour Leader Field Operations (`TL`)
+### Epic 7: Tour Leader Field Operations (`TL`) — [DITANGGUHKAN KE PHASE 2]
 
-#### `US-TL-01` (Feature ID: `TL-MANI-01`)
+> [!NOTE]
+> **Keputusan Penataan Ruang Lingkup MVP-1**: Modul aplikasi web seluler lapangan Tour Leader (`TL-MANI-01` s/d `TL-INCD-04`) ditangguhkan (*deferred*) ke Phase 2. Pertimbangan utamanya adalah menjaga agar ruang lingkup MVP-1 tidak membengkak (*anti-scope creep*), membebaskan Tour Leader dari friksi pengoperasian gadget di lapangan, serta menyesuaikan dengan profil demografi mayoritas peserta (terutama generasi lansia/keluarga yang memerlukan interaksi verbal langsung tanpa kendala teknis). Kebutuhan operasional lapangan pada MVP-1 sepenuhnya dipenuhi melalui **Format Manifest Lapangan Siap Cetak (*Print-Ready Field Manifest Checklist*)** pada modul `DOC-MANI-02` yang di-generate oleh tim Back-Office.
+
+#### `US-TL-01` (Feature ID: `TL-MANI-01`) [Deferred Phase 2]
 - **Judul**: Interactive Field Live Manifest & Multi-Bus Filtering
-- **Prioritas**: Must Have | **Aktor**: Tour Leader
-- **User Story**:
-  - *Sebagai* **Tour Leader**,
-  - *Saya ingin* membuka daftar manifest peserta yang selalu terbarui secara *live* melalui web seluler (*responsive mobile web*) serta memfilter peserta berdasarkan unit bus yang saya pandu,
-  - *Sehingga* saya dapat melihat daftar lengkap nama peserta, titik jemput (*pick-up point*), kontak darurat, dan informasi gender/kamar secara langsung di lapangan untuk armada saya.
-- **Kriteria Penerimaan (Acceptance Criteria)**:
-  1. *Given* Tour Leader telah login dan ditugaskan pada departure tertentu, *When* membuka menu Live Manifest, *Then* sistem menampilkan seluruh daftar peserta terkonfirmasi beserta status kehadiran dan detail kontak.
-  2. *Given* departure memiliki lebih dari 1 unit armada bus (Multi-Bus), *When* Tour Leader membuka manifest, *Then* sistem secara default memfilter dan menampilkan daftar peserta yang dialokasikan khusus pada unit bus yang ditugaskan kepada TL tersebut, dengan opsi beralih ke Master Manifest jika memiliki hak akses supervisor.
-  3. *Given* manifest dibuka di lapangan, *Then* daftar peserta secara otomatis diurutkan secara sekuensial berdasarkan waktu penjemputan rute bus: kelompok **Titik A (*En-Route Point*)** dengan jadwal lebih awal ditampilkan di urutan atas, diikuti kelompok **Meeting Point Utama**.
+- **Prioritas**: Ditangguhkan (Phase 2) | **Aktor**: Tour Leader
 
-#### `US-TL-02` (Feature ID: `TL-PERK-02`)
-- **Judul**: Perk Badge & Inclusion Validator
-- **Prioritas**: Must Have | **Aktor**: Tour Leader
-- **User Story**:
-  - *Sebagai* **Tour Leader**,
-  - *Saya ingin* melihat ikon penanda fasilitas khusus (*Perk Badge*) pada nama peserta di manifest lapangan,
-  - *Sehingga* saya dapat membagikan merchandise spesial atau layanan makanan tambahan kepada peserta yang berhak tanpa salah sasaran.
-- **Kriteria Penerimaan (Acceptance Criteria)**:
-  1. *Given* peserta memiliki fasilitas promo ekstra (misal: *Free Extra Meals*), *When* nama peserta dibuka di manifest lapangan, *Then* sistem menampilkan lencana (*badge*) visual dan rincian fasilitas ekstra tersebut.
+#### `US-TL-02` (Feature ID: `TL-PERK-02`) [Deferred Phase 2]
+- **Judul**: Perk Badge & Inclusion Validator Web
+- **Prioritas**: Ditangguhkan (Phase 2) | **Aktor**: Tour Leader
 
-#### `US-TL-03` (Feature ID: `TL-ATTN-03`)
+#### `US-TL-03` (Feature ID: `TL-ATTN-03`) [Deferred Phase 2]
 - **Judul**: Digital Attendance & Check-in Lapangan
-- **Prioritas**: Must Have | **Aktor**: Tour Leader
-- **User Story**:
-  - *Sebagai* **Tour Leader**,
-  - *Saya ingin* menandai status kehadiran fisik peserta (*Check-in / Boarded*) saat mereka tiba di titik penjemputan,
-  - *Sehingga* tim operasional kantor pusat mengetahui jumlah peserta yang sudah berada di dalam armada secara real-time.
-- **Kriteria Penerimaan (Acceptance Criteria)**:
-  1. *Given* peserta tiba di titik kumpul, *When* TL menekan tombol check-in pada kartu peserta, *Then* status peserta di manifest berubah menjadi `BOARDED` dengan timestamp waktu check-in.
+- **Prioritas**: Ditangguhkan (Phase 2) | **Aktor**: Tour Leader
 
-#### `US-TL-04` (Feature ID: `TL-INCD-04`)
+#### `US-TL-04` (Feature ID: `TL-INCD-04`) [Deferred Phase 2]
 - **Judul**: Pencatatan Insiden Lapangan (Field Incident Logger)
-- **Prioritas**: Must Have | **Aktor**: Tour Leader
-- **User Story**:
-  - *Sebagai* **Tour Leader**,
-  - *Saya ingin* mencatat kejadian darurat atau kendala layanan vendor (misal: bus mogok, destinasi tutup mendadak) beserta foto bukti langsung dari ponsel,
-  - *Sehingga* ada bukti rekam jejak resmi untuk dasar evaluasi operasional dan klaim/penalti vendor pasca-trip.
-- **Kriteria Penerimaan (Acceptance Criteria)**:
-  1. *Given* terjadi kendala di lapangan, *When* TL mengisi form insiden dengan deskripsi dan mengunggah foto, *Then* sistem menyimpan laporan insiden yang terikat langsung pada ID departure tersebut.
+- **Prioritas**: Ditangguhkan (Phase 2) | **Aktor**: Tour Leader
 
 ---
 
@@ -630,14 +626,19 @@ sequenceDiagram
   1. *Given* aksi penerbitan invoice atau PO dipicu, *When* sistem merender PDF, *Then* file PDF terbuat dengan tata letak baku, nomor registrasi dokumen resmi, rincian biaya, dan kop agensi.
 
 #### `US-DOC-02` (Feature ID: `DOC-MANI-02`)
-- **Judul**: Export Manifest Keberangkatan (PDF/XLSX)
+- **Judul**: Export Manifest Keberangkatan & Print-Ready Field Checklist (PDF/XLSX)
 - **Prioritas**: Must Have | **Aktor**: Operations Manager, Admin Sales
 - **User Story**:
-  - *Sebagai* **Operations Manager / Admin**,
-  - *Saya ingin* mengekspor daftar manifest keberangkatan ke format PDF atau Excel (XLSX),
-  - *Sehingga* dapat diserahkan ke pihak otoritas pelabuhan/KSOP, pihak asuransi perjalanan, dan manajemen hotel.
+  - *Sebagai* **Operations Manager & Admin Sales**,
+  - *Saya ingin* mengekspor daftar manifest keberangkatan ke format PDF atau Excel (XLSX) yang siap cetak (*print-ready*) dengan kotak centang absensi fisik dan penanda fasilitas promo (*Perk Badge*),
+  - *Sehingga* Tour Leader dapat melakukan presensi kehadiran peserta secara verbal/kertas di lapangan dan dokumen resmi dapat diserahkan ke otoritas pelabuhan/KSOP, asuransi perjalanan, serta manajemen hotel.
 - **Kriteria Penerimaan (Acceptance Criteria)**:
-  1. *Given* departure berstatus `CONFIRMED_DEPARTURE`, *When* menekan tombol "Export Manifest", *Then* file Excel/PDF terunduh berisi kolom: No, Nama Lengkap, NIK/Paspor, Gender, No Telp, Titik Jemput, dan Catatan Medis.
+  1. *Given* departure berstatus `CONFIRMED_DEPARTURE`, *When* menekan tombol "Export Field Manifest (PDF)", *Then* sistem menghasilkan dokumen PDF siap cetak dengan layout terstruktur yang memuat:
+     - Header dokumen: Kode Departure, Nama Paket, Tanggal Berangkat, Nama & Kontak Tour Leader, Nomor Armada/Plat Bus.
+     - Pengelompokan sekuensial rute: Daftar peserta otomatis dikelompokkan berdasarkan urutan penjemputan (**Titik A / En-route Point** di bagian atas dengan jam jemput lebih awal, disusul **Meeting Point Utama**).
+     - Kolom tabel: Kotak Centang Presensi Fisik (`[  ]`), No, Nama Lengkap Peserta, Gender, No Telp/WhatsApp, NIK/Paspor (termasking untuk kepatuhan privasi), Nomor Kursi/Kamar, Catatan Khusus/Alergi, dan Lencana Fasilitas Promo (**Perk Badges**, misal: `[Extra Meal]`, `[Free Souvenir]`).
+  2. *Given* admin membutuhkan rekap data digital mentah, *When* memilih export XLSX, *Then* file spreadsheet terunduh berisi seluruh data traveler dan kontak darurat untuk pelaporan asuransi dan mitra hotel.
+  3. *Given* trip selesai dilaksanakan atau terjadi kejadian no-show/pembatalan di lapangan yang dilaporkan TL via WhatsApp, *When* Admin Sales membuka departure di sistem back-office, *Then* admin dapat melakukan sinkronisasi status presensi peserta secara batch (*Mark as Boarded / No-Show*) sebelum prosedur *Financial Closing* dijalankan.
 
 ---
 
@@ -683,11 +684,11 @@ sequenceDiagram
 - **Prioritas**: Must Have | **Aktor**: System Admin
 - **User Story**:
   - *Sebagai* **System Admin**,
-  - *Saya ingin* membatasi akses menu dan hak eksekusi data berdasarkan 7 peran pengguna resmi,
-  - *Sehingga* integritas data terjaga dan tidak ada aktor yang mengeksekusi wewenang di luar otoritasnya.
+  - *Saya ingin* membatasi akses menu dan hak eksekusi data berdasarkan 4 peran pengguna internal terautentikasi (Owner, Operations, Finance, Admin Sales) serta akses publik tamu,
+  - *Sehingga* integritas data back-office terjaga dan tidak ada aktor yang mengeksekusi wewenang di luar otoritasnya.
 - **Kriteria Penerimaan (Acceptance Criteria)**:
   1. *Given* user dengan peran Admin Sales, *When* mencoba mengakses menu persetujuan pembayaran Finance atau konsol disrupsi Owner, *Then* sistem mengembalikan respons `403 Forbidden`.
-  2. *Given* user dengan peran Tour Leader, *Then* akses dibatasi hanya untuk membaca manifest dan check-in pada trip yang ditugaskan kepadanya.
+  2. *Given* pengguna terautentikasi, *Then* sistem membatasi wewenang secara ketat pada 4 peran back-office resmi, sedangkan akses Customer dilayani melalui endpoint formulir publik (*Guest Booking Mode*) tanpa akses ke data internal agensi.
 
 #### `US-SEC-02` (Feature ID: `SEC-AUDIT-02`)
 - **Judul**: Immutable Audit Trail & Override Logger
@@ -715,7 +716,7 @@ sequenceDiagram
 
 1. **Kinerja & Responsivitas (Performance)**:
    - Waktu respons API rata-rata $\le 200\text{ ms}$ untuk operasi baca (*read*) dan $\le 500\text{ ms}$ untuk transaksi tulis (*write*).
-   - Live manifest lapangan diakses dalam waktu $\le 2$ detik pada jaringan seluler 3G/4G.
+   - Rendering dan unduhan dokumen PDF manifest lapangan $\le 3$ detik untuk kapasitas hingga 200 peserta per keberangkatan.
 2. **Integritas Transaksi & Konkurensi (Concurrency Control)**:
    - Penerapan mekanisme *Concurrency Locking* pada kuota kursi saat pembuatan pesanan guna mencegah *race condition* dan *overbooking*.
    - Operasi cron evaluator kuota H-5 bersifat mutlak *idempotent*.
@@ -762,10 +763,10 @@ sequenceDiagram
 | `US-VEND-01` | `VEND-DIR-01` | BRD 2.1 | Modul 07 (`VEND`) |
 | `US-VEND-02` | `VEND-PO-02` | BRD 1.1, 4.4.2 | Modul 07 (`VEND`) |
 | `US-VEND-03` | `VEND-CLAIM-03`| BRD 1.1, 3 | Modul 07 (`VEND`) |
-| `US-TL-01` | `TL-MANI-01` | BRD 3 (Tour Leader) | Modul 08 (`TL`) |
-| `US-TL-02` | `TL-PERK-02` | BRD Rule 4.3.2 | Modul 08 (`TL`) |
-| `US-TL-03` | `TL-ATTN-03` | BRD 3 (Tour Leader) | Modul 08 (`TL`) |
-| `US-TL-04` | `TL-INCD-04` | BRD 3 (Tour Leader) | Modul 08 (`TL`) |
+| `US-TL-01` | `TL-MANI-01` | BRD 3 (Tour Leader) | Modul 08 (`TL`) [Deferred Phase 2] |
+| `US-TL-02` | `TL-PERK-02` | BRD Rule 4.3.2 | Modul 08 (`TL`) [Deferred Phase 2] |
+| `US-TL-03` | `TL-ATTN-03` | BRD 3 (Tour Leader) | Modul 08 (`TL`) [Deferred Phase 2] |
+| `US-TL-04` | `TL-INCD-04` | BRD 3 (Tour Leader) | Modul 08 (`TL`) [Deferred Phase 2] |
 | `US-DOC-01` | `DOC-GEN-01` | BRD 1.1, 6 | Modul 09 (`DOC`) |
 | `US-DOC-02` | `DOC-MANI-02` | BRD 6 | Modul 09 (`DOC`) |
 | `US-SEC-01` | `SEC-RBAC-01` | BRD 3 (RBAC) | Modul 10 (`SEC`) |

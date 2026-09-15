@@ -8,6 +8,15 @@ Format pencatatan mengikuti panduan:
 
 ## [2026-09-15]
 
+### [SCOPE-REFINEMENT] Penataan Ruang Lingkup Lapangan Tour Leader & RBAC MVP-1
+- **Status:** Approved
+- **Author:** Product & Operations Team
+- **Changes:**
+  - **Penangguhan Modul TL ke Phase 2**: Mengeluarkan modul aplikasi mobile-web Tour Leader (`TL-MANI-01` s/d `TL-INCD-04`) dari MVP-1 ke Phase 2 untuk mencegah *scope creep* dan menyesuaikan dengan profil demografi peserta tour yang mayoritas generasi lansia/keluarga (memerlukan layanan verbal/kertas langsung tanpa friksi teknologi di titik kumpul).
+  - **Penyederhanaan RBAC**: Tour Leader dan Vendor tidak dijadikan akun login sistem pada MVP-1. RBAC difokuskan pada 4 peran internal back-office terautentikasi (`OWNER`, `OPERATIONS`, `FINANCE`, `ADMIN_SALES`) dan endpoint pemesanan publik tamu (*Guest Checkout*).
+  - **Pengayaan Modul Dokumen (`DOC-MANI-02`)**: Memperluas kapabilitas ekspor manifest menjadi format *Print-Ready Field Manifest Checklist* (PDF/XLSX) yang dilengkapi kotak centang fisik kehadiran `[ ]`, pengelompokan urutan rute (Titik A En-route vs Meeting Point Utama), penanda *Perk Badges* fasilitas promo, serta sinkronisasi status presensi batch oleh Admin Back-Office.
+  - **Pembaruan Dokumen**: Menyelaraskan `01_PRD.md`, `02_BRD.md`, dan `03_FEATURE_CATALOG_AND_SCOPE.md`.
+
 ### [PRD-MVP1] 01_PRD.md - Version 1.0
 - **Status:** Approved Baseline
 - **Author:** Product & Operations Team

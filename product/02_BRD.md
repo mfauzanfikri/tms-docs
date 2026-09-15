@@ -107,24 +107,37 @@ classDiagram
 3. **Booking & Price Snapshot:** Kontrak reservasi komersial pelanggan yang mengunci harga total transaksi pada saat pembayaran DP terkonfirmasi (*Price Snapshot*), kebal terhadap fluktuasi harga di masa depan.
 4. **Promotion Overlay:** Lapisan modifikasi transaksi (diskon moneter % / nominal flat atau fasilitas cuma-cuma seperti *free meals/merchandise*) yang diterapkan di atas transaksi tanpa mengubah *base price* master paket.
 5. **Customer:** Pemesan komersial yang memegang kewajiban pembayaran; satu Customer dapat mendaftarkan satu atau lebih Traveler/Pax yang tercatat dalam manifest keberangkatan beserta hak fasilitas standar maupun fasilitas promo khusus (*Perk Badges*).
-6. **Tour Leader:** Koordinator lapangan yang memimpin perjalanan, memvalidasi kehadiran, memverifikasi hak fasilitas peserta, dan mencatat insiden.
-7. **Vendor:** Pihak ketiga penyedia layanan operasional atau mitra operator luar untuk transfer peserta.
+6. **Tour Leader:** Koordinator lapangan yang memimpin perjalanan, memvalidasi kehadiran secara verbal/kertas, dan membagikan fasilitas promo melalui lembar manifest fisik cetak. *(Pada MVP-1, TL berstatus sebagai entitas data operasional tanpa akun login sistem guna mengakomodasi demografi peserta lansia dan menjaga lean scope).*
+7. **Vendor:** Pihak ketiga penyedia layanan operasional atau mitra operator luar untuk transfer peserta. *(Menerima dokumen PO & voucher via PDF; portal vendor mandiri ditangguhkan ke Phase 2).*
 
 ---
 
 ## 3. Taksonomi Aktor & Matriks Hak Akses (RBAC)
 
-Sistem berinteraksi dengan 8 persona (7 aktor manusia dan 1 engine otomasi sistem):
+Sistem berinteraksi dengan 8 persona yang diklasifikasikan ke dalam 4 kelompok akses: **4 Pengguna Internal Terautentikasi (RBAC)**, **1 Aktor Publik Tamu**, **2 Entitas Eksternal Non-Login**, dan **1 Engine Otomasi**:
 
+### A. Pengguna Internal Back-Office (Wajib Akun & Login)
 | No | Aktor | Tanggung Jawab Utama | Lingkup Wewenang Sistem |
 |---|---|---|---|
-| 1 | **Customer** | Mengajukan inquiry, mengisi formulir registrasi peserta, mengklaim promo, membayar tagihan DP & pelunasan, mengajukan resolusi/pembatalan jika berhalangan. | Akses publik / portal tamu (Read info paket, Create booking draft, Upload bukti bayar). |
-| 2 | **Admin / Sales Desk** | Melayani inquiry pelanggan, membuat draf pesanan, mengaplikasikan kode promo valid, menerbitkan invoice, dan melayani meja resolusi disrupsi. | Create/Update Booking, Apply Promo, Trigger Invoice, Request Disruption Action. |
+| 1 | **Admin / Sales Desk** | Melayani inquiry pelanggan, membuat draf pesanan, mengaplikasikan kode promo valid, menerbitkan invoice, sinkronisasi presensi lapangan pasca-trip, dan melayani meja resolusi disrupsi. | Create/Update Booking, Apply Promo, Trigger Invoice, Sync Field Attendance, Request Disruption Action. |
+| 2 | **Operations Manager** | Merancang master paket wisata (BOM), mengatur mesin rekurensi jadwal, menugaskan Tour Leader (data assignment), menerbitkan PO/Voucher layanan vendor, dan mengekspor manifest cetak lapangan. | Create/Update Master Blueprint, Configure Recurrence, Assign TL, Issue Vendor PO, Export Print-Ready Manifest. |
 | 3 | **Finance** | Memverifikasi pembayaran kas masuk (DP & pelunasan), memproses pencairan *refund*, membayar tagihan vendor (PO), dan menyusun laporan laba-rugi trip. | Approve Payment, Execute Payout/Refund, Record Expense Allocation, Financial Closing. |
-| 4 | **Operations Manager** | Merancang master paket wisata (BOM), mengatur mesin rekurensi jadwal, menugaskan Tour Leader, dan menerbitkan PO/Voucher layanan vendor. | Create/Update Master Blueprint, Configure Recurrence, Assign TL, Issue Vendor PO. |
-| 5 | **Tour Leader (Field)** | Mengakses manifest digital lapangan secara langsung, memverifikasi kehadiran peserta, memvalidasi hak fasilitas/perks, dan mencatat insiden. | Read Field Manifest, Check-in Attendees, View Perk Badges, Log Field Incidents. |
-| 6 | **Business Owner / Executive** | Memantau kesehatan bisnis, memberikan persetujuan pembatalan trip kuota H-5, menyetujui subsidi *Free Waiver*, dan otorisasi kebijakan darurat. | Executive Dashboard, Approve D-5 Cancellation/Partner Transfer, Authorize Discretionary Override. |
-| 7 | **Vendor** | Menerima PO dan voucher pemesanan layanan, menyediakan fasilitas trip, atau menerima pelimpahan peserta dari agensi. | External Service Fulfillment, Invoice Claim. |
+| 4 | **Business Owner / Executive** | Memantau kesehatan bisnis, memberikan persetujuan pembatalan trip kuota H-5, menyetujui subsidi *Free Waiver*, dan otorisasi kebijakan darurat. | Executive Dashboard, Approve D-5 Cancellation/Partner Transfer, Authorize Discretionary Override. |
+
+### B. Aktor Publik Tamu (Tanpa Akun Login)
+| No | Aktor | Tanggung Jawab Utama | Lingkup Wewenang Sistem |
+|---|---|---|---|
+| 5 | **Customer** | Mengajukan inquiry, mengisi formulir registrasi peserta via web publik (guest checkout), mengklaim promo, membayar tagihan DP & pelunasan, dan mengunggah bukti bayar. | Akses publik / portal tamu (Read info paket, Create booking draft, Upload bukti bayar, View order summary). |
+
+### C. Entitas Eksternal Non-Login (Penerima Dokumen Lapangan)
+| No | Entitas | Tanggung Jawab Utama | Interaksi Sistem |
+|---|---|---|---|
+| 6 | **Tour Leader (Field)** | Memimpin rombongan lapangan, memvalidasi kehadiran secara verbal/kertas di titik kumpul, memverifikasi hak fasilitas/perks, dan melaporkan disrupsi via WA ke Admin. | Menerima lembar fisik *Print-Ready Field Manifest* (PDF/XLSX) sebelum trip; tidak memiliki akun login sistem di MVP-1. |
+| 7 | **Vendor** | Menerima PO dan voucher pemesanan layanan, menyediakan fasilitas trip, atau menerima pelimpahan peserta dari agensi. | Menerima file PO & Service Voucher PDF resmi; verifikasi tagihan klaim ditangani oleh Finance di back-office. |
+
+### D. Otomasi Sistem
+| No | Entitas | Tanggung Jawab Utama | Interaksi Sistem |
+|---|---|---|---|
 | 8 | **System Automation Engine** | Mengeksekusi pembuatan jadwal berulang, penguncian harga rilis, evaluasi kuota H-5 tepat waktu, dan kalkulasi tagihan/snapshot otomatis. | Background Cron, Recurrence Generator, D-5 Quota Evaluator, Price Snapshotter. |
 
 ---
@@ -331,7 +344,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 ├── 05. Promotion Overlay Engine (Monetary Discount, Complimentary Badges)
 ├── 06. Finance, Billing & Settlement Module (Invoicing, Instant Pay, Refund Queue, Ledger)
 ├── 07. Vendor & Procurement Module (Master Directory, Add-on PO & Voucher Generator)
-├── 08. Tour Leader Field Module (Live Manifest, Check-in, Late-Joiner Validator, Incident Log)
+├── 08. Tour Leader Field Module [Deferred Phase 2 — MVP dipenuhi via Manifest Cetak Modul 09]
 ├── 09. Document Management & Template Vault (Invoice, PO, Voucher, Manifest, Digital Waiver)
 └── 10. Access Control, Security & Audit Trail (RBAC, Override Logger)
 ```
