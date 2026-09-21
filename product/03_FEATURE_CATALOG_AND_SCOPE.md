@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Feature Catalog & Scope |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.1 |
+| **Document Version** | 1.3 |
 | **Document Status** | Approved |
 | **Implementation Status** | Planned |
-| **Last Updated** | 2026-09-10 |
+| **Last Updated** | 2026-09-21 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -98,6 +98,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 | `OPS-DISR-05` | Disruption & Crisis Resolution Console | Meja eksekusi 4 jalur resolusi disrupsi (*Reschedule, Partner Transfer, Full Refund, Force Majeure*) dengan otorisasi Owner. | Business Owner, Admin, Operations Manager |
 | `OPS-DISP-06` | Tour Leader & Resource Dispatcher | Penugasan pemandu wisata (Tour Leader) secara manual & bebas oleh Admin/Owner berdasarkan diskresi internal (tanpa restriksi algoritma/beban kerja), serta alokasi armada transportasi legal per batch keberangkatan. | Operations Manager, Admin, Owner |
 | `OPS-SEAS-07` | Peak Season Supply Alert & Vendor Block Reminder | Peringatan dini sistem pada H-1 Bulan (H-30 hari) sebelum rentang periode Peak Season (libur sekolah resmi / tanggal merah panjang) agar Manajer Operasional mengunci unit armada bus dan hotel mitra sebelum kehabisan pasokan. | Operations Manager, Business Owner |
+| `OPS-HIST-08` | Field Expense Entry & Trip History Archiving | Input pos rincian biaya riil lapangan dari lembar rekap TL, multi-upload foto/scan bon fisik/kuitansi, dan pengarsipan Dokumen Riwayat Trip terpadu untuk audit dan penutupan buku Finance. | Admin, Operations Manager |
 
 ---
 
@@ -159,6 +160,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 | `TL-ITIN-02`   | Itinerary Execution & Dual-Timestamp Tracker | Checklist agenda tur terwarisi dari Blueprint, pencatatan waktu aktual manual tanpa tombol pintas, dan catatan lapangan. | Tour Leader |
 | `TL-LOG-03`    | Ad-Hoc Disruption & Incident Logger | Pencatatan kejadian/aktivitas di luar jadwal resmi (kendala vendor, rute darurat) beserta lampiran foto bukti. | Tour Leader |
 | `TL-PERK-04`   | Perk Badge & Inclusion Validator | Indikator visual lencana fasilitas khusus/promo peserta untuk validasi serah terima layanan lapangan. | Tour Leader |
+| `TL-MEAL-05`   | Field Meal Manifest & Group Listing Helper | Generator format teks listing menu WhatsApp untuk grup koordinasi trip pra-keberangkatan, rekapitulasi total porsi menu untuk pemesanan manual di resto destinasi (non-PO), dan checklist pembagian makanan peserta. | Tour Leader, Admin |
 
 ---
 
@@ -235,6 +237,7 @@ flowchart LR
 | `OPS-DISR-05` | Disruption & Crisis Resolution Console | In-Scope | - | - | MVP: Eksekusi 4 jalur disrupsi via internal desk. |
 | `OPS-DISP-06` | Tour Leader & Resource Dispatcher | In-Scope | - | - | MVP: Penugasan TL bebas manual oleh Admin/Owner tanpa restriksi algoritma/beban kerja. |
 | `OPS-SEAS-07` | Peak Season Supply Alert & Vendor Block | In-Scope | - | - | MVP: Alert H-1 Bulan (H-30 hari) sebelum peak season untuk reservasi dini vendor. |
+| `OPS-HIST-08` | Field Expense Entry & Trip History | In-Scope | - | - | MVP: Input rincian biaya riil lapangan dari rekap TL, upload bon fisik, dan penerbitan Dokumen Riwayat Trip terpadu. |
 | `BOOK-PIPE-01` | Order & Booking Management | In-Scope | - | - | MVP: Pembuatan booking internal & formulir publik. |
 | `BOOK-HOLD-02` | Temporary Seat Locking & Quota Hold | In-Scope | - | - | MVP: Hold kuota 2 jam selama proses bayar DP. |
 | `BOOK-SNAP-03` | Price Snapshotting Engine | In-Scope | - | - | MVP: Kunci harga transaksi saat DP terverifikasi. |
@@ -256,6 +259,7 @@ flowchart LR
 | `TL-ITIN-02`   | Itinerary Execution & Dual-Timestamp | In-Scope | - | - | MVP: Checklist agenda tur, input jam aktual manual, dan catatan lapangan. |
 | `TL-LOG-03`    | Ad-Hoc Disruption & Incident Logger | In-Scope | - | - | MVP: Log kejadian luar jadwal & upload foto bukti kendala lapangan. |
 | `TL-PERK-04`   | Perk Badge & Inclusion Validator | In-Scope | - | - | MVP: Penanda visual fasilitas khusus/promo peserta di kartu presensi. |
+| `TL-MEAL-05`   | Field Meal Manifest & Listing Helper | In-Scope | - | - | MVP: Generator format teks WA grup, rekapitulasi porsi pemesanan resto non-PO, checklist pembagian pax. |
 | `DOC-GEN-01`   | Standard Document PDF Generator | In-Scope | - | - | MVP: Template PDF Invoice, Kuitansi, PO, Voucher. |
 | `DOC-MANI-02`  | Exportable Trip Manifest & Field Checklist | In-Scope | - | - | MVP: Ekspor manifest ke PDF/XLSX siap cetak dengan checkbox presensi fisik & badges. |
 | `SEC-RBAC-01`  | Role-Based Access Control (RBAC) | In-Scope | - | - | MVP: Hak akses 5 peran internal terautentikasi (Owner, Ops, Finance, Admin, TL) + Guest Checkout. |

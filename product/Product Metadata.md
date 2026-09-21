@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Product** | Travel & Tour Operations System (TMS) |
 | **Target Product Release** | v1.0 (TMS Core Operations MVP) |
-| **Last Updated** | 2026-09-10 |
+| **Last Updated** | 2026-09-21 |
 
 ---
 
@@ -14,13 +14,13 @@
 | Document Name | Path | Current Doc Version | Description / Status |
 | :--- | :--- | :--- | :--- |
 | [01 Business Analysis](01_BUSINESS_ANALYSIS.md) | `product/01_BUSINESS_ANALYSIS.md` | 1.2 | Approved — Analisis masalah, operating model, struktur BEP, dan risiko mid-trip addition |
-| [02 BRD](02_BRD.md) | `product/02_BRD.md` | 1.4 | Approved — Konsep domain, aktor/RBAC, canonical status vocabulary, H-5 gate, financial rules, Early Bus PO H-1 bulan, dan 2 pick-up points en-route |
-| [03 Feature Catalog & Scope](03_FEATURE_CATALOG_AND_SCOPE.md) | `product/03_FEATURE_CATALOG_AND_SCOPE.md` | 1.1 | Approved — Master katalog kapabilitas & pemetaan fase rilis (MVP vs. Phase 2 & 3) |
+| [02 BRD](02_BRD.md) | `product/02_BRD.md` | 1.5 | Approved — Konsep domain, aktor/RBAC, canonical status vocabulary, H-5 gate, financial rules, Early Bus PO H-1 bulan, 2 pick-up points en-route, protokol konsumsi non-PO di resto, dan rekapitulasi biaya Dokumen Riwayat Trip |
+| [03 Feature Catalog & Scope](03_FEATURE_CATALOG_AND_SCOPE.md) | `product/03_FEATURE_CATALOG_AND_SCOPE.md` | 1.3 | Approved — Master katalog kapabilitas, penambahan OPS-HIST-08 & TL-MEAL-05, serta pemetaan fase rilis (MVP vs. Phase 2 & 3) |
 
 ### Milestone & PRD Documents (MVP-1)
 | Feature ID | Document Name | Path | Current Doc Version | Description / Status |
 | :--- | :--- | :--- | :--- | :--- |
-| `TMS-MVP1-PRD` | [01 PRD MVP-1](../development/mvp-1/01_PRD.md) | `development/mvp-1/01_PRD.md` | 1.0 | Approved Baseline — User Stories, Journey Flows & Acceptance Criteria MVP-1 |
+| `TMS-MVP1-PRD` | [01 PRD MVP-1](../development/mvp-1/01_PRD.md) | `development/mvp-1/01_PRD.md` | 1.1 | Approved Baseline — User Stories, Journey Flows, Acceptance Criteria MVP-1, US-OPS-08, dan US-TL-05 |
 | `TMS-MVP1-FRD` | [02 FRD MVP-1](../development/mvp-1/02_FRD.md) | `development/mvp-1/02_FRD.md` | 1.0 | Planned / Not yet available — State Machine, System Triggers & Validations MVP-1 |
 
 ### Technical Architecture Documents

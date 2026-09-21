@@ -8,6 +8,16 @@ Format pencatatan mengikuti panduan:
 
 ## [2026-09-21]
 
+### [FIELD-EXPENSE-MEALS] Protokol Konsumsi Non-PO & Dokumen Riwayat Trip Terpadu
+- **Status:** Approved
+- **Author:** Product & Operations Team
+- **Changes:**
+  - **Protokol Pemilihan Menu Konsumsi Pra-Keberangkatan (`TL-MEAL-05` / `US-TL-05`)**: Peserta memilih menu dan porsi via format teks listing di grup koordinasi perjalanan (WhatsApp Group) pada H-3 s/d H-1. Sistem menyediakan generator format teks WA siap salin serta tampilan ringkasan teragregasi (*Field Meal Manifest*) pada portal mobile web Tour Leader.
+  - **Peniadaan PO Vendor Restoran (Non-PO On-Site Order)**: Ditegaskan bahwa rumah makan lokal di destinasi beroperasi secara manual di tempat tanpa penerbitan PO vendor. Tour Leader memesan langsung total porsi ke pihak restoran dan membagikan hidangan sesuai daftar peserta.
+  - **Rekapitulasi Pengeluaran Riil Lapangan Pasca-Trip (`OPS-HIST-08` / `US-OPS-08`)**: Maksimal H+1 setelah trip selesai (`COMPLETED`), Tour Leader menyusun rekapitulasi seluruh pengeluaran riil lapangan (makan resto lokal, BBM, tiket tol, retribusi jalan/daerah, parkir bus, ad-hoc) beserta seluruh bukti fisik sah (bon/nota/kuitansi) untuk diserahkan ke Admin Operasional.
+  - **Input Pengeluaran & Dokumen Riwayat Trip**: Admin Operasional menginput rincian pos pengeluaran lapangan dan mengunggah multi-file foto/scan bon fisik ke TMS, membundelnya menjadi Dokumen Riwayat Trip (*Trip Operational History & Expense Archive*) terpadu sebagai prasyarat rekonsiliasi kas dan penutupan buku (*Financial Closing Ledger*, Rule 4.5 / `FIN-CLOSE-05`) oleh Finance pada H+2.
+  - **Pembaruan Dokumen**: Menyelaraskan `02_BRD.md` (Versi 1.5, Rule 4.9 & 4.10), `03_FEATURE_CATALOG_AND_SCOPE.md` (Versi 1.3, fitur `OPS-HIST-08` & `TL-MEAL-05`), `01_PRD.md` (Versi 1.1, `US-OPS-08` & `US-TL-05`), dan `Product Metadata.md`.
+
 ### [FIELD-OPS] Integrasi Login Internal Tour Leader, Multi-Checkpoint & Itinerary Dual-Timestamp
 - **Status:** Approved
 - **Author:** Product & Operations Team

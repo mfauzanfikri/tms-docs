@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Requirements Document |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.4 |
+| **Document Version** | 1.5 |
 | **Document Status** | Approved |
 | **Implementation Status** | N/A |
-| **Last Updated** | 2026-09-15 |
+| **Last Updated** | 2026-09-21 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -119,11 +119,11 @@ Sistem berinteraksi dengan 8 persona yang diklasifikasikan ke dalam 4 kelompok a
 ### A. Pengguna Internal Terautentikasi (Wajib Akun & Login)
 | No | Aktor | Tanggung Jawab Utama | Lingkup Wewenang Sistem |
 |---|---|---|---|
-| 1 | **Admin / Sales Desk** | Melayani inquiry pelanggan, membuat draf pesanan, mengaplikasikan kode promo valid, menerbitkan invoice, monitoring presensi lapangan, dan melayani meja resolusi disrupsi. | Create/Update Booking, Apply Promo, Trigger Invoice, Monitor Field Attendance, Request Disruption Action. |
+| 1 | **Admin / Sales & Operations Desk** | Melayani inquiry pelanggan, membuat draf pesanan, mengaplikasikan kode promo valid, menerbitkan invoice, monitoring presensi lapangan, menginput rekapitulasi biaya pengeluaran lapangan & upload bukti bon fisik dari TL, dan melayani meja resolusi disrupsi. | Create/Update Booking, Apply Promo, Trigger Invoice, Monitor Field Attendance, Input Field Expense & Trip History, Request Disruption Action. |
 | 2 | **Operations Manager** | Merancang master paket wisata (BOM), mengatur mesin rekurensi jadwal, menugaskan Tour Leader (data assignment), menerbitkan PO/Voucher layanan vendor, dan mengekspor manifest cetak lapangan. | Create/Update Master Blueprint, Configure Recurrence, Assign TL, Issue Vendor PO, Export Manifest. |
-| 3 | **Finance** | Memverifikasi pembayaran kas masuk (DP & pelunasan), memproses pencairan *refund*, membayar tagihan vendor (PO), dan menyusun laporan laba-rugi trip. | Approve Payment, Execute Payout/Refund, Record Expense Allocation, Financial Closing. |
+| 3 | **Finance** | Memverifikasi pembayaran kas masuk (DP & pelunasan), memproses pencairan *refund*, membayar tagihan vendor (PO), memvalidasi rekapitulasi biaya riil Dokumen Riwayat Trip, dan menyusun laporan laba-rugi trip. | Approve Payment, Execute Payout/Refund, Record Expense Allocation, Verify Field Expenses, Financial Closing. |
 | 4 | **Business Owner / Executive** | Memantau kesehatan bisnis, memberikan persetujuan pembatalan trip kuota H-5, menyetujui subsidi *Free Waiver*, dan otorisasi kebijakan darurat. | Executive Dashboard, Approve D-5 Cancellation/Partner Transfer, Authorize Discretionary Override. |
-| 5 | **Tour Leader (Field)** | Memimpin rombongan lapangan, presensi bertahap (keberangkatan & kamar hotel), mencatat realisasi agenda itinerary dengan waktu aktual manual, serta mencatat log insiden darurat dengan foto. | Akses Field Operations Portal untuk jadwal yang ditugaskan; Presensi Boarding & Rooming, Checklist Itinerary, Log Ad-Hoc/Insiden Lapangan. |
+| 5 | **Tour Leader (Field)** | Memimpin rombongan lapangan, membagikan template listing menu di grup trip dan memesan manual ke resto tanpa PO, presensi bertahap (keberangkatan & kamar hotel), mencatat realisasi agenda itinerary dengan waktu aktual manual, mencatat log insiden darurat dengan foto, serta menyusun rekapitulasi pengeluaran riil lapangan beserta bukti fisik/bon untuk diserahkan ke Admin paska-trip. | Akses Field Operations Portal untuk jadwal yang ditugaskan; Presensi Boarding & Rooming, Checklist Itinerary, Akses Field Meal Manifest, Log Ad-Hoc/Insiden Lapangan, Serah Terima Bukti Pengeluaran Riil. |
 
 ### B. Aktor Publik Tamu (Tanpa Akun Login)
 | No | Aktor | Tanggung Jawab Utama | Lingkup Wewenang Sistem |
@@ -275,6 +275,17 @@ Jika terdapat permintaan penambahan peserta baru saat tour sedang berlangsung (*
   - Waktu penjemputan di Titik A wajib dijadwalkan lebih awal (*earlier timestamp*) dibanding Meeting Point Utama.
   - Pada H-2 keberangkatan, Admin Sales/Operasional wajib menghubungi seluruh peserta terkonfirmasi: *"Apakah ada yang ingin dijemput di Titik A?"*. Pilihan peserta langsung dicatat dan tersinkronisasi secara sekuensial ke *Live Manifest* Tour Leader.
 
+### 4.9 Protokol Pemilihan Menu Konsumsi Lapangan Non-PO (Pre-Trip Group Listing & On-Site Manual Order)
+- **Rule 4.9.1 (Pre-Trip Group Listing):** Pada fase persiapan keberangkatan (H-3 hingga H-1 kalender sebelum tanggal jalan), Tour Leader atau Admin menyebarkan format teks listing di grup koordinasi perjalanan (*WhatsApp Group*) yang memuat daftar nama seluruh peserta terkonfirmasi, opsi varian menu makanan yang tersedia pada destinasi persinggahan, serta alokasi jumlah porsi dan catatan khusus/pantangan alergi (`BOOK-VAULT-04`).
+- **Rule 4.9.2 (Guardrail Porsi Konsumsi & Default Fallback):** Akumulasi porsi konsumsi yang dipilih dibatasi oleh jumlah pax terdaftar dalam kontrak booking (sesuai hak fasilitas BOM paket). Penambahan porsi ekstra di luar jatah paket ditanggung mandiri oleh peserta. Bagi peserta yang tidak mengisi listing hingga batas waktu penutupan (*cut-off time*, default: H-1 pukul 12:00 WIB), sistem/TL otomatis menetapkan menu standar (*Standard Default Menu*).
+- **Rule 4.9.3 (Peniadaan PO Vendor Restoran & Pemesanan Manual di Lokasi):** Sistem tidak menerbitkan *Purchase Order (PO)* kepada rumah makan destinasi karena rumah makan lokal beroperasi dengan pemesanan langsung di tempat. Tour Leader membacakan atau menyerahkan rekapitulasi total porsi menu (*Field Meal Manifest*) langsung ke pelayan/kasir rumah makan saat rombongan tiba. Saat hidangan disajikan, TL mencocokkan pembagian menu berdasarkan daftar nama peserta agar tidak terjadi kesalahan distribusi porsi.
+
+### 4.10 Protokol Rekapitulasi Pengeluaran Riil Lapangan & Dokumen Riwayat Trip (Post-Trip Field Expense Ledger & Trip History Archiving)
+- **Rule 4.10.1 (Kewajiban Rekapitulasi & Bukti Fisik oleh TL):** Maksimal **H+1** setelah trip selesai (`COMPLETED`), Tour Leader wajib menyusun lembar rekapitulasi seluruh pengeluaran riil lapangan (konsumsi rumah makan lokal, bahan bakar armada tambahan, tiket tol, retribusi jalan/daerah, parkir bus, dan biaya darurat lapangan) serta melampirkan seluruh bukti fisik yang sah (nota bon warung/resto, karcis parkir, struk tol, kuitansi).
+- **Rule 4.10.2 (Input Data & Upload Bukti oleh Admin Operasional):** Admin Operasional bertanggung jawab memvalidasi fisik bukti pengeluaran, menginput setiap rincian pos biaya lapangan ke dalam sistem TMS, dan mengunggah berkas foto/scan bukti bon fisik tersebut.
+- **Rule 4.10.3 (Pembentukan Dokumen Riwayat Trip Terpadu):** Rincian biaya riil dan berkas bukti pembayaran yang telah diinput Admin Operasional secara otomatis dibundel ke dalam **Dokumen Riwayat Trip (*Trip Operational History & Expense Archive*)** yang permanen dan terhubung dengan manifest presensi bertahap (`TL-ATTN-01`), catatan jam aktual agenda (`TL-ITIN-02`), dan log insiden lapangan (`TL-LOG-03`).
+- **Rule 4.10.4 (Prasyarat Rekonsiliasi & Financial Closing H+2):** Dokumen Riwayat Trip yang telah diverifikasi kelengkapannya menjadi dasar mutlak bagi Finance untuk melakukan rekonsiliasi kas jalan (*petty cash / cash advance*), penagihan/reimbursement selisih kas, dan penutupan buku laba-rugi (*Financial Closing Ledger*, Rule 4.5 / `FIN-CLOSE-05`) maksimal pada **H+2**.
+
 ---
 
 ## 5. End-to-End Business Flow & BPMN Swimlane
@@ -286,9 +297,10 @@ flowchart TD
     subgraph Operational["Operational & Tour Planning"]
         O1[Buat Master Tour Package & BOM] --> O2[Set Recurrence Schedule: Mingguan/Bulanan]
         O2 --> O3[Penugasan Tour Leader]
-        O3 --> O4[Terbitkan PO & Service Voucher Vendor]
+        O3 --> O4[Terbitkan PO & Service Voucher Vendor Bus & Hotel]
         O4 --> O5[Rilis Final Manifest ke TL]
-        O5 --> O6[Tour Leader Pimpin Trip & Validasi Fasilitas]
+        O5 --> O6[Tour Leader Pimpin Trip, Manual Order Resto & Validasi Fasilitas]
+        O6 --> O7[TL Rekap Biaya Keluar & Serahkan Bukti Bon H+1]
     end
 
     subgraph System["System Automation Engines"]
@@ -305,20 +317,22 @@ flowchart TD
         A2 --> A3[Buat Booking & Terapkan Promotion]
         A3 --> A4[Terbitkan Invoice DP & Pelunasan]
         A4 --> A5{Penanganan Disrupsi H-5}
+        A6[Input Biaya Riil Lapangan & Upload Bukti ke Riwayat Trip]
     end
 
     subgraph Customer["Customer"]
         C1[Inquiry & Pilih Paket] --> C2[Isi Form Registrasi & Kode Promo]
         C2 --> C3[Bayar DP & Upload Struk]
         C3 --> C4[Bayar Pelunasan Sebelum H-5]
-        C4 --> C5[Pelaksanaan Trip & Nikmati Fasilitas]
+        C4 --> C5[Listing Menu Makan di WAG Trip H-3 s/d H-1]
+        C5 --> C6[Pelaksanaan Trip & Nikmati Fasilitas]
     end
 
     subgraph Finance["Finance"]
         F1[Verifikasi Pembayaran DP & Pelunasan]
-        F2[Pembayaran PO Tagihan Vendor]
+        F2[Pembayaran PO Tagihan Vendor Bus/Hotel]
         F3[Eksekusi Payout Refund / Subsidi]
-        F4[Financial Closing Laba-Rugi Per Trip]
+        F4[Verifikasi Biaya Lapangan & Financial Closing H+2]
     end
 
     O1 --> S1 --> A1 --> A2 --> C1 --> C2 --> A3 --> A4 --> C3 --> F1 --> S3
@@ -326,7 +340,9 @@ flowchart TD
     S6[Set Departure: CONFIRMED_DEPARTURE] --> O3
     S7 --> A5
     A5 --> F3
-    O6 --> F2 --> F4
+    O6 --> F2
+    O7 --> A6
+    A6 --> F4
 ```
 
 ---

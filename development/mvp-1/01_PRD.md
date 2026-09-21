@@ -9,10 +9,10 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Product Requirements Document (PRD) |
 | **Phase / Milestone** | MVP-1 |
-| **Document Version** | 1.0 |
+| **Document Version** | 1.1 |
 | **Document Status** | Approved Baseline |
 | **Implementation Status** | In Development |
-| **Last Updated** | 2026-09-15 |
+| **Last Updated** | 2026-09-21 |
 | **Author / Owner** | Product & Operations Team |
 
 ---
@@ -404,6 +404,18 @@ sequenceDiagram
   1. *Given* kalender sistem mendeteksi rentang tanggal merah atau libur semester sekolah resmi, *When* tanggal sistem mencapai H-30 hari sebelum periode tersebut dimulai, *Then* sistem memunculkan banner peringatan prioritas tinggi di dashboard operasional dan mengirimkan notifikasi tugas (*actionable task*) kepada Operations Manager.
   2. *Given* alert H-30 hari aktif, *When* Operations Manager membuka alert dan memilih PO Bus mitra, *Then* sistem memungkinkan penerbitan dokumen **Early Bus Purchase Order (PO Blok Armada)** lengkap dengan nomor registrasi PO resmi, identitas pool bus vendor, rincian unit/kapasitas seat, klausul penguncian tarif sewa, dan pencatatan komitmen DP vendor.
 
+#### `US-OPS-08` (Feature ID: `OPS-HIST-08`)
+- **Judul**: Input Rekapitulasi Pengeluaran Riil Lapangan & Pengarsipan Riwayat Trip
+- **Prioritas**: Must Have | **Aktor**: Admin / Operations Desk, Operations Manager
+- **User Story**:
+  - *Sebagai* **Admin / Operations Desk**,
+  - *Saya ingin* menginput rincian pos pengeluaran riil lapangan dari lembar rekapitulasi Tour Leader (makan resto lokal, BBM, tiket tol, retribusi jalan/daerah, parkir bus, dan biaya ad-hoc) serta mengunggah lampiran foto/scan bukti fisik bon/nota/kuitansi ke sistem pada H+1,
+  - *Sehingga* sistem membundel data tersebut ke dalam **Dokumen Riwayat Trip (*Trip Operational History & Expense Archive*)** yang terpadu dan valid sebagai dasar rekonsiliasi kas jalan dan penutupan buku laba-rugi oleh Finance.
+- **Kriteria Penerimaan (Acceptance Criteria)**:
+  1. *Given* trip berstatus `COMPLETED` dan TL menyerahkan rekapitulasi pengeluaran riil beserta bukti bon/nota fisik pada H+1, *When* Admin membuka tab Riwayat & Biaya Lapangan pada departure terkait, *Then* sistem menyediakan formulir entri tabel pos biaya (Tanggal, Kategori Biaya: Resto Lokal, BBM, Tol, Parkir, Tiket Ad-Hoc, Lainnya, Nominal Pengeluaran, Keterangan) dengan kalkulasi otomatis total pengeluaran riil.
+  2. *Given* Admin mengisi pos biaya pengeluaran, *When* mengunggah lampiran berkas bukti (format PDF/JPG/PNG, dukungan multi-file), *Then* sistem menyimpan lampiran tersebut ke dalam vault bukti pengeluaran departure dan menandai status verifikasi bukti sebagai `ATTACHED`.
+  3. *Given* seluruh pos pengeluaran dan berkas bukti selesai diinput, *When* Admin menekan tombol `[Simpan & Terbitkan Dokumen Riwayat Trip]`, *Then* sistem membundel data pengeluaran, berkas bukti, presensi kehadiran (`TL-ATTN-01`), realisasi waktu itinerary (`TL-ITIN-02`), dan log insiden lapangan (`TL-LOG-03`) menjadi satu Dokumen Riwayat Trip terpadu berstatus `READY_FOR_CLOSING` serta meneruskan tugas verifikasi kas ke tim Finance.
+
 ---
 
 ### Epic 3: Booking & Traveler Vault (`BOOK`)
@@ -656,6 +668,18 @@ sequenceDiagram
   1. *Given* peserta terdaftar memiliki promo fasilitas gratis (misal: *Free Merchandise Kit*), *When* kartu presensi peserta dibuka di portal lapangan, *Then* sistem menampilkan lencana visual (*badge*) warna mencolok beserta rincian fasilitas ekstra yang menjadi hak peserta tersebut.
   2. *Given* fasilitas ekstra telah diserahkan kepada peserta, *When* TL mengetuk lencana tersebut, *Then* sistem menandai fasilitas tersebut telah diserahterimakan (*Perk Distributed*).
 
+#### `US-TL-05` (Feature ID: `TL-MEAL-05`)
+- **Judul**: Field Meal Manifest & WhatsApp Listing Helper (Pemesanan Resto Non-PO)
+- **Prioritas**: Must Have | **Aktor**: Tour Leader, Admin Sales
+- **User Story**:
+  - *Sebagai* **Tour Leader / Admin**,
+  - *Saya ingin* menyalin template teks format listing menu makan untuk dibagikan ke WhatsApp Group peserta pada fase persiapan keberangkatan, serta mengakses kartu ringkasan total porsi menu (*Field Meal Manifest*) di aplikasi lapangan saat rombongan tiba di rumah makan destinasi,
+  - *Sehingga* saya dapat memesan hidangan secara langsung/manual ke pihak rumah makan tanpa sistem PO dan membagikan porsi makanan ke meja peserta secara akurat tanpa salah bagi.
+- **Kriteria Penerimaan (Acceptance Criteria)**:
+  1. *Given* departure berstatus `CONFIRMED_DEPARTURE` (H-3 s/d H-1 sebelum keberangkatan), *When* TL atau Admin menekan tombol `[Salin Format List Menu WA]`, *Then* sistem menghasilkan format teks siap tempel (*clipboard ready*) yang memuat daftar nama seluruh peserta terdaftar, pilihan menu makan sesuai BOM paket, dan instruksi pengisian listing (Nama, Menu Pilihan, Banyak Porsi, Catatan Alergi).
+  2. *Given* rombongan tiba di rumah makan persinggahan, *When* TL membuka tab Konsumsi Lapangan (*Field Meals*) di portal mobile web, *Then* sistem menampilkan kartu ringkasan teragregasi (*Aggregated Meal Summary*) berupa total porsi per varian menu (misal: "Ayam Bakar Madu: 15 porsi, Nasi Ikan Nila Bakar: 8 porsi, Nasi Goreng: 2 porsi") untuk dipesan langsung ke kasir/pelayan rumah makan.
+  3. *Given* hidangan telah disajikan, *When* TL mendistribusikan makanan ke peserta, *Then* sistem menampilkan daftar rincian per peserta lengkap dengan catatan pantangan/alergi makanan agar TL dapat mencocokkan porsi dengan tepat; setelah makan selesai, TL meminta nota/bon fisik pembayaran untuk direkap pasca-trip.
+
 ---
 
 ### Epic 8: Document Management & Templates (`DOC`)
@@ -793,6 +817,7 @@ sequenceDiagram
 | `US-OPS-05` | `OPS-DISR-05` | BRD Rule 4.5, 4.5.1 | Modul 03 (`OPS`) |
 | `US-OPS-06` | `OPS-DISP-06` | BRD 3 (Ops Manager) | Modul 03 (`OPS`) |
 | `US-OPS-07` | `OPS-SEAS-07` | BRD 1.1, Scope Modul 03 | Modul 03 (`OPS`) |
+| `US-OPS-08` | `OPS-HIST-08` | BRD Rule 4.10 | Modul 03 (`OPS`) |
 | `US-BOOK-01` | `BOOK-PIPE-01` | BRD Rule 4.2.1 | Modul 04 (`BOOK`) |
 | `US-BOOK-02` | `BOOK-HOLD-02` | BRD Rule 4.2.2 | Modul 04 (`BOOK`) |
 | `US-BOOK-03` | `BOOK-SNAP-03` | BRD Rule 4.2.3 | Modul 04 (`BOOK`) |
@@ -814,6 +839,7 @@ sequenceDiagram
 | `US-TL-02` | `TL-ITIN-02` | BRD 3, 6 (Itinerary) | Modul 08 (`TL`) |
 | `US-TL-03` | `TL-LOG-03` | BRD 3 (Tour Leader) | Modul 08 (`TL`) |
 | `US-TL-04` | `TL-PERK-04` | BRD Rule 4.3.2 | Modul 08 (`TL`) |
+| `US-TL-05` | `TL-MEAL-05` | BRD Rule 4.9 | Modul 08 (`TL`) |
 | `US-DOC-01` | `DOC-GEN-01` | BRD 1.1, 6 | Modul 09 (`DOC`) |
 | `US-DOC-02` | `DOC-MANI-02` | BRD 6 | Modul 09 (`DOC`) |
 | `US-SEC-01` | `SEC-RBAC-01` | BRD 3 (RBAC) | Modul 10 (`SEC`) |
