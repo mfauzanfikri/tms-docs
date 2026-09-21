@@ -6,6 +6,18 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-09-21]
+
+### [FIELD-OPS] Integrasi Login Internal Tour Leader, Multi-Checkpoint & Itinerary Dual-Timestamp
+- **Status:** Approved
+- **Author:** Product & Operations Team
+- **Changes:**
+  - **Reintegrasi Tour Leader ke RBAC Internal (5 Peran)**: Menetapkan `TOUR_LEADER` sebagai peran terautentikasi resmi di sistem MVP-1 dengan prinsip hak akses minimal (*strictly assigned departures*), mengisolasi data manifest di balik kredensial login demi kepatuhan perlindungan data pribadi dan keandalan koordinasi back-office.
+  - **Multi-Checkpoint Attendance (`TL-ATTN-01`)**: Mendukung presensi digital bertahap yang mencakup check-in keberangkatan armada (boarding titik jemput & Perk Badges) serta check-in penginapan (*Hotel Rooming*) untuk memvalidasi pembagian kamar fisik dan penyerahan kunci.
+  - **Itinerary Execution Tracker (`TL-ITIN-02`)**: Memungkinkan checklist agenda tur yang diwarisi dari Blueprint, didukung pola *Dual-Timestamp* (`actual_event_time` yang dapat diketik manual oleh TL untuk mencerminkan jam tiba riil di lapangan, serta `system_recorded_at` untuk audit server) tanpa tombol pintas tambahan, ditambah kolom catatan lapangan.
+  - **Ad-Hoc Disruption Logger (`TL-LOG-03`)**: Form ringkas untuk mencatat kejadian tak terduga/kendala di luar jadwal baku disertai unggahan foto bukti via kamera ponsel yang langsung tersinkronisasi ke radar operasional Back-Office.
+  - **Pembaruan Dokumen**: Menyelaraskan seluruh spesifikasi pada `01_PRD.md`, `02_BRD.md`, dan `03_FEATURE_CATALOG_AND_SCOPE.md`.
+
 ## [2026-09-15]
 
 ### [SCOPE-REFINEMENT] Penataan Ruang Lingkup Lapangan Tour Leader & RBAC MVP-1
