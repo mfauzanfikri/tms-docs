@@ -8,6 +8,15 @@ Format pencatatan mengikuti panduan:
 
 ## [2026-09-21]
 
+### [ITIN-TROUBLE-PHOTO] Lampiran Bukti Foto Kendala Lapangan pada Logging Activity (TL-ITIN-02)
+- **Status:** Approved
+- **Author:** Product & Operations Team
+- **Changes:**
+  - **Dukungan Bukti Foto Kendala Perjalanan (`TL-ITIN-02` / `US-TL-02`)**: Memperluas fitur logging activity agenda tur sehingga Tour Leader dapat melampirkan bukti foto (dari kamera ponsel atau galeri) saat terjadi trouble/kendala operasional di perjalanan atau di destinasi agenda (seperti kemacetan ekstrem, bus mogok/kendala teknis, kerusakan fasilitas objek wisata, atau cuaca buruk), selain kolom catatan teks per activity.
+  - **Sinkronisasi Visual & Radar Back-Office**: Bukti foto kendala tersimpan terikat pada ID activity log (`trouble_photo_url`), memunculkan thumbnail visual di timeline aplikasi TL, serta memicu indikator/badge peringatan kendala aktivitas secara real-time pada radar operasional Back-Office.
+  - **Pengarsipan Terpadu**: Foto bukti kendala aktivitas turut dibundel ke dalam Dokumen Riwayat Trip (*Trip Operational History & Expense Archive* / `OPS-HIST-08` / Rule 4.10.3) pasca-trip sebagai bukti sah rekonsiliasi dan evaluasi vendor/rute.
+  - **Pembaruan Dokumen**: Menyelaraskan `01_PRD.md` (Versi 1.2, `US-TL-02` AC 5 & 6, §2.1 & §5.4), `02_BRD.md` (Versi 1.6, Rule 4.10.3 & Modul 08), `03_FEATURE_CATALOG_AND_SCOPE.md` (Versi 1.4, fitur `TL-ITIN-02`), dan `Product Metadata.md`.
+
 ### [FIELD-EXPENSE-MEALS] Protokol Konsumsi Non-PO & Dokumen Riwayat Trip Terpadu
 - **Status:** Approved
 - **Author:** Product & Operations Team

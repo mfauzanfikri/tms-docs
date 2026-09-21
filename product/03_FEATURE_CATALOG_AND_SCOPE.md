@@ -9,7 +9,7 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Feature Catalog & Scope |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.3 |
+| **Document Version** | 1.4 |
 | **Document Status** | Approved |
 | **Implementation Status** | Planned |
 | **Last Updated** | 2026-09-21 |
@@ -157,7 +157,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 | Feature ID | Nama Fitur | Deskripsi Kapabilitas | Aktor / Persona |
 | :--- | :--- | :--- | :--- |
 | `TL-ATTN-01`   | Multi-Checkpoint Digital Attendance | Presensi bertahap: Check-in keberangkatan bus (Titik A vs Meeting Point Utama) dan check-in penginapan/pembagian kamar hotel. | Tour Leader |
-| `TL-ITIN-02`   | Itinerary Execution & Dual-Timestamp Tracker | Checklist agenda tur terwarisi dari Blueprint, pencatatan waktu aktual manual tanpa tombol pintas, dan catatan lapangan. | Tour Leader |
+| `TL-ITIN-02`   | Itinerary Execution & Dual-Timestamp Tracker | Checklist agenda tur terwarisi dari Blueprint, pencatatan waktu aktual manual tanpa tombol pintas, catatan per aktivitas, dan lampiran bukti foto saat terjadi kendala/trouble di perjalanan. | Tour Leader |
 | `TL-LOG-03`    | Ad-Hoc Disruption & Incident Logger | Pencatatan kejadian/aktivitas di luar jadwal resmi (kendala vendor, rute darurat) beserta lampiran foto bukti. | Tour Leader |
 | `TL-PERK-04`   | Perk Badge & Inclusion Validator | Indikator visual lencana fasilitas khusus/promo peserta untuk validasi serah terima layanan lapangan. | Tour Leader |
 | `TL-MEAL-05`   | Field Meal Manifest & Group Listing Helper | Generator format teks listing menu WhatsApp untuk grup koordinasi trip pra-keberangkatan, rekapitulasi total porsi menu untuk pemesanan manual di resto destinasi (non-PO), dan checklist pembagian makanan peserta. | Tour Leader, Admin |
@@ -256,7 +256,7 @@ flowchart LR
 | `VEND-PO-02`   | Purchase Order & Voucher Generator | In-Scope | - | - | MVP: Generate PO dan service voucher PDF. |
 | `VEND-CLAIM-03`| Vendor Bill Settlement Tracker | In-Scope | - | - | MVP: Pencatatan status pembayaran tagihan vendor. |
 | `TL-ATTN-01`   | Multi-Checkpoint Digital Attendance | In-Scope | - | - | MVP: Presensi keberangkatan bus & check-in kamar hotel via mobile web. |
-| `TL-ITIN-02`   | Itinerary Execution & Dual-Timestamp | In-Scope | - | - | MVP: Checklist agenda tur, input jam aktual manual, dan catatan lapangan. |
+| `TL-ITIN-02`   | Itinerary Execution & Dual-Timestamp | In-Scope | - | - | MVP: Checklist agenda tur, input jam aktual manual, catatan aktivitas, dan bukti foto trouble di perjalanan. |
 | `TL-LOG-03`    | Ad-Hoc Disruption & Incident Logger | In-Scope | - | - | MVP: Log kejadian luar jadwal & upload foto bukti kendala lapangan. |
 | `TL-PERK-04`   | Perk Badge & Inclusion Validator | In-Scope | - | - | MVP: Penanda visual fasilitas khusus/promo peserta di kartu presensi. |
 | `TL-MEAL-05`   | Field Meal Manifest & Listing Helper | In-Scope | - | - | MVP: Generator format teks WA grup, rekapitulasi porsi pemesanan resto non-PO, checklist pembagian pax. |

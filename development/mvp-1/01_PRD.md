@@ -9,7 +9,7 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Product Requirements Document (PRD) |
 | **Phase / Milestone** | MVP-1 |
-| **Document Version** | 1.1 |
+| **Document Version** | 1.2 |
 | **Document Status** | Approved Baseline |
 | **Implementation Status** | In Development |
 | **Last Updated** | 2026-09-21 |
@@ -56,7 +56,7 @@ Berdasarkan analisis operasional agensi wisata sebagai *Tour Orchestrator*:
 5. **Promo Diskon & Perk Overlay**: Diskon moneter, *Perk Badge* fasilitas cuma-cuma, dan guardrails kuota promo/non-stackable.
 6. **Keuangan & Verifikasi Kas**: Dual invoicing (DP & Pelunasan), verifikasi bukti transfer manual, antrean pencairan refund disrupsi, dan *Closing Ledger* H+2.
 7. **Pengadaan Vendor**: Direktori vendor, generator dokumen PO/Service Voucher PDF, dan pencocokan klaim tagihan vendor.
-8. **Operasional Lapangan Tour Leader (Field Operations Portal)**: Mobile-web terautentikasi (RBAC) untuk Tour Leader yang ditugaskan, mencakup presensi bertahap (*Departure Boarding & Hotel Rooming Check-in*), *Itinerary Execution Tracker* (checklist agenda, input jam aktual manual, dan catatan lapangan), verifikasi *Perk Badges*, serta *Ad-Hoc Disruption Logger* dengan unggahan foto.
+8. **Operasional Lapangan Tour Leader (Field Operations Portal)**: Mobile-web terautentikasi (RBAC) untuk Tour Leader yang ditugaskan, mencakup presensi bertahap (*Departure Boarding & Hotel Rooming Check-in*), *Itinerary Execution Tracker* (checklist agenda, input jam aktual manual, catatan per aktivitas, serta bukti foto saat terjadi kendala/trouble di perjalanan), verifikasi *Perk Badges*, serta *Ad-Hoc Disruption Logger* dengan unggahan foto.
 9. **Generator Dokumen Standar**: Rendering PDF otomatis untuk Invoice, Kuitansi, PO, Voucher, dan Export Manifest XLSX/PDF.
 10. **Dashboard & RBAC**: Dashboard metrik eksekutif, radar milestone H-30 s/d H+7, RBAC 5 peran internal terautentikasi (Owner, Ops, Finance, Admin Sales, Tour Leader) + akses publik tamu, dan *immutable audit log*.
 
@@ -205,10 +205,10 @@ sequenceDiagram
     opt Waktu Pelaksanaan Berbeda dengan Jam Sekarang
         TL->>Portal: Ketik Manual Jam Aktual (actual_event_time, misal 10:15)
     end
-    opt Ada Penyesuaian Kondisi Lapangan
-        TL->>Portal: Tulis Catatan Singkat Lapangan pada Agenda Terkait
+    opt Ada Penyesuaian Kondisi / Terjadi Trouble di Perjalanan
+        TL->>Portal: Tulis Catatan Lapangan & Unggah Foto Bukti Kendala (Kamera HP)
     end
-    Portal->>DB: Simpan Status Agenda, actual_event_time, system_recorded_at, & Notes
+    Portal->>DB: Simpan Status Agenda, actual_event_time, system_recorded_at, Notes, & trouble_photo_url
 
     Note over TL,Portal: Checkpoint 2: Tiba di Akomodasi / Hotel (Jika Ada Hotel)
     TL->>Portal: Buka Modul Pembagian Kamar (Rooming List)
@@ -414,7 +414,7 @@ sequenceDiagram
 - **Kriteria Penerimaan (Acceptance Criteria)**:
   1. *Given* trip berstatus `COMPLETED` dan TL menyerahkan rekapitulasi pengeluaran riil beserta bukti bon/nota fisik pada H+1, *When* Admin membuka tab Riwayat & Biaya Lapangan pada departure terkait, *Then* sistem menyediakan formulir entri tabel pos biaya (Tanggal, Kategori Biaya: Resto Lokal, BBM, Tol, Parkir, Tiket Ad-Hoc, Lainnya, Nominal Pengeluaran, Keterangan) dengan kalkulasi otomatis total pengeluaran riil.
   2. *Given* Admin mengisi pos biaya pengeluaran, *When* mengunggah lampiran berkas bukti (format PDF/JPG/PNG, dukungan multi-file), *Then* sistem menyimpan lampiran tersebut ke dalam vault bukti pengeluaran departure dan menandai status verifikasi bukti sebagai `ATTACHED`.
-  3. *Given* seluruh pos pengeluaran dan berkas bukti selesai diinput, *When* Admin menekan tombol `[Simpan & Terbitkan Dokumen Riwayat Trip]`, *Then* sistem membundel data pengeluaran, berkas bukti, presensi kehadiran (`TL-ATTN-01`), realisasi waktu itinerary (`TL-ITIN-02`), dan log insiden lapangan (`TL-LOG-03`) menjadi satu Dokumen Riwayat Trip terpadu berstatus `READY_FOR_CLOSING` serta meneruskan tugas verifikasi kas ke tim Finance.
+  3. *Given* seluruh pos pengeluaran dan berkas bukti selesai diinput, *When* Admin menekan tombol `[Simpan & Terbitkan Dokumen Riwayat Trip]`, *Then* sistem membundel data pengeluaran, berkas bukti, presensi kehadiran (`TL-ATTN-01`), realisasi waktu itinerary & foto bukti kendala aktivitas (`TL-ITIN-02`), dan log insiden lapangan (`TL-LOG-03`) menjadi satu Dokumen Riwayat Trip terpadu berstatus `READY_FOR_CLOSING` serta meneruskan tugas verifikasi kas ke tim Finance.
 
 ---
 
@@ -633,17 +633,19 @@ sequenceDiagram
   4. *Given* kunci fisik kamar diserahkan kepada peserta, *When* TL menekan tombol `Roomed` pada kartu kamar terkait, *Then* sistem menandai kamar tersebut telah terisi dan memperbarui penghitung progres (*rooming progress counter*, misal: "18/18 Kamar Terisi").
 
 #### `US-TL-02` (Feature ID: `TL-ITIN-02`)
-- **Judul**: Itinerary Execution Checklist & Dual-Timestamp Tracker
+- **Judul**: Itinerary Execution Checklist, Dual-Timestamp & Trouble Activity Logger
 - **Prioritas**: Must Have | **Aktor**: Tour Leader
 - **User Story**:
   - *Sebagai* **Tour Leader**,
-  - *Saya ingin* melihat daftar rencana kegiatan (*planned itinerary*) tur dan mencentang agenda yang telah selesai dilaksanakan, serta memiliki fleksibilitas mengetik manual jam pelaksanaan aktual dan menambahkan catatan kondisi lapangan,
-  - *Sehingga* realisasi jadwal perjalanan tercatat akurat (meskipun saya baru sempat mengisi beberapa saat setelah kegiatan selesai) dan kantor pusat dapat memantau ketepatan waktu tur (*on-time performance*).
+  - *Saya ingin* melihat daftar rencana kegiatan (*planned itinerary*) tur dan mencentang agenda yang telah selesai dilaksanakan, memiliki fleksibilitas mengetik manual jam pelaksanaan aktual, menambahkan catatan kondisi lapangan, serta memasukkan bukti foto saat terjadi trouble/kendala operasional selama di perjalanan atau di lokasi agenda,
+  - *Sehingga* realisasi jadwal perjalanan tercatat akurat (meskipun saya baru sempat mengisi beberapa saat setelah kegiatan selesai), kendala teknis/operasional per aktivitas terdokumentasi lengkap dengan bukti visual valid, dan kantor pusat dapat memantau ketepatan waktu tur (*on-time performance*) beserta kondisi riil lapangan secara transparan.
 - **Kriteria Penerimaan (Acceptance Criteria)**:
   1. *Given* jadwal tur sedang berlangsung, *When* TL membuka tab Itinerary, *Then* sistem menampilkan seluruh rangkaian agenda tur yang diwarisi dari cetak biru master (*Blueprint*), terurut berdasarkan hari dan jam rencana.
   2. *Given* suatu agenda tur selesai dilaksanakan, *When* TL menekan tombol checklist `[✓ Selesai]`, *Then* kolom waktu pelaksanaan aktual (`actual_event_time`) otomatis terisi dengan jam perangkat saat ini (format `HH:mm`).
   3. *Given* TL baru sempat melakukan checklist beberapa waktu setelah kegiatan berlangsung (misal baru sempat menginput 30 menit setelah tiba di destinasi), *When* TL memilih kolom jam aktual, *Then* TL dapat mengetik manual jam kejadian riil di lapangan (misal mengubah `10:50` menjadi `10:15`) tanpa tombol pintas tambahan.
-  4. *Given* checklist agenda disimpan, *Then* sistem secara permanen menyimpan dua atribut waktu terpisah: `actual_event_time` (waktu riil lapangan yang dimasukkan/diedit TL) dan `system_recorded_at` (timestamp audit server saat data disimpan), serta menyimpan catatan teks lapangan opsional jika TL mengisinya.
+  4. *Given* checklist agenda disimpan, *Then* sistem secara permanen menyimpan atribut terstruktur: `actual_event_time` (waktu riil lapangan yang dimasukkan/diedit TL), `system_recorded_at` (timestamp audit server saat data disimpan), serta catatan teks lapangan opsional jika TL mengisinya.
+  5. *Given* terjadi kendala/trouble selama pelaksanaan agenda atau perjalanan menuju agenda tersebut (misal: kemacetan ekstrem di rute perjalanan, bus mogok/kendala teknis en-route, fasilitas/wahana destinasi bermasalah/tutup, atau cuaca buruk), *When* TL membuka formulir catatan agenda terkait, *Then* sistem menyediakan opsi penandaan status trouble (*Trouble Flag*) dan tombol unggah bukti foto (*trouble photo attachment* via kamera ponsel atau galeri) selain kolom catatan teks per activity.
+  6. *Given* bukti foto kendala dilampirkan dan log agenda disimpan, *Then* sistem menyimpan berkas bukti visual tersebut (`trouble_photo_url`) terikat langsung pada ID agenda/activity log, menampilkan thumbnail foto pada timeline perjalanan di portal TL, dan memunculkan badge peringatan kendala aktivitas pada live monitor Back-Office secara real-time.
 
 #### `US-TL-03` (Feature ID: `TL-LOG-03`)
 - **Judul**: Ad-Hoc Field Activity & Disruption Logger

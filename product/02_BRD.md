@@ -9,7 +9,7 @@
 | **Product Name** | Travel & Tour Operations System (TMS) |
 | **Document Type** | Business Requirements Document |
 | **Phase / Milestone** | Entire Product / Foundation |
-| **Document Version** | 1.5 |
+| **Document Version** | 1.6 |
 | **Document Status** | Approved |
 | **Implementation Status** | N/A |
 | **Last Updated** | 2026-09-21 |
@@ -283,7 +283,7 @@ Jika terdapat permintaan penambahan peserta baru saat tour sedang berlangsung (*
 ### 4.10 Protokol Rekapitulasi Pengeluaran Riil Lapangan & Dokumen Riwayat Trip (Post-Trip Field Expense Ledger & Trip History Archiving)
 - **Rule 4.10.1 (Kewajiban Rekapitulasi & Bukti Fisik oleh TL):** Maksimal **H+1** setelah trip selesai (`COMPLETED`), Tour Leader wajib menyusun lembar rekapitulasi seluruh pengeluaran riil lapangan (konsumsi rumah makan lokal, bahan bakar armada tambahan, tiket tol, retribusi jalan/daerah, parkir bus, dan biaya darurat lapangan) serta melampirkan seluruh bukti fisik yang sah (nota bon warung/resto, karcis parkir, struk tol, kuitansi).
 - **Rule 4.10.2 (Input Data & Upload Bukti oleh Admin Operasional):** Admin Operasional bertanggung jawab memvalidasi fisik bukti pengeluaran, menginput setiap rincian pos biaya lapangan ke dalam sistem TMS, dan mengunggah berkas foto/scan bukti bon fisik tersebut.
-- **Rule 4.10.3 (Pembentukan Dokumen Riwayat Trip Terpadu):** Rincian biaya riil dan berkas bukti pembayaran yang telah diinput Admin Operasional secara otomatis dibundel ke dalam **Dokumen Riwayat Trip (*Trip Operational History & Expense Archive*)** yang permanen dan terhubung dengan manifest presensi bertahap (`TL-ATTN-01`), catatan jam aktual agenda (`TL-ITIN-02`), dan log insiden lapangan (`TL-LOG-03`).
+- **Rule 4.10.3 (Pembentukan Dokumen Riwayat Trip Terpadu):** Rincian biaya riil dan berkas bukti pembayaran yang telah diinput Admin Operasional secara otomatis dibundel ke dalam **Dokumen Riwayat Trip (*Trip Operational History & Expense Archive*)** yang permanen dan terhubung dengan manifest presensi bertahap (`TL-ATTN-01`), catatan jam aktual agenda serta foto bukti kendala aktivitas (`TL-ITIN-02`), dan log insiden lapangan (`TL-LOG-03`).
 - **Rule 4.10.4 (Prasyarat Rekonsiliasi & Financial Closing H+2):** Dokumen Riwayat Trip yang telah diverifikasi kelengkapannya menjadi dasar mutlak bagi Finance untuk melakukan rekonsiliasi kas jalan (*petty cash / cash advance*), penagihan/reimbursement selisih kas, dan penutupan buku laba-rugi (*Financial Closing Ledger*, Rule 4.5 / `FIN-CLOSE-05`) maksimal pada **H+2**.
 
 ---
@@ -360,7 +360,7 @@ TRAVEL & TOUR OPERATIONS SYSTEM (TMS)
 ├── 05. Promotion Overlay Engine (Monetary Discount, Complimentary Badges)
 ├── 06. Finance, Billing & Settlement Module (Invoicing, Instant Pay, Refund Queue, Ledger)
 ├── 07. Vendor & Procurement Module (Master Directory, Add-on PO & Voucher Generator)
-├── 08. Tour Leader Field Module (Multi-Checkpoint Attendance, Itinerary Dual-Timestamp, Disruption Logger)
+├── 08. Tour Leader Field Module (Multi-Checkpoint Attendance, Itinerary Dual-Timestamp & Trouble Photo Logger, Disruption Logger)
 ├── 09. Document Management & Template Vault (Invoice, PO, Voucher, Manifest, Digital Waiver)
 └── 10. Access Control, Security & Audit Trail (RBAC, Override Logger)
 ```
