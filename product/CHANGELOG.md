@@ -8,6 +8,14 @@ Format pencatatan mengikuti panduan:
 
 ## [2026-10-07]
 
+### [REG-01] Product Metadata.md - Version 1.2
+- **Status:** Approved
+- **Author:** Product & Operations Team
+- **Changes:**
+  - **Penyelarasan Document ID Master Registry**: Menyelaraskan seluruh Document ID pada `product/Product Metadata.md` agar konsisten menggunakan kode kanonikal (`BA-01`, `BRD-01`, `SCOPE-01`, `REG-01`, `PRD-MVP1`, `FRD-MVP1`, `DOMAIN-01`, `ARCH-01`, `DB-01`, `API-01`).
+  - **Koreksi Kolom Tabel**: Mengoreksi label kolom `Feature ID` pada tabel Milestone & PRD Documents menjadi `Document ID`, serta menyelaraskan kode `TMS-MVP1-PRD` menjadi `PRD-MVP1` dan `TMS-MVP1-FRD` menjadi `FRD-MVP1`.
+  - **Standarisasi Kolom Registri**: Menambahkan kolom `Document ID` secara seragam pada tabel Product Documents dan Technical Architecture Documents.
+
 ### [FRD-MVP1] 02_FRD.md - Version 1.0
 - **Status:** Draft
 - **Author:** Product & Operations Team

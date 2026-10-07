@@ -186,7 +186,7 @@ Format pencatatan perubahan pada `product/CHANGELOG.md` dan `technical/CHANGELOG
 | **Document Status** | `Draft`, `In Review`, `Approved`, `Final`, `Deprecated` | Status kesepakatan dan persetujuan isi dokumen. |
 | **Implementation Status** | `Planned`, `In Progress`, `Implemented`, `Blocked`, `N/A` | Status realisasi pengembangan kode oleh tim engineering. |
 | **Priority (pada PRD)** | `Must Have`, `Should Have`, `Could Have`, `Won't Have` (MoSCoW) | Prioritas penyelesaian fitur dalam satu milestone rilis. |
-| **Document ID Format** | `BA-01`, `BRD-01`, `SCOPE-01`, `PRD-MVP1`, `FRD-MVP1`, `ARCH-01`, `DB-01`, `API-01` | Kode pengenal unik untuk perujukan silang (*cross-referencing*). |
+| **Document ID Format** | `BA-01`, `BRD-01`, `SCOPE-01`, `REG-01`, `PRD-MVP1`, `FRD-MVP1`, `DOMAIN-01`, `ARCH-01`, `DB-01`, `API-01` | Kode pengenal unik untuk perujukan silang (*cross-referencing*). |
 | **Feature ID Format** | `[DOMAIN]-[ROLE]-[INDEX]`<br>Contoh: `CATALOG-ADMIN-01`, `BOOKING-CUST-02`, `OPS-TL-01` | ID fitur kanonikal untuk keterlacakan dari PRD $\rightarrow$ FRD $\rightarrow$ DB $\rightarrow$ Test. |
 
 ---
