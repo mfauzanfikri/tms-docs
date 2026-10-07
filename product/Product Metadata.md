@@ -21,7 +21,7 @@
 | Feature ID | Document Name | Path | Current Doc Version | Description / Status |
 | :--- | :--- | :--- | :--- | :--- |
 | `TMS-MVP1-PRD` | [01 PRD MVP-1](../development/mvp-1/01_PRD.md) | `development/mvp-1/01_PRD.md` | 1.2 | Approved Baseline — User Stories, Journey Flows, Acceptance Criteria MVP-1, US-TL-02 trouble photo evidence, US-OPS-08, dan US-TL-05 |
-| `TMS-MVP1-FRD` | [02 FRD MVP-1](../development/mvp-1/02_FRD.md) | `development/mvp-1/02_FRD.md` | 1.0 | Planned / Not yet available — State Machine, System Triggers & Validations MVP-1 |
+| `TMS-MVP1-FRD` | [02 FRD MVP-1](../development/mvp-1/02_FRD.md) | `development/mvp-1/02_FRD.md` | 1.0 | Draft — State Machine, System Triggers, Calculations & Validations MVP-1 |
 
 ### Technical Architecture Documents
 | Document Name | Path | Current Doc Version | Description / Status |

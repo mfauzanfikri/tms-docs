@@ -6,6 +6,19 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-10-07]
+
+### [FRD-MVP1] 02_FRD.md - Version 1.0
+- **Status:** Draft
+- **Author:** Product & Operations Team
+- **Changes:**
+  - **Inisialisasi Dokumen FRD MVP-1 (`02_FRD.md`)**: Menyusun Functional Requirements Document (FRD) komprehensif berdasarkan `01_PRD.md` dan aturan normatif `02_BRD.md`.
+  - **Spesifikasi Formal State Machines**: Mendefinisikan tabel transisi, guard conditions, side effects, dan diagram status untuk Departure (`TENTATIVE`, `PUBLISHED_FIXED`, `CONFIRMED_DEPARTURE`, `IN_OPERATION`, `COMPLETED`, `WAITING_OWNER_ACTION`, `CANCELLED`), Booking (`DRAFT`, `PENDING_PAYMENT`, `EXPIRED`, `CONFIRMED`, `FULLY_PAID`, `RESCHEDULED`, `TRANSFERRED`, `CANCELLED`), Payment & Refund (`UNPAID`, `PARTIALLY_PAID`, `PAID`, `REFUND_PENDING`, `REFUNDED`), dan PO Vendor.
+  - **Spesifikasi Cron & Event Triggers**: Mendefinisikan detail alur eksekusi untuk Gatekeeper H-5 00:00 WIB (`OPS-GATE-04`), Expiry Hold Kursi 2 Jam (`BOOK-HOLD-02`), Radar Peak Season H-30 (`OPS-SEAS-07`), Radar Milestone Operasional H-30 s/d H+7 (`DASH-OPS-02`), dan Warning Center Risiko Kuota H-10 s/d H-6 (`DASH-RISK-03`).
+  - **Mesin Kalkulasi & Formula Bisnis**: Merumuskan kalkulasi BEP Pax (`CAT-PRIC-03`), multi-bus batching recalculation (`OPS-DISP-06`), price snapshotting (`BOOK-SNAP-03`), resolusi disrupsi 4-jalur & akuntansi Goodwill Subsidy (`OPS-DISR-05`), rekapitulasi pengeluaran riil lapangan (`OPS-HIST-08`), dan formula closing ledger H+2 (`FIN-CLOSE-05`).
+  - **Spesifikasi Fungsional 10 Modul**: Menjabarkan input, output, dan aturan sistem untuk 41 Feature ID kanonikal lintas 10 modul (DASH, CAT, OPS, BOOK, PROMO, FIN, VEND, TL, DOC, SEC).
+  - **Validasi Data, Error Codes & Matriks RBAC**: Memuat katalog invariant, kode error kanonikal, matriks wewenang operasional 5 peran internal + tamu, serta matriks ketertelusuran fungsional.
+
 ## [2026-09-21]
 
 ### [ITIN-TROUBLE-PHOTO] Lampiran Bukti Foto Kendala Lapangan pada Logging Activity (TL-ITIN-02)
