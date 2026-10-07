@@ -6,6 +6,19 @@ Format pencatatan mengikuti panduan:
 - `[YYYY-MM-DD] - [Document ID / Name] - Version X.X`
 - Rincian perubahan (*Added, Changed, Deprecated, Removed, Fixed*).
 
+## [2026-10-07]
+
+### [DB-MVP1] 02_DATABASE_DESIGN.md - Version 1.0
+- **Status:** Approved
+- **Author:** Engineering & Data Architecture Team
+- **Changes:**
+  - Inisialisasi spesifikasi Database Design & Physical Data Architecture turunan langsung dari FRD MVP-1.
+  - Memuat Master ERD (Mermaid) dan 4 Sub-ERD modular (Catalog & Operations, Booking & Promo, Billing & Vendor Procurement, Field Operations & Receipts).
+  - Menyusun Kamus Data Komprehensif (Data Catalogue) untuk 20 entitas tabel dengan tipe data PostgreSQL, constraints, indexes, dan foreign keys.
+  - Menetapkan DDL Triggers untuk penegakan invarian immutability (`price_snapshots`, `departures`, dan `audit_logs`).
+
+---
+
 ## [2026-09-11]
 
 ### [DOCS-ALIGNMENT] 00_DOMAIN_MODEL.md - Version 1.1
