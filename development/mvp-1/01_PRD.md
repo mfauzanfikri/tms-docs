@@ -158,26 +158,43 @@ sequenceDiagram
 ### 5.3 Journey 3: H-5 Quota Gatekeeper & Disruption Resolution (OPS & FIN)
 
 ```mermaid
-flowchart TD
-    Start(["H-5 00:00 WIB: Cron Trigger"]) --> Eval{"Peserta Aktif >= Min Quota?"}
-    
-    Eval -- Ya --> Conf["Departure Status: CONFIRMED_DEPARTURE"]
-    Conf --> GenPO["Ops: Terbitkan PO & Voucher ke Vendor"]
-    Conf --> GenMani["System: Siapkan Live Field Manifest"]
-    
-    Eval -- Tidak --> Wait["Departure Status: WAITING_OWNER_ACTION"]
-    Wait --> Freeze["Sistem Bekukan Pemesanan Baru (Freeze Bookings)"]
-    Wait --> OwnerConsole["Alert Meja Pemilik (Owner Crisis Console)"]
-    
-    OwnerConsole --> Decision{"Owner Memilih Jalur Resolusi"}
-    
-    Decision -- "Jalur 1: Reschedule" --> Resched["Pindahkan Saldo ke Batch Jadwal Baru"]
-    Decision -- "Jalur 2: Partner Transfer" --> Partner["Alihkan ke Operator Mitra"]
-    Partner --> Waiver{"Free Waiver Goodwill?"}
-    Waiver -- Ya --> Sub["Selisih Biaya Dibebankan ke Akun Goodwill Subsidy"]
-    Decision -- "Jalur 3: 100% Full Refund" --> Ref["Booking Status: REFUND_PENDING"]
-    Ref --> Payout["Finance: Transfer 100% Kas (< 24 Jam Tanpa Potongan)"]
-    Decision -- "Jalur 4: Force Majeure Override" --> Override["Tetap Berangkat dengan Catatan Justifikasi Audit"]
+sequenceDiagram
+    autonumber
+    actor Cron as System Automation Engine
+    participant OpsMod as Departure Engine
+    participant DB as Database
+    actor Owner as Business Owner
+    actor Ops as Operations Manager
+    actor Fin as Finance Officer
+
+    Cron->>OpsMod: Trigger Evaluasi Kuota H-5 (00:00 WIB)
+    OpsMod->>DB: Query Total Peserta Aktif vs Min Quota
+
+    alt Kuota Terpenuhi (Peserta Aktif >= Min Quota)
+        OpsMod->>DB: Update Status = CONFIRMED_DEPARTURE
+        OpsMod-->>Ops: Notifikasi Kesiapan Operasional
+        Ops->>OpsMod: Terbitkan PO & Service Voucher ke Vendor
+        OpsMod->>DB: Siapkan Live Field Manifest
+    else Kuota Tidak Terpenuhi (Peserta Aktif < Min Quota)
+        OpsMod->>DB: Update Status = WAITING_OWNER_ACTION
+        OpsMod->>DB: Bekukan Pemesanan Baru (Freeze Bookings)
+        OpsMod-->>Owner: Alert Meja Pemilik (Owner Crisis Console)
+        
+        alt Jalur 1: Reschedule
+            Owner->>OpsMod: Pilih Jalur 1 (Reschedule)
+            OpsMod->>DB: Pindahkan Saldo Pax ke Batch Jadwal Baru
+        else Jalur 2: Partner Transfer
+            Owner->>OpsMod: Pilih Jalur 2 (Partner Transfer)
+            OpsMod->>DB: Alihkan ke Operator Mitra & Bebankan Biaya ke Goodwill Subsidy
+        else Jalur 3: 100% Full Refund
+            Owner->>OpsMod: Pilih Jalur 3 (100% Full Refund)
+            OpsMod->>DB: Update Booking (Status: REFUND_PENDING)
+            Fin->>DB: Transfer 100% Kas (< 24 Jam) & Tandai REFUNDED
+        else Jalur 4: Force Majeure Override
+            Owner->>OpsMod: Pilih Jalur 4 (Force Majeure Override)
+            OpsMod->>DB: Update Status CONFIRMED_DEPARTURE & Catat Audit Log
+        end
+    end
 ```
 
 ### 5.4 Journey 4: Field Operations, Multi-Checkpoint Attendance & Itinerary Execution (TL)
@@ -249,36 +266,46 @@ sequenceDiagram
 ## 6. Spesifikasi State Machines
 
 ### 6.1 Departure State Machine
-```text
-[TENTATIVE] ──(Publish Departure)──> [PUBLISHED_FIXED]
-                                            │
-               ┌────────────────────────────┴────────────────────────────┐
-               ▼ (H-5 Gate: Kuota Cukup)                                 ▼ (H-5 Gate: Kuota Kurang)
-     [CONFIRMED_DEPARTURE]                                      [WAITING_OWNER_ACTION]
-               │                                                         │
-               ▼ (Hari H Berangkat)                                      ├──(Jalur 1/2/3)──> [CANCELLED]
-         [ON_TRIP]                                                       └──(Jalur 4)──────> [CONFIRMED_DEPARTURE]
-               │
-               ▼ (Trip Selesai)
-        [COMPLETED] ──(H+2 Closing)──> [FINANCIALLY_CLOSED]
+
+```mermaid
+stateDiagram-v2
+    [*] --> TENTATIVE
+    TENTATIVE --> PUBLISHED_FIXED: Publish Departure
+
+    PUBLISHED_FIXED --> CONFIRMED_DEPARTURE: H-5 Gate (Kuota Cukup)
+    PUBLISHED_FIXED --> WAITING_OWNER_ACTION: H-5 Gate (Kuota Kurang)
+
+    WAITING_OWNER_ACTION --> CANCELLED: Jalur 1, 2, atau 3 (Reschedule / Partner / Refund)
+    WAITING_OWNER_ACTION --> CONFIRMED_DEPARTURE: Jalur 4 (Force Majeure Override)
+
+    CONFIRMED_DEPARTURE --> ON_TRIP: Hari H Berangkat
+    ON_TRIP --> COMPLETED: Trip Selesai
+    COMPLETED --> FINANCIALLY_CLOSED: H+2 Closing
+
+    CANCELLED --> [*]
+    FINANCIALLY_CLOSED --> [*]
 ```
 
 ### 6.2 Booking State Machine
-```text
-[DRAFT] ──(Submit Booking)──> [PENDING_PAYMENT] ──(2 Jam Expiry)──> [EXPIRED]
-                                     │
-                                     ▼ (Verifikasi Bayar DP)
-                                [CONFIRMED] ──(Trigger Price Snapshot)
-                                     │
-                                     ▼ (Pelunasan H-7)
-                                [FULLY_PAID]
-                                     │
-          ┌──────────────────────────┴──────────────────────────┐
-          ▼ (Trip Sukses)                                       ▼ (Batal / Krisis H-5)
-     [COMPLETED]                                         [REFUND_PENDING]
-                                                                │
-                                                                ▼ (Pencairan Kas)
-                                                            [REFUNDED]
+
+```mermaid
+stateDiagram-v2
+    [*] --> DRAFT
+    DRAFT --> PENDING_PAYMENT: Submit Booking
+    PENDING_PAYMENT --> EXPIRED: 2 Jam Expiry
+    PENDING_PAYMENT --> CONFIRMED: Verifikasi Bayar DP (Trigger Price Snapshot)
+
+    CONFIRMED --> FULLY_PAID: Pelunasan H-7
+    CONFIRMED --> REFUND_PENDING: Batal / Krisis H-5
+
+    FULLY_PAID --> COMPLETED: Trip Sukses
+    FULLY_PAID --> REFUND_PENDING: Batal / Krisis H-5
+
+    REFUND_PENDING --> REFUNDED: Pencairan Kas (< 24 Jam)
+
+    EXPIRED --> [*]
+    COMPLETED --> [*]
+    REFUNDED --> [*]
 ```
 
 ---
